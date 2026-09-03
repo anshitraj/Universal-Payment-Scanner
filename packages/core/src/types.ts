@@ -37,6 +37,7 @@ export interface PaymentIntent {
   supported: boolean;
   category: PaymentCategory;
   scheme: string;
+  subtype?: string;
   standard?: string;
   country?: string;
   network?: string;
@@ -118,6 +119,18 @@ export const ALL_SCHEME_IDS = [
   "jpqr",
   "twqr",
   "zeropay",
+  "mercado_pago",
+  "venmo",
+  "cash_app",
+  "tron",
+  "ton",
+  "xrp",
+  "stellar",
+  "walletconnect",
+  "otp_setup",
+  "url",
+  "epc_qr",
+  "swiss_qr_bill",
 ] as const;
 
 export interface ScannerOptions {

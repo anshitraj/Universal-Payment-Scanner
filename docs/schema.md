@@ -5,6 +5,10 @@ SCREAMING_SNAKE_CASE error codes.
 
 Important semantics:
 
+- `subtype`: a finer shape within `scheme`, when one payload family covers meaningfully different
+  flows a developer would want to branch on - e.g. `paypal`'s `paypal_me` vs `invoice_qr`. Omitted
+  when the scheme has no subtypes. Not a closed enum on the wire: new subtype strings can appear
+  as detection for a scheme's other shapes improves, without a schema version bump.
 - `recognized`: a registered adapter confidently identified the payload family.
 - `validation.valid`: the parser verified the implemented structural rules.
 - `supported`: application policy allows the recognized scheme and the adapter can normalize it.

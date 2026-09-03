@@ -59,19 +59,43 @@ A disabled scheme remains recognized:
 | JPQR | JP | Community | EMV structure/CRC, generic country-tag detection (GUID not yet confirmed) | None |
 | TWQR | TW | Community | EMV structure/CRC, generic country-tag detection (GUID not yet confirmed) | None |
 | ZeroPay | KR | Community | EMV structure/CRC, generic country-tag detection (GUID not yet confirmed) | None |
-| PayPal.Me | Global | Beta | strict public HTTPS link shape only | None |
+| Mercado Pago | AR | Community | EMV structure/CRC, generic country-tag detection (BCRA mandates EMVCo; GUID not yet confirmed) | None |
+| PayPal | Global | Beta | public link shape (`paypal_me`, `invoice_qr` subtypes) | None |
+| Venmo | US | Beta | public profile link shape (`/u/<handle>` only, to avoid misreading other venmo.com pages) | None |
+| Cash App | US, GB | Beta | public `$cashtag` link shape | None |
 | Lightning BOLT-11 | Global | Experimental | recognizable invoice prefix and bounds only | None |
 | Alipay | CN | Experimental | link shape only; proprietary, `PROPRIETARY_FORMAT` | None |
 | WeChat Pay | CN | Experimental | link shape only; proprietary, `PROPRIETARY_FORMAT` | None |
+| TRON (TRC-20) | Global | Beta | Base58Check address, double-SHA256 checksum | None |
+| TON | Global | Beta | user-friendly address, CRC16/XMODEM checksum | None |
+| XRP Ledger | Global | Beta | classic address, XRPL base58 alphabet, checksum | None |
+| Stellar | Global | Beta | strkey ed25519 public key, CRC16/XMODEM checksum | None |
+| WalletConnect | Global | Beta | pairing URI shape; recognized, flagged `NOT_PAYMENT_QR` | None |
+| Authenticator (OTP) setup | Global | Beta | `otpauth://` shape; secret never extracted or stored | None |
+| Generic URL | Global | Beta | any other well-formed `http(s)://` link; flagged `NOT_PAYMENT_QR` | None |
+| SEPA / EPC QR (Girocode) | EU/SEPA | Beta | EPC069-12 line format, real IBAN MOD-97 checksum | None |
+| Swiss QR-bill | CH, LI | Experimental | SPC v2.x format, IBAN checksum; debtor-block field count and the QRR reference's own check digit not independently confirmed | None |
 
 "Valid" means structurally valid. It never means that a recipient is trustworthy or that a
 payment is safe. "Community" maturity means the national standard and its EMVCo basis are
 confirmed from a public source, but the exact scheme GUID hasn't been pinned yet - contributions
 welcome, see [adding a scheme](docs/adding-a-scheme.md).
 
-Bhutan, Brunei, Mongolia (QPay), Kazakhstan (Unified QR), and Kyrgyzstan (ELQR) are not yet
-covered: research for this release did not surface a public payload specification for any of
-them, and this project does not ship a parser it cannot verify against one.
+Several schemes above are structural families rather than one shape: `PaymentIntent.subtype`
+distinguishes them (e.g. `paypal` + `paypal_me` vs `paypal` + `invoice_qr`). See
+[schema](docs/schema.md).
+
+WalletConnect, Authenticator setup, and Generic URL are deliberately not payment schemes. A
+scanner that can only say "unknown QR" for a wallet-connection request or a 2FA setup code is
+less trustworthy than one that says what it actually found - see
+[architecture](docs/architecture.md).
+
+Bhutan, Brunei, Mongolia (QPay), Kazakhstan (Unified QR), Kyrgyzstan (ELQR), and Zelle (no public
+payload spec exists at all - confirmed bank-proprietary, no public API or URI scheme) are not yet
+covered: research for this release did not surface a usable public payload specification for any
+of them, and this project does not ship a parser it cannot verify against one. Standalone TWINT
+(distinct from a Swiss QR-bill a TWINT app can pay) and PayPal's seller/payment-link QR subtypes
+are similarly deferred pending a confirmed URL pattern.
 
 ## Repository map
 

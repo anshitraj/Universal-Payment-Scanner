@@ -13,8 +13,13 @@ The Go service caps request bodies, uses short timeouts, disables response cachi
 from logs, and returns generic core failures. Integrators should add authentication and deployment
 rate limiting at their own edge if exposing it publicly.
 
-Known limitations are tracked in scheme metadata. In v0.1, Lightning is detection-only, PayPal.Me
-is public-link parsing only, Alipay/WeChat Pay are proprietary-format detect-only stubs, and nine
-national EMVCo overlays (`community` maturity - see README) are detected via the generic envelope
-and country field rather than a confirmed scheme GUID.
+Known limitations are tracked in scheme metadata. In v0.1, Lightning is detection-only, PayPal
+link parsing covers `paypal_me`/`invoice_qr` only, Alipay/WeChat Pay are proprietary-format
+detect-only stubs, and ten national EMVCo overlays (`community` maturity - see README) are
+detected via the generic envelope and country field rather than a confirmed scheme GUID.
+
+The `otp_setup` adapter (`otpauth://` 2FA setup codes) intentionally never reads or stores the
+`secret` query parameter - only the OTP type (`totp`/`hotp`) is extracted. That parameter is a
+live authentication credential; the adapter's job is to say "this is a 2FA setup code," not to
+handle the credential inside it.
 

@@ -22,12 +22,25 @@ pub fn default_registry() -> Vec<Box<dyn PaymentScheme>> {
         Box::new(schemes::Lightning),
         Box::new(schemes::Alipay),
         Box::new(schemes::WeChatPay),
+        Box::new(schemes::Venmo),
+        Box::new(schemes::CashApp),
+        Box::new(schemes::Tron),
+        Box::new(schemes::Ton),
+        Box::new(schemes::Xrp),
+        Box::new(schemes::Stellar),
+        Box::new(schemes::WalletConnect),
+        Box::new(schemes::Authenticator),
+        Box::new(schemes::EpcQr),
+        Box::new(schemes::SwissQr),
     ];
     registry.extend(
         schemes::OVERLAYS
             .iter()
             .map(|config| Box::new(schemes::NationalOverlay(config)) as Box<dyn PaymentScheme>),
     );
+    // GenericUrl is the lowest-confidence detector in the registry (see its own doc comment) -
+    // registered last so every specific http(s) scheme above gets first refusal.
+    registry.push(Box::new(schemes::GenericUrl));
     registry
 }
 

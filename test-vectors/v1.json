@@ -10,8 +10,13 @@
     "expected": { "recognized": true, "scheme": "pix", "valid": true }
   },
   {
-    "name": "ordinary website",
+    "name": "ordinary website is recognized as a generic URL, not a payment",
     "payload": "https://example.com/docs",
+    "expected": { "recognized": true, "scheme": "url", "valid": true }
+  },
+  {
+    "name": "truly unstructured input is not recognized at all",
+    "payload": "just some plain text with no structure at all",
     "expected": { "recognized": false, "scheme": "unknown", "valid": false }
   },
   {
@@ -118,5 +123,55 @@
     "name": "VietQR personal transfer with no merchant category code, name, or city (real-world NAPAS P2P shape)",
     "payload": "00020101021138540010A00000072701240006970436011000118860200208QRIBFTTA53037045802VN6304DA3A",
     "expected": { "recognized": true, "scheme": "vietqr", "valid": true }
+  },
+  {
+    "name": "PayPal.Me link with amount, subtype paypal_me",
+    "payload": "https://paypal.me/exampleuser/25.00",
+    "expected": { "recognized": true, "scheme": "paypal", "valid": true, "amount": "25.00" }
+  },
+  {
+    "name": "PayPal shareable invoice link, subtype invoice_qr",
+    "payload": "https://www.paypal.com/invoice/p/#INV2-ABCD-1234-EFGH",
+    "expected": { "recognized": true, "scheme": "paypal", "valid": true }
+  },
+  {
+    "name": "Venmo profile link",
+    "payload": "https://venmo.com/u/Example-User",
+    "expected": { "recognized": true, "scheme": "venmo", "valid": true }
+  },
+  {
+    "name": "Cash App $cashtag link with amount",
+    "payload": "https://cash.app/$exampletag/12.50",
+    "expected": { "recognized": true, "scheme": "cash_app", "valid": true, "amount": "12.50" }
+  },
+  {
+    "name": "bare TRON address (public USDT-TRC20 contract address, not a customer account)",
+    "payload": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+    "expected": { "recognized": true, "scheme": "tron", "valid": true }
+  },
+  {
+    "name": "bare XRP Ledger classic address (public XRPL genesis account)",
+    "payload": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+    "expected": { "recognized": true, "scheme": "xrp", "valid": true }
+  },
+  {
+    "name": "WalletConnect pairing URI is recognized but flagged as not a payment",
+    "payload": "wc:7f6e504bfad60b485450578e05678ed3e8e8c4751d3c6160be17160d63ec90f9@2?relay-protocol=irn&symKey=abc",
+    "expected": { "recognized": true, "scheme": "walletconnect", "valid": true }
+  },
+  {
+    "name": "OTP authenticator setup URI is recognized but flagged as not a payment",
+    "payload": "otpauth://totp/Example:alice@example.com?secret=JBSWY3DPEHPK3PXP&issuer=Example",
+    "expected": { "recognized": true, "scheme": "otp_setup", "valid": true }
+  },
+  {
+    "name": "SEPA / EPC QR (Girocode), open amount, real IBAN checksum",
+    "payload": "BCD\n002\n1\nSCT\n\nMax Mustermann\nDE89370400440532013000\n\n\n\n",
+    "expected": { "recognized": true, "scheme": "epc_qr", "valid": true }
+  },
+  {
+    "name": "Swiss QR-bill v2.x with a SCOR reference",
+    "payload": "SPC\n0200\n1\nDE89370400440532013000\nMusterfrau AG\nBahnhofstrasse\n1\n8001\nZurich\nCH\n\n\n\n\n\n\n100.00\nCHF\n\n\n\n\n\n\nSCOR\nRF18539007547034\nOrder 42\nEPD",
+    "expected": { "recognized": true, "scheme": "swiss_qr_bill", "valid": true, "amount": "100.00" }
   }
 ]

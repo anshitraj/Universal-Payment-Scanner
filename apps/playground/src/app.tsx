@@ -8,10 +8,14 @@ type SchemeGroup = readonly [label: string, entries: readonly SchemeEntry[]];
 const schemeGroups: readonly SchemeGroup[] = [
   ["Global", [
     ["emvco_mpm", "EMVCo", "GLOBAL"],
+    ["paypal", "PayPal", "GLOBAL"],
     ["bitcoin", "Bitcoin", "GLOBAL"],
     ["ethereum", "Ethereum", "GLOBAL"],
     ["solana_pay", "Solana Pay", "GLOBAL"],
-    ["paypal", "PayPal.Me", "GLOBAL"],
+    ["tron", "TRON", "GLOBAL"],
+    ["ton", "TON", "GLOBAL"],
+    ["xrp", "XRP Ledger", "GLOBAL"],
+    ["stellar", "Stellar", "GLOBAL"],
   ]],
   ["South Asia", [
     ["upi", "UPI", "IN"],
@@ -39,8 +43,22 @@ const schemeGroups: readonly SchemeGroup[] = [
     ["alipay", "Alipay", "CN"],
     ["wechat_pay", "WeChat Pay", "CN"],
   ]],
-  ["Americas", [
+  ["North America", [
+    ["venmo", "Venmo", "US"],
+    ["cash_app", "Cash App", "US"],
+  ]],
+  ["Latin America", [
     ["pix", "Pix", "BR"],
+    ["mercado_pago", "Mercado Pago", "AR"],
+  ]],
+  ["Europe", [
+    ["epc_qr", "SEPA / EPC (Girocode)", "EU"],
+    ["swiss_qr_bill", "Swiss QR-bill", "CH"],
+  ]],
+  ["Other QR types", [
+    ["walletconnect", "WalletConnect", "GLOBAL"],
+    ["otp_setup", "Authenticator setup", "GLOBAL"],
+    ["url", "Generic URL", "GLOBAL"],
   ]],
 ];
 

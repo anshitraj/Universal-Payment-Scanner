@@ -3,6 +3,7 @@
 //! This crate parses data that has already been decoded from a QR image. It never performs
 //! network requests, opens URLs, or initiates transactions.
 
+mod checksums;
 mod decimal;
 mod emv;
 mod model;
@@ -34,10 +35,22 @@ mod tests {
     use super::*;
 
     #[test]
-    fn non_payment_is_not_recognized() {
-        let result = parse_payment_qr("https://example.com/docs");
+    fn truly_unrecognizable_input_is_not_recognized() {
+        let result = parse_payment_qr("just some plain text with no structure at all");
         assert!(!result.recognized);
         assert_eq!(result.validation.errors[0].code, ErrorCode::NotPaymentQr);
+    }
+
+    #[test]
+    fn a_generic_url_is_recognized_as_a_url_but_flagged_as_not_a_payment() {
+        // A website link is a *known* shape - it should read as "recognized, not a payment"
+        // (scheme "url", NOT_PAYMENT_QR) rather than the same "we have no idea" fallback that a
+        // truly unstructured payload gets. See schemes::nonpayment::GenericUrl.
+        let result = parse_payment_qr("https://example.com/docs");
+        assert!(result.recognized);
+        assert_eq!(result.scheme, "url");
+        assert!(!result.supported);
+        assert_eq!(result.support.reason, Some(ErrorCode::NotPaymentQr));
     }
 
     #[test]

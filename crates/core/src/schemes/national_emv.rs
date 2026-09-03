@@ -411,6 +411,18 @@ overlay!(
     Maturity::Community,
     &["https://www.zeropay.or.kr"]
 );
+overlay!(
+    MERCADO_PAGO,
+    "mercado_pago",
+    "Mercado Pago / Transferencias 3.0",
+    "Mercado Pago",
+    "AR",
+    ("032", "ARS"),
+    &[],
+    "BCRA Transferencias 3.0 interoperable QR (EMVCo QRCPS, Comunicacion A 6425)",
+    Maturity::Community,
+    &["https://www.bcra.gob.ar"]
+);
 
 pub const OVERLAYS: &[&NationalOverlayConfig] = &[
     &PROMPTPAY,
@@ -430,6 +442,7 @@ pub const OVERLAYS: &[&NationalOverlayConfig] = &[
     &JPQR,
     &TWQR,
     &ZEROPAY,
+    &MERCADO_PAGO,
 ];
 
 #[cfg(test)]

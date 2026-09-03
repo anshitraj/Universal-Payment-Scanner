@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 
-pub const SCHEMA_VERSION: &str = "1.0.0";
+pub const SCHEMA_VERSION: &str = "1.1.0";
 pub const DEFAULT_MAX_PAYLOAD_BYTES: usize = 8 * 1024;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -150,6 +150,11 @@ pub struct PaymentIntent {
     pub supported: bool,
     pub category: Category,
     pub scheme: String,
+    /// A finer-grained shape within `scheme` when one payload family covers meaningfully
+    /// different flows - e.g. `paypal`'s `paypal_me` vs `unknown_paypal`, or a bare crypto
+    /// address vs a full payment-request URI. Omitted when the scheme has no subtypes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subtype: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -187,6 +192,7 @@ impl PaymentIntent {
             supported: true,
             category,
             scheme: scheme.into(),
+            subtype: None,
             standard: None,
             country: None,
             network: None,

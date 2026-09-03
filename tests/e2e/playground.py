@@ -32,14 +32,31 @@ with sync_playwright() as playwright:
     page.get_by_text("Solana Pay payments are not supported by this application.", exact=True).wait_for()
     assert '"reason": "SCHEME_DISABLED"' in page.locator(".json-panel pre").inner_text()
 
+    # A generic website link is recognized (scheme "url") and flagged NOT_PAYMENT_QR, not left
+    # fully unrecognized - see schemes::nonpayment::GenericUrl.
     payload.fill("https://example.com/docs")
     page.get_by_role("button", name="Parse intent").click()
-    page.get_by_text("That QR is valid, but it is not a recognized payment request.", exact=True).wait_for()
+    page.get_by_text("That QR is a website link, not a payment request.", exact=True).wait_for()
+    assert '"scheme": "url"' in page.locator(".json-panel pre").inner_text()
 
     page.get_by_role("button", name="upload", exact=True).click()
     page.locator('input[type="file"]').set_input_files(str(upload_fixture))
     page.get_by_text("bitcoin recognized", exact=True).wait_for()
     assert '"scheme": "bitcoin"' in page.locator(".json-panel pre").inner_text()
+
+    # Regression guard for a WASM/native parity bug: serde_wasm_bindgen's default serializer
+    # represented PaymentIntent.metadata (a Rust map) as a JS Map, which JSON.stringify silently
+    # renders as "{}". Nothing exercised metadata through real WASM+JSON.stringify until this was
+    # added, so it shipped undetected - see crates/wasm/src/lib.rs and CHANGELOG.md.
+    page.get_by_role("button", name="paste", exact=True).click()
+    payload.fill(
+        "00020126360014BR.GOV.BCB.PIX0114+55119999999995204000053039865802BR5913FULANO DE TAL6008BRASILIA62070503***6304C23A"
+    )
+    page.get_by_role("button", name="Parse intent").click()
+    page.get_by_text("pix recognized", exact=True).wait_for()
+    metadata_text = page.locator(".json-panel pre").inner_text()
+    assert '"merchantCategoryCode": "0000"' in metadata_text
+    assert '"merchantCity": "BRASILIA"' in metadata_text
 
     page.screenshot(path=str(artifact_dir / "playground.png"), full_page=True)
     page.set_viewport_size({"width": 390, "height": 844})

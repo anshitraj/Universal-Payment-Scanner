@@ -511,6 +511,7 @@ dependencies = [
 name = "universal-payment-qr-wasm"
 version = "0.1.0"
 dependencies = [
+ "serde",
  "serde-wasm-bindgen",
  "serde_json",
  "universal-payment-qr-core",

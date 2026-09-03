@@ -193,6 +193,7 @@ pub fn currency_from_numeric(code: &str) -> Option<&'static str> {
         "901" => Some("TWD"),
         "410" => Some("KRW"),
         "344" => Some("HKD"),
+        "032" => Some("ARS"),
         _ => None,
     }
 }
