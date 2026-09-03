@@ -1,0 +1,102 @@
+[
+  {
+    "name": "upi static exact amount",
+    "payload": "upi://pay?pa=merchant%40bank&pn=Example&am=499.00&cu=INR",
+    "expected": { "recognized": true, "scheme": "upi", "valid": true, "amount": "499.00" }
+  },
+  {
+    "name": "pix public manual-style static payload",
+    "payload": "00020126360014BR.GOV.BCB.PIX0114+55119999999995204000053039865802BR5913FULANO DE TAL6008BRASILIA62070503***6304C23A",
+    "expected": { "recognized": true, "scheme": "pix", "valid": true }
+  },
+  {
+    "name": "ordinary website",
+    "payload": "https://example.com/docs",
+    "expected": { "recognized": false, "scheme": "unknown", "valid": false }
+  },
+  {
+    "name": "invalid EMV checksum",
+    "payload": "00020126360014BR.GOV.BCB.PIX0114+55119999999995204000053039865802BR5913FULANO DE TAL6008BRASILIA62070503***63040000",
+    "expected": { "recognized": true, "scheme": "pix", "valid": false, "error": "INVALID_CHECKSUM" }
+  },
+  {
+    "name": "multibyte unicode near the EMV tail must not panic detection",
+    "payload": "000201€€€",
+    "expected": { "recognized": false, "scheme": "unknown", "valid": false }
+  },
+  {
+    "name": "multibyte unicode reaching Pix CRC validation must not panic",
+    "payload": "000201br.gov.bcb.pix€€€",
+    "expected": { "recognized": true, "scheme": "pix", "valid": false, "error": "MALFORMED_PAYLOAD" }
+  },
+  {
+    "name": "PromptPay (Tier 1, confirmed GUID A000000677010111)",
+    "payload": "00020101021129370016A0000006770101110113006689123456752046011530376454041.005802TH5913TEST MERCHANT6007BANGKOK63047594",
+    "expected": { "recognized": true, "scheme": "promptpay", "valid": true, "amount": "1.00" }
+  },
+  {
+    "name": "PromptPay GUID with wrong country field must fail structurally, not silently pass",
+    "payload": "00020101021129370016A0000006770101110113006689123456752046011530376454041.005802ID5913TEST MERCHANT6007BANGKOK630472E4",
+    "expected": { "recognized": true, "scheme": "promptpay", "valid": false, "error": "INVALID_NETWORK" }
+  },
+  {
+    "name": "VietQR (Tier 1, confirmed GUID A000000727)",
+    "payload": "00020101021138540010A00000072701240006970436011000118860200208QRIBFTTA5204599953037045802VN5912NGUYEN VAN A6005HANOI63042FCB",
+    "expected": { "recognized": true, "scheme": "vietqr", "valid": true }
+  },
+  {
+    "name": "PayNow (Tier 1, confirmed GUID SG.PAYNOW)",
+    "payload": "00020101021126380009SG.PAYNOW010100211+65912345670301152045999530370254041.005802SG5913TEST MERCHANT6009SINGAPORE63046B0D",
+    "expected": { "recognized": true, "scheme": "paynow", "valid": true, "amount": "1.00" }
+  },
+  {
+    "name": "DuitNow QR (Tier 1, confirmed GUID A0000006150001)",
+    "payload": "00020101021126350014A00000061500010113016612345678952045999530345854041.005802MY5913TEST MERCHANT6012KUALA LUMPUR63049BF8",
+    "expected": { "recognized": true, "scheme": "duitnow_qr", "valid": true, "amount": "1.00" }
+  },
+  {
+    "name": "DuitNow QR invalid checksum",
+    "payload": "00020101021126350014A00000061500010113016612345678952045999530345854041.005802MY5913TEST MERCHANT6012KUALA LUMPUR63040000",
+    "expected": { "recognized": true, "scheme": "duitnow_qr", "valid": false, "error": "INVALID_CHECKSUM" }
+  },
+  {
+    "name": "QRIS (Tier 1, confirmed GUID ID.CO.QRIS.WWW)",
+    "payload": "00020101021126400014ID.CO.QRIS.WWW01189360001412345678905204599953033605802ID5913TEST MERCHANT6007JAKARTA630403AF",
+    "expected": { "recognized": true, "scheme": "qris", "valid": true }
+  },
+  {
+    "name": "QR Ph (Tier 1, confirmed GUID PH.INSTAPAY.ME)",
+    "payload": "00020101021126380014PH.INSTAPAY.ME0316123456789012345652045999530360854041.005802PH5913TEST MERCHANT6006MANILA63044481",
+    "expected": { "recognized": true, "scheme": "qr_ph", "valid": true, "amount": "1.00" }
+  },
+  {
+    "name": "HKQR (Tier 1, confirmed GUID HK.COM.HKICL)",
+    "payload": "00020101021126370012HK.COM.HKICL010100212+8529123456752045999530334454041.005802HK5913TEST MERCHANT6009HONG KONG630488EB",
+    "expected": { "recognized": true, "scheme": "hkqr", "valid": true, "amount": "1.00" }
+  },
+  {
+    "name": "NepalPay QR (Tier 1, confirmed GUID np.gov.nrb)",
+    "payload": "00020101021126300010np.gov.nrb0112NCHL0000123452045999530352454041.005802NP5913TEST MERCHANT6009KATHMANDU6304A6A5",
+    "expected": { "recognized": true, "scheme": "nepalpay_qr", "valid": true, "amount": "1.00" }
+  },
+  {
+    "name": "KHQR (Tier 2, generic country-tag detection, no confirmed GUID yet)",
+    "payload": "00020101021129300010kh.gov.nbc0112someone@wing52045999530311654041.005802KH5913TEST MERCHANT6010PHNOM PENH6304D6A2",
+    "expected": { "recognized": true, "scheme": "khqr", "valid": true, "amount": "1.00" }
+  },
+  {
+    "name": "LankaQR (Tier 2, generic country-tag detection, no confirmed GUID yet)",
+    "payload": "00020101021129320011lk.gov.cbsl0113123456789012352045999530314454041.005802LK5913TEST MERCHANT6007COLOMBO630440A5",
+    "expected": { "recognized": true, "scheme": "lankaqr", "valid": true, "amount": "1.00" }
+  },
+  {
+    "name": "Alipay link shape is recognized but marked proprietary, not parsed",
+    "payload": "https://qr.alipay.com/fkx01234567890abcdef",
+    "expected": { "recognized": true, "scheme": "alipay", "valid": true }
+  },
+  {
+    "name": "WeChat Pay link shape is recognized but marked proprietary, not parsed",
+    "payload": "weixin://wxpay/bizpayurl?pr=abc123XYZ",
+    "expected": { "recognized": true, "scheme": "wechat_pay", "valid": true }
+  }
+]

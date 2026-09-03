@@ -1,0 +1,22 @@
+{
+  "name": "@universal-payment-qr/playground",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "vite", "build": "tsc -b && vite build", "typecheck": "tsc -b --pretty false" },
+  "dependencies": {
+    "@fontsource-variable/bodoni-moda": "^5.2.8",
+    "@fontsource-variable/manrope": "^5.2.8",
+    "@universal-payment-qr/core": "^0.1.0",
+    "@universal-payment-qr/react": "^0.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.2",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.4"
+  }
+}

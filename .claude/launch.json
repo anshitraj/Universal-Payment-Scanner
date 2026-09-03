@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "playground-preview",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "preview", "apps/playground", "--port", "58211", "--strictPort"],
+      "port": 58211
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Payment QR example</title></head>
+  <body>
+    <form id="parser"><label>Payment payload <input id="payload" required></label><button>Parse</button></form>
+    <pre id="result"></pre>
+    <script type="module">
+      import { createScanner } from "@universal-payment-qr/core";
+      const scanner = createScanner({ preset: "all-stable" });
+      document.querySelector("#parser").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const result = await scanner.scan(document.querySelector("#payload").value);
+        document.querySelector("#result").textContent = JSON.stringify(result, null, 2);
+      });
+    </script>
+  </body>
+</html>
+

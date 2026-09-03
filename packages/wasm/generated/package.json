@@ -1,0 +1,21 @@
+{
+  "name": "universal-payment-qr-wasm",
+  "type": "module",
+  "description": "WebAssembly bindings for universal-payment-qr-core",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/example/universal-payment-qr"
+  },
+  "files": [
+    "index_bg.wasm",
+    "index.js",
+    "index.d.ts"
+  ],
+  "main": "index.js",
+  "types": "index.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

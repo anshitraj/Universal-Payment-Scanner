@@ -1,0 +1,19 @@
+[package]
+name = "universal-payment-qr-wasm"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "WebAssembly bindings for universal-payment-qr-core"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+serde-wasm-bindgen = "0.6"
+serde_json.workspace = true
+universal-payment-qr-core = { path = "../core" }
+wasm-bindgen = "0.2"
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false

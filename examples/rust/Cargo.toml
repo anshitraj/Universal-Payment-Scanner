@@ -1,0 +1,12 @@
+[package]
+name = "universal-payment-qr-example"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+serde_json = "1"
+universal-payment-qr-core = { path = "../../crates/core" }
+
+[workspace]
+

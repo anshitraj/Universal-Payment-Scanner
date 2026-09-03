@@ -1,0 +1,17 @@
+/target/
+node_modules/
+node_modules.pnpm/
+/.pnpm-store/
+dist/
+coverage/
+# packages/wasm/generated* is committed on purpose: it's the wasm-pack output that Vercel's
+# Node-only build (`npm run build:vercel`) needs but has no Rust toolchain to produce itself. Run
+# `npm run build:wasm` and commit the result after any change under crates/. See docs/deployment.md.
+/tests/artifacts/
+/tests/package-consumer/temp/
+*.log
+.env
+.DS_Store
+# Local Claude Code harness state; only launch.json (dev-server preview config) is intentional.
+.claude/*
+!.claude/launch.json

@@ -1,0 +1,12 @@
+{
+  "name": "@universal-payment-qr/scanner",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "exports": { ".": { "types": "./dist/index.d.mts", "import": "./dist/index.mjs" } },
+  "files": ["dist"],
+  "scripts": { "build": "tsc -p tsconfig.json", "typecheck": "tsc -p tsconfig.json --noEmit" },
+  "dependencies": { "@zxing/browser": "^0.1.5" },
+  "devDependencies": { "typescript": "^5.9.2" }
+}

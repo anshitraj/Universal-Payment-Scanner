@@ -1,0 +1,16 @@
+{
+  "name": "@universal-payment-qr/react",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": ["**/*.css"],
+  "exports": { ".": { "types": "./dist/index.d.mts", "import": "./dist/index.mjs" }, "./styles.css": "./dist/styles.css" },
+  "files": ["dist"],
+  "scripts": { "build": "tsc -p tsconfig.json && copyfiles -u 1 src/*.css dist", "typecheck": "tsc -p tsconfig.json --noEmit" },
+  "dependencies": {
+    "@universal-payment-qr/core": "^0.1.0",
+    "@universal-payment-qr/scanner": "^0.1.0"
+  },
+  "peerDependencies": { "react": ">=18", "react-dom": ">=18" },
+  "devDependencies": { "@types/react": "^19.1.12", "copyfiles": "^2.4.1", "react": "^19.1.1", "typescript": "^5.9.2" }
+}

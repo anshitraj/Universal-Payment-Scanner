@@ -1,0 +1,29 @@
+[package]
+name = "universal-payment-qr-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Deterministic, offline payment QR detection and normalization"
+
+[lib]
+name = "universal_payment_qr_core"
+
+[[bin]]
+name = "upqr-core"
+path = "src/bin/upqr-core.rs"
+
+[dependencies]
+bs58 = "0.5"
+serde.workspace = true
+serde_json.workspace = true
+sha2 = "0.10"
+thiserror.workspace = true
+url.workspace = true
+
+[dev-dependencies]
+pretty_assertions = "1"
+
+[[bench]]
+name = "parse"
+harness = false
