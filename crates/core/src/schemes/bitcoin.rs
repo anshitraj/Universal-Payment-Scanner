@@ -38,12 +38,19 @@ impl PaymentScheme for Bitcoin {
             .is_some_and(|p| p.eq_ignore_ascii_case("bitcoin:"))
         {
             100
+        } else if (14..=90).contains(&payload.len()) && validate_bitcoin_address(payload).is_ok() {
+            // Most wallet "receive" screens QR-encode the bare address, not a `bitcoin:` BIP-21
+            // URI - that form is mostly used for payment *requests* with a specific amount.
+            85
         } else {
             0
         }
     }
 
     fn parse(&self, payload: &str) -> Result<PaymentIntent, ParseError> {
+        if !payload.contains(':') {
+            return parse_bare_address(payload);
+        }
         let (_, body) = payload
             .split_once(':')
             .ok_or_else(|| ParseError::new(ErrorCode::MalformedPayload, "Invalid BIP-21 URI."))?;
@@ -114,6 +121,40 @@ impl PaymentScheme for Bitcoin {
         });
         Ok(intent)
     }
+}
+
+/// A bare address with no `bitcoin:` scheme and no amount - what most wallet apps put in a
+/// "receive" QR. Normalized the same as `bitcoin:<address>` with no query parameters.
+fn parse_bare_address(payload: &str) -> Result<PaymentIntent, ParseError> {
+    validate_bitcoin_address(payload).map_err(|_| {
+        ParseError::new(
+            ErrorCode::InvalidRecipient,
+            "Bitcoin address checksum or encoding is invalid.",
+        )
+    })?;
+    let mut intent = PaymentIntent::recognized("bitcoin", Category::Crypto);
+    intent.standard = Some("BIP-21".into());
+    intent.network = Some("bitcoin".into());
+    intent.recipient = Some(Recipient {
+        address: Some(payload.into()),
+        ..Recipient::default()
+    });
+    intent.asset = Some(Asset {
+        symbol: Some("BTC".into()),
+        decimals: Some(8),
+        ..Asset::default()
+    });
+    intent.dynamic = Some(false);
+    intent.validation.warnings.push(Issue::error(
+        ErrorCode::UnverifiedRecipient,
+        "Address encoding is valid; ownership is not verified.",
+    ));
+    intent.recommended_action = Some(RecommendedAction {
+        kind: ActionType::Wallet,
+        uri: Some(payload.into()),
+        requires_user_confirmation: true,
+    });
+    Ok(intent)
 }
 
 fn validate_bitcoin_address(address: &str) -> Result<(), ()> {
@@ -240,5 +281,17 @@ mod tests {
                 .validation
                 .valid
         );
+    }
+
+    #[test]
+    fn recognizes_a_bare_address_with_no_uri_scheme() {
+        let intent = parse_payment_qr("1BoatSLRHtKNngkdXEeobR76b53LETtpyT");
+        assert!(intent.validation.valid, "{:?}", intent.validation.errors);
+        assert_eq!(intent.scheme, "bitcoin");
+        assert_eq!(
+            intent.recipient.unwrap().address.as_deref(),
+            Some("1BoatSLRHtKNngkdXEeobR76b53LETtpyT")
+        );
+        assert!(intent.amount.is_none());
     }
 }

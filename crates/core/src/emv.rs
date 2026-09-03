@@ -72,13 +72,17 @@ pub fn has_mpm_envelope(payload: &str) -> bool {
         && bytes[bytes.len() - 8..].starts_with(b"6304")
 }
 
-/// Checks the required-field shape every EMVCo Merchant-Presented Mode adapter needs: the six
-/// mandatory tags are present, some merchant account information exists in 02-51, and the
-/// merchant category code / currency / country fields have the lengths and character classes the
-/// standard specifies. Shared by the generic `EmvCo`/`Pix` adapters and every national overlay in
-/// `national_emv.rs` so the shape check has exactly one implementation.
+/// Checks the required-field shape every EMVCo Merchant-Presented Mode adapter needs: currency
+/// and country are present with the shape the standard specifies, and some merchant account
+/// information exists in 02-51. Shared by the generic `EmvCo`/`Pix` adapters and every national
+/// overlay in `national_emv.rs` so the shape check has exactly one implementation.
+///
+/// Merchant category code (52), merchant name (59), and merchant city (60) are validated *when
+/// present* but not required: the base EMVCo spec marks them mandatory, but real-world national
+/// overlays routinely omit them for personal/P2P transfers that have no real "merchant" - a
+/// genuine VietQR personal-account code was the first thing that surfaced this gap.
 pub fn validate_required_fields(fields: &TlvMap) -> Result<(), ParseError> {
-    for required in ["52", "53", "58", "59", "60", "63"] {
+    for required in ["53", "58", "63"] {
         if !fields.contains_key(required) {
             return Err(ParseError::new(
                 ErrorCode::MalformedPayload,
@@ -92,9 +96,9 @@ pub fn validate_required_fields(fields: &TlvMap) -> Result<(), ParseError> {
             "EMV merchant account information is missing.",
         ));
     }
-    if !fields
+    if fields
         .get("52")
-        .is_some_and(|value| value.len() == 4 && value.bytes().all(|byte| byte.is_ascii_digit()))
+        .is_some_and(|value| !(value.len() == 4 && value.bytes().all(|byte| byte.is_ascii_digit())))
         || !fields.get("53").is_some_and(|value| {
             value.len() == 3 && value.bytes().all(|byte| byte.is_ascii_digit())
         })

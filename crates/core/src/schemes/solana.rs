@@ -38,12 +38,19 @@ impl PaymentScheme for SolanaPay {
             .is_some_and(|p| p.eq_ignore_ascii_case("solana:"))
         {
             100
+        } else if (32..=44).contains(&payload.len()) && validate_pubkey(payload).is_ok() {
+            // Most wallet "receive" screens QR-encode the bare pubkey, not a `solana:` Solana Pay
+            // URI - that form is mostly used for payment *requests* with a specific amount.
+            80
         } else {
             0
         }
     }
 
     fn parse(&self, payload: &str) -> Result<PaymentIntent, ParseError> {
+        if !payload.contains(':') {
+            return parse_bare_pubkey(payload);
+        }
         let body = payload
             .split_once(':')
             .map(|(_, body)| body)
@@ -129,6 +136,35 @@ impl PaymentScheme for SolanaPay {
     }
 }
 
+/// A bare base58 public key with no `solana:` scheme and no amount - what most wallet apps put
+/// in a "receive" QR. Normalized the same as `solana:<pubkey>` with no query parameters.
+fn parse_bare_pubkey(payload: &str) -> Result<PaymentIntent, ParseError> {
+    validate_pubkey(payload)?;
+    let mut intent = PaymentIntent::recognized("solana_pay", Category::Crypto);
+    intent.standard = Some("Solana Pay transfer request 1.0".into());
+    intent.network = Some("solana".into());
+    intent.recipient = Some(Recipient {
+        address: Some(payload.into()),
+        ..Recipient::default()
+    });
+    intent.asset = Some(Asset {
+        symbol: Some("SOL".into()),
+        ..Asset::default()
+    });
+    intent.dynamic = Some(false);
+    intent.validation.warnings.push(Issue::error(
+        ErrorCode::UnverifiedRecipient,
+        "Address encoding is valid; this is a bare public key with no URI scheme, amount, or \
+         memo. Account ownership and mint metadata are not verified.",
+    ));
+    intent.recommended_action = Some(RecommendedAction {
+        kind: ActionType::Wallet,
+        uri: Some(payload.into()),
+        requires_user_confirmation: true,
+    });
+    Ok(intent)
+}
+
 fn validate_pubkey(value: &str) -> Result<(), ParseError> {
     let decoded = bs58::decode(value).into_vec().map_err(|_| {
         ParseError::new(ErrorCode::InvalidRecipient, "Solana address is not base58.")
@@ -154,5 +190,17 @@ mod tests {
         );
         assert!(intent.validation.valid);
         assert_eq!(intent.amount.as_deref(), Some("1.25"));
+    }
+
+    #[test]
+    fn recognizes_a_bare_pubkey_with_no_uri_scheme() {
+        let intent = parse_payment_qr("9xQeWvG816bUx9EPfEZi4q3G44E2sA6v7a6D9k5GmRse");
+        assert!(intent.validation.valid, "{:?}", intent.validation.errors);
+        assert_eq!(intent.scheme, "solana_pay");
+        assert_eq!(
+            intent.recipient.unwrap().address.as_deref(),
+            Some("9xQeWvG816bUx9EPfEZi4q3G44E2sA6v7a6D9k5GmRse")
+        );
+        assert!(intent.amount.is_none());
     }
 }

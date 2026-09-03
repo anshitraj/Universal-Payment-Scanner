@@ -37,4 +37,13 @@
   ids, fixing a latent bug where `@universal-payment-qr/react`'s `enabledSchemes` prop silently
   ignored any scheme not in its own separately-hardcoded id list (would have affected every new
   national overlay scheme).
+- Fixed (found via real-device testing): Bitcoin, Ethereum, and Solana Pay only recognized their
+  `bitcoin:`/`ethereum:`/`solana:` URI form, not a bare address - which is what most wallet apps
+  (Coinbase, Phantom, etc.) actually put in a "receive" QR. All three now also recognize a bare,
+  checksum-valid address with no amount.
+- Fixed (found via a real scanned VietQR): `validate_required_fields` hard-required merchant
+  category code (52), merchant name (59), and merchant city (60) on every EMVCo-family payload.
+  Real-world personal/P2P transfers (confirmed against a real VietQR) omit these merchant-only
+  fields even though the base EMVCo spec calls them mandatory. Now validated when present, not
+  required; currency (53), country (58), and the CRC remain mandatory.
 

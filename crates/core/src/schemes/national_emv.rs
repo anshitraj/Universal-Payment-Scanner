@@ -148,10 +148,11 @@ impl PaymentScheme for NationalOverlay {
             symbol: Some(symbol),
             ..Asset::default()
         });
-        intent.metadata.insert(
-            "merchantCategoryCode".into(),
-            fields.get("52").cloned().unwrap_or_default().into(),
-        );
+        if let Some(mcc) = fields.get("52") {
+            intent
+                .metadata
+                .insert("merchantCategoryCode".into(), mcc.clone().into());
+        }
         intent.validation.warnings.push(Issue::error(
             ErrorCode::UnverifiedRecipient,
             "Checksum and structure are valid; merchant identity is not verified.",
@@ -452,6 +453,11 @@ mod tests {
     const NEPALPAY_QR: &str = "00020101021126300010np.gov.nrb0112NCHL0000123452045999530352454041.005802NP5913TEST MERCHANT6009KATHMANDU6304A6A5";
     const LANKAQR: &str = "00020101021129320011lk.gov.cbsl0113123456789012352045999530314454041.005802LK5913TEST MERCHANT6007COLOMBO630440A5";
     const MMQR: &str = "00020101021129290011mm.com.mmqr0110091234567852045999530310454041.005802MM5913TEST MERCHANT6006YANGON630483CE";
+    /// A real VietQR personal-account transfer has no merchant category code, name, or city -
+    /// those are merchant-only fields the base EMVCo spec calls mandatory but NAPAS omits for
+    /// P2P. Reported against a real scanned VietQR that failed with "Required EMV field 52 is
+    /// missing" before `validate_required_fields` stopped hard-requiring 52/59/60.
+    const VIETQR_PERSONAL_NO_MCC: &str = "00020101021138540010A00000072701240006970436011000118860200208QRIBFTTA53037045802VN6304DA3A";
 
     #[test]
     fn promptpay_guid_is_recognized_and_normalized() {
@@ -468,6 +474,16 @@ mod tests {
         assert!(intent.validation.valid, "{:?}", intent.validation.errors);
         assert_eq!(intent.scheme, "vietqr");
         assert_eq!(intent.currency.as_deref(), Some("VND"));
+    }
+
+    #[test]
+    fn vietqr_personal_transfer_without_mcc_name_or_city_still_parses() {
+        let intent = parse_payment_qr(VIETQR_PERSONAL_NO_MCC);
+        assert!(intent.validation.valid, "{:?}", intent.validation.errors);
+        assert_eq!(intent.scheme, "vietqr");
+        assert_eq!(intent.currency.as_deref(), Some("VND"));
+        assert!(!intent.metadata.contains_key("merchantCategoryCode"));
+        assert!(intent.recipient.unwrap().name.is_none());
     }
 
     #[test]

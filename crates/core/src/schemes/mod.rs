@@ -130,14 +130,16 @@ fn parse_emv_intent(payload: &str, pix: bool) -> Result<crate::PaymentIntent, cr
         symbol: Some(symbol),
         ..Asset::default()
     });
-    intent.metadata.insert(
-        "merchantCategoryCode".into(),
-        fields.get("52").cloned().unwrap_or_default().into(),
-    );
-    intent.metadata.insert(
-        "merchantCity".into(),
-        fields.get("60").cloned().unwrap_or_default().into(),
-    );
+    if let Some(mcc) = fields.get("52") {
+        intent
+            .metadata
+            .insert("merchantCategoryCode".into(), mcc.clone().into());
+    }
+    if let Some(city) = fields.get("60") {
+        intent
+            .metadata
+            .insert("merchantCity".into(), city.clone().into());
+    }
     if pix {
         let account = (26..=51)
             .find_map(|tag| fields.get(&format!("{tag:02}")))

@@ -37,12 +37,20 @@ impl PaymentScheme for Ethereum {
             .is_some_and(|p| p.eq_ignore_ascii_case("ethereum:"))
         {
             100
+        } else if validate_hex_address(payload).is_ok() {
+            // Most wallet "receive" screens QR-encode the bare address, not an `ethereum:` /
+            // ERC-681 URI - that form is mostly used for payment *requests* with a specific
+            // amount. Recognize it, just at lower confidence than an explicit scheme match.
+            85
         } else {
             0
         }
     }
 
     fn parse(&self, payload: &str) -> Result<PaymentIntent, ParseError> {
+        if !payload.contains(':') {
+            return parse_bare_address(payload);
+        }
         let body = payload
             .split_once(':')
             .map(|(_, body)| body)
@@ -132,6 +140,38 @@ impl PaymentScheme for Ethereum {
     }
 }
 
+/// A bare `0x…` address with no `ethereum:` scheme and no amount - what most wallet apps put in
+/// a "receive" QR. Normalized the same as `ethereum:<address>` with no query parameters, since
+/// that's exactly what it means; just without a URI scheme to parse it out of.
+fn parse_bare_address(payload: &str) -> Result<PaymentIntent, ParseError> {
+    validate_hex_address(payload)?;
+    let mut intent = PaymentIntent::recognized("ethereum", Category::Crypto);
+    intent.standard = Some("ERC-681".into());
+    intent.network = Some(chain_name("").into());
+    intent.dynamic = Some(false);
+    intent.recipient = Some(Recipient {
+        address: Some(payload.into()),
+        ..Recipient::default()
+    });
+    intent.asset = Some(Asset {
+        symbol: Some("ETH".into()),
+        decimals: Some(18),
+        ..Asset::default()
+    });
+    intent.validation.warnings.push(Issue::error(
+        ErrorCode::UnverifiedRecipient,
+        "Address format is valid; ownership is not verified. This is a bare address with no URI \
+         scheme, so the intended network (Ethereum, Base, or another EVM chain) could not be \
+         determined from the QR alone.",
+    ));
+    intent.recommended_action = Some(RecommendedAction {
+        kind: ActionType::Wallet,
+        uri: Some(payload.into()),
+        requires_user_confirmation: true,
+    });
+    Ok(intent)
+}
+
 fn validate_eth_target(value: &str) -> Result<(), ParseError> {
     if value.starts_with("0x") {
         validate_hex_address(value)
@@ -198,6 +238,18 @@ mod tests {
         );
         assert!(intent.validation.valid);
         assert_eq!(intent.amount.as_deref(), Some("2.014"));
+    }
+
+    #[test]
+    fn recognizes_a_bare_address_with_no_uri_scheme() {
+        let intent = parse_payment_qr("0xfb6916095ca1df60bb79Ce92ce3ea74c37c5d359");
+        assert!(intent.validation.valid, "{:?}", intent.validation.errors);
+        assert_eq!(intent.scheme, "ethereum");
+        assert_eq!(
+            intent.recipient.unwrap().address.as_deref(),
+            Some("0xfb6916095ca1df60bb79Ce92ce3ea74c37c5d359")
+        );
+        assert!(intent.amount.is_none());
     }
 
     #[test]

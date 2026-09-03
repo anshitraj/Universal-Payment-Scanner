@@ -98,5 +98,25 @@
     "name": "WeChat Pay link shape is recognized but marked proprietary, not parsed",
     "payload": "weixin://wxpay/bizpayurl?pr=abc123XYZ",
     "expected": { "recognized": true, "scheme": "wechat_pay", "valid": true }
+  },
+  {
+    "name": "bare Ethereum address with no ethereum: scheme (what wallet receive-QRs actually encode)",
+    "payload": "0xfb6916095ca1df60bb79Ce92ce3ea74c37c5d359",
+    "expected": { "recognized": true, "scheme": "ethereum", "valid": true }
+  },
+  {
+    "name": "bare Solana pubkey with no solana: scheme",
+    "payload": "9xQeWvG816bUx9EPfEZi4q3G44E2sA6v7a6D9k5GmRse",
+    "expected": { "recognized": true, "scheme": "solana_pay", "valid": true }
+  },
+  {
+    "name": "bare Bitcoin address with no bitcoin: scheme",
+    "payload": "1BoatSLRHtKNngkdXEeobR76b53LETtpyT",
+    "expected": { "recognized": true, "scheme": "bitcoin", "valid": true }
+  },
+  {
+    "name": "VietQR personal transfer with no merchant category code, name, or city (real-world NAPAS P2P shape)",
+    "payload": "00020101021138540010A00000072701240006970436011000118860200208QRIBFTTA53037045802VN6304DA3A",
+    "expected": { "recognized": true, "scheme": "vietqr", "valid": true }
   }
 ]
