@@ -1,0 +1,24 @@
+{
+  "scheme": "raast_qr",
+  "displayName": "Raast QR",
+  "country": [
+    "PK"
+  ],
+  "category": "bank_transfer",
+  "standard": "State Bank of Pakistan Raast QR specification",
+  "parserVersion": "0.1.0",
+  "maturity": "community",
+  "identification": "generic",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": true,
+    "merchant": true,
+    "currency": true,
+    "dynamic": true
+  },
+  "references": [
+    "https://www.sbp.org.pk/PS/Raast.html"
+  ]
+}

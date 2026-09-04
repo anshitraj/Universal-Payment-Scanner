@@ -1,0 +1,24 @@
+{
+  "scheme": "lao_qr",
+  "displayName": "Lao QR",
+  "country": [
+    "LA"
+  ],
+  "category": "bank_transfer",
+  "standard": "Bank of the Lao PDR unified QR specification",
+  "parserVersion": "0.1.0",
+  "maturity": "community",
+  "identification": "generic",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": true,
+    "merchant": true,
+    "currency": true,
+    "dynamic": true
+  },
+  "references": [
+    "https://www.bol.gov.la"
+  ]
+}

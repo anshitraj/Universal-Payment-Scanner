@@ -1,0 +1,22 @@
+{
+  "scheme": "epc_qr",
+  "displayName": "SEPA / EPC QR (Girocode)",
+  "country": [],
+  "category": "bank_transfer",
+  "standard": "EPC069-12 v2.1",
+  "parserVersion": "0.1.0",
+  "maturity": "beta",
+  "identification": "exact",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": true,
+    "merchant": true,
+    "currency": true,
+    "dynamic": false
+  },
+  "references": [
+    "https://www.europeanpaymentscouncil.eu/document-library/guidance-documents/quick-response-code-guidelines-enable-data-capture-initiation"
+  ]
+}

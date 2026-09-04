@@ -1,0 +1,22 @@
+{
+  "scheme": "ethereum",
+  "displayName": "Ethereum / ERC-681",
+  "country": [],
+  "category": "crypto",
+  "standard": "ERC-681",
+  "parserVersion": "0.1.0",
+  "maturity": "stable",
+  "identification": "exact",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": true,
+    "merchant": false,
+    "currency": false,
+    "dynamic": false
+  },
+  "references": [
+    "https://eips.ethereum.org/EIPS/eip-681"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "scheme": "promptpay",
+  "displayName": "PromptPay",
+  "country": [
+    "TH"
+  ],
+  "category": "bank_transfer",
+  "standard": "Bank of Thailand Standardised Thai QR Code for Payment Transactions",
+  "parserVersion": "0.1.0",
+  "maturity": "beta",
+  "identification": "exact",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": true,
+    "merchant": true,
+    "currency": true,
+    "dynamic": true
+  },
+  "references": [
+    "https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2562/EngPDF/25620084.pdf"
+  ]
+}

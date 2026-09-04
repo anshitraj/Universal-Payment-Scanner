@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/anshitraj/Universal-Payment-Scanner/blob/main/registry/schema/scheme.schema.json",
+  "title": "UPS Scheme Registry entry",
+  "description": "One payment (or explicitly non-payment) QR/address format recognized by Universal Payment QR. Generated from the live Rust core's own scheme metadata by scripts/generate-registry.mjs - never hand-edited. See registry/README.md for field-by-field semantics and how this maps to the runtime PaymentIntent schema.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scheme",
+    "displayName",
+    "country",
+    "category",
+    "standard",
+    "parserVersion",
+    "maturity",
+    "identification",
+    "supported",
+    "nonPayment",
+    "lastVerified",
+    "supports",
+    "references"
+  ],
+  "properties": {
+    "scheme": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "Stable machine id. Matches PaymentIntent.scheme in the runtime API exactly - this is the join key between the registry and a live parse result."
+    },
+    "displayName": {
+      "type": "string",
+      "description": "Human-readable name, e.g. \"PromptPay\" or \"SEPA / EPC QR (Girocode)\"."
+    },
+    "country": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[A-Z]{2}$" },
+      "description": "ISO 3166-1 alpha-2 country codes this scheme is issued in. Empty for schemes with no single issuing country (e.g. generic EMVCo MPM, or global crypto/link schemes)."
+    },
+    "category": {
+      "type": "string",
+      "enum": ["bank_transfer", "wallet", "card", "crypto", "payment_link", "unknown"]
+    },
+    "standard": {
+      "type": "string",
+      "description": "The named specification or governing document this scheme implements, e.g. \"UPI deep link v1\" or \"EPC069-12 v2.1\"."
+    },
+    "parserVersion": {
+      "type": "string",
+      "description": "The universal-payment-qr-core crate version whose parser produced this entry (semver)."
+    },
+    "maturity": {
+      "type": "string",
+      "enum": ["stable", "beta", "community", "experimental", "deprecated"],
+      "description": "stable: original 6 schemes, no known open questions. beta: structure, checksum, and at least one confirmed real-world identifying detail verified against an official or independently cross-validated source. community: the national standard is confirmed real and EMVCo-based, but no scheme-specific GUID has been pinned down yet - detected via country tag only. experimental: recognized by shape/prefix only, or a structural detail could not be fully confirmed against a primary source."
+    },
+    "identification": {
+      "type": "string",
+      "enum": ["exact", "generic", "heuristic"],
+      "description": "How confidently a match actually identifies THIS scheme, as opposed to a family it belongs to. exact: a scheme-specific signature (confirmed GUID, verified checksum algorithm, or a scheme-unique URI/domain) positively identifies this exact standard - corresponds to the runtime PaymentIntent.identification value GUID_MATCH for the EMVCo family. generic: matched via a shared envelope plus a weaker signal (e.g. generic EMVCo plus a country tag) that cannot rule out an unrelated standard from the same family/country - corresponds to runtime COUNTRY_LEVEL_INFERENCE. heuristic: matched by shape or prefix only, with no structural or checksum verification (proprietary formats with no public spec, or an invoice prefix check) - the runtime does not yet attach an explicit identification value outside the EMVCo family, so this is the registry's own equivalent tier."
+    },
+    "supported": {
+      "type": "boolean",
+      "description": "False only for schemes that are detected but never fully parsed because no public payload specification exists (Alipay, WeChat Pay) - matches the runtime PaymentIntent.supported / PROPRIETARY_FORMAT behavior for these two."
+    },
+    "nonPayment": {
+      "type": "boolean",
+      "description": "True for the 3 entries that are deliberately not payment schemes (WalletConnect pairing, otpauth:// 2FA setup, generic URL) but are still identified by name rather than falling into an \"unknown\" bucket."
+    },
+    "lastVerified": {
+      "type": "string",
+      "format": "date",
+      "description": "The date this entry was last regenerated from, and cross-checked against, the live parser and its test suite - not necessarily the date the scheme was first implemented (see the repository's CHANGELOG.md and git history for that)."
+    },
+    "supports": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amount", "merchant", "currency", "dynamic"],
+      "properties": {
+        "amount": { "type": "boolean", "description": "The wire format has a field for a specific transfer amount." },
+        "merchant": { "type": "boolean", "description": "The wire format has a field for a recipient/merchant/beneficiary name." },
+        "currency": { "type": "boolean", "description": "The wire format has an explicit currency field (as opposed to an implied one, e.g. a crypto network's native asset)." },
+        "dynamic": { "type": "boolean", "description": "The scheme supports a dynamic QR - one that resolves the actual payment details from a URL/reference at scan time, rather than encoding them statically in the payload." }
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": { "type": "string", "format": "uri" },
+      "description": "Public source(s) - an official spec, a central bank/scheme-operator document, or (for a confirmed-proprietary format) the operator's own site - this entry's identification method was verified against."
+    }
+  }
+}

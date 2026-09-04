@@ -1,0 +1,22 @@
+{
+  "scheme": "lightning",
+  "displayName": "Lightning invoice",
+  "country": [],
+  "category": "crypto",
+  "standard": "BOLT-11 identification",
+  "parserVersion": "0.1.0",
+  "maturity": "experimental",
+  "identification": "heuristic",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": false,
+    "merchant": false,
+    "currency": false,
+    "dynamic": false
+  },
+  "references": [
+    "https://github.com/lightning/bolts/blob/master/11-payment-encoding.md"
+  ]
+}

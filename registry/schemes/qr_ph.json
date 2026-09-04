@@ -1,0 +1,24 @@
+{
+  "scheme": "qr_ph",
+  "displayName": "QR Ph",
+  "country": [
+    "PH"
+  ],
+  "category": "bank_transfer",
+  "standard": "Bangko Sentral ng Pilipinas QR Ph P2M specification",
+  "parserVersion": "0.1.0",
+  "maturity": "beta",
+  "identification": "exact",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": true,
+    "merchant": true,
+    "currency": true,
+    "dynamic": true
+  },
+  "references": [
+    "https://www.bsp.gov.ph/Media_and_Research/Primers%20Faqs/QR_Ph_P2M_FAQs.pdf"
+  ]
+}

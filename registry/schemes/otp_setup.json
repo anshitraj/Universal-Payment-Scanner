@@ -1,0 +1,22 @@
+{
+  "scheme": "otp_setup",
+  "displayName": "Authenticator (OTP) setup",
+  "country": [],
+  "category": "unknown",
+  "standard": "Google Authenticator Key URI Format",
+  "parserVersion": "0.1.0",
+  "maturity": "beta",
+  "identification": "exact",
+  "supported": true,
+  "nonPayment": true,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": false,
+    "merchant": false,
+    "currency": false,
+    "dynamic": false
+  },
+  "references": [
+    "https://github.com/google/google-authenticator/wiki/Key-Uri-Format"
+  ]
+}

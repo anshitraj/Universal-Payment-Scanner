@@ -1,0 +1,24 @@
+{
+  "scheme": "nepalpay_qr",
+  "displayName": "NepalPay QR",
+  "country": [
+    "NP"
+  ],
+  "category": "bank_transfer",
+  "standard": "Nepal Rastra Bank NepalQR Guidelines and Framework",
+  "parserVersion": "0.1.0",
+  "maturity": "beta",
+  "identification": "exact",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": true,
+    "merchant": true,
+    "currency": true,
+    "dynamic": true
+  },
+  "references": [
+    "https://www.nrb.org.np/contents/uploads/2021/01/QR-Code-Guidelines-and-Framework-and-Specifications.pdf"
+  ]
+}

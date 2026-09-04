@@ -1,0 +1,24 @@
+{
+  "scheme": "khqr",
+  "displayName": "KHQR",
+  "country": [
+    "KH"
+  ],
+  "category": "bank_transfer",
+  "standard": "National Bank of Cambodia Bakong KHQR specification",
+  "parserVersion": "0.1.0",
+  "maturity": "community",
+  "identification": "generic",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": true,
+    "merchant": true,
+    "currency": true,
+    "dynamic": true
+  },
+  "references": [
+    "https://bakong.nbc.gov.kh/download/KHQR/integration/KHQR%20Content%20Guideline%20v.1.3.pdf"
+  ]
+}

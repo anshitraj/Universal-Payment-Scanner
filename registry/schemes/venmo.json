@@ -1,0 +1,24 @@
+{
+  "scheme": "venmo",
+  "displayName": "Venmo",
+  "country": [
+    "US"
+  ],
+  "category": "payment_link",
+  "standard": "Public Venmo profile link",
+  "parserVersion": "0.1.0",
+  "maturity": "beta",
+  "identification": "exact",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": false,
+    "merchant": false,
+    "currency": false,
+    "dynamic": false
+  },
+  "references": [
+    "https://help.venmo.com/cs/articles/personal-qr-codes-on-venmo-faq-vhel316"
+  ]
+}

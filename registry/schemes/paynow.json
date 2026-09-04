@@ -1,0 +1,24 @@
+{
+  "scheme": "paynow",
+  "displayName": "PayNow",
+  "country": [
+    "SG"
+  ],
+  "category": "bank_transfer",
+  "standard": "MAS Singapore Quick Response Code (SGQR) - PayNow",
+  "parserVersion": "0.1.0",
+  "maturity": "beta",
+  "identification": "exact",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": true,
+    "merchant": true,
+    "currency": true,
+    "dynamic": true
+  },
+  "references": [
+    "https://www.mas.gov.sg/development/e-payments/sgqr"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "scheme": "cash_app",
+  "displayName": "Cash App",
+  "country": [
+    "US",
+    "GB"
+  ],
+  "category": "payment_link",
+  "standard": "Public Cash App $cashtag link",
+  "parserVersion": "0.1.0",
+  "maturity": "beta",
+  "identification": "exact",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": true,
+    "merchant": false,
+    "currency": false,
+    "dynamic": false
+  },
+  "references": [
+    "https://cash.app/help/us/en-us/3123-cashtags"
+  ]
+}

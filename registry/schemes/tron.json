@@ -1,0 +1,22 @@
+{
+  "scheme": "tron",
+  "displayName": "TRON",
+  "country": [],
+  "category": "crypto",
+  "standard": "TRON Base58Check address",
+  "parserVersion": "0.1.0",
+  "maturity": "beta",
+  "identification": "exact",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": false,
+    "merchant": false,
+    "currency": false,
+    "dynamic": false
+  },
+  "references": [
+    "https://tronprotocol.github.io/documentation-en/mechanism-algorithm/account/"
+  ]
+}

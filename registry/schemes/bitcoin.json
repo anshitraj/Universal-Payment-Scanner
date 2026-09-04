@@ -1,0 +1,22 @@
+{
+  "scheme": "bitcoin",
+  "displayName": "Bitcoin",
+  "country": [],
+  "category": "crypto",
+  "standard": "BIP-21",
+  "parserVersion": "0.1.0",
+  "maturity": "stable",
+  "identification": "exact",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": true,
+    "merchant": false,
+    "currency": false,
+    "dynamic": false
+  },
+  "references": [
+    "https://bips.dev/21/"
+  ]
+}

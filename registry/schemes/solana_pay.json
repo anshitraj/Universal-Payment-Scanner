@@ -1,0 +1,22 @@
+{
+  "scheme": "solana_pay",
+  "displayName": "Solana Pay",
+  "country": [],
+  "category": "crypto",
+  "standard": "Solana Pay transfer request 1.0",
+  "parserVersion": "0.1.0",
+  "maturity": "stable",
+  "identification": "exact",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": true,
+    "merchant": false,
+    "currency": false,
+    "dynamic": true
+  },
+  "references": [
+    "https://docs.solanapay.com/spec"
+  ]
+}

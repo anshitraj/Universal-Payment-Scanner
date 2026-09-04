@@ -1,0 +1,22 @@
+{
+  "scheme": "walletconnect",
+  "displayName": "WalletConnect pairing request",
+  "country": [],
+  "category": "unknown",
+  "standard": "WalletConnect pairing URI (ERC-1328 / WalletConnect specs)",
+  "parserVersion": "0.1.0",
+  "maturity": "beta",
+  "identification": "exact",
+  "supported": true,
+  "nonPayment": true,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": false,
+    "merchant": false,
+    "currency": false,
+    "dynamic": true
+  },
+  "references": [
+    "https://specs.walletconnect.com/2.0/specs/clients/core/pairing/pairing-uri"
+  ]
+}

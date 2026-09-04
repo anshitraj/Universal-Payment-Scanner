@@ -1,0 +1,24 @@
+{
+  "scheme": "hkqr",
+  "displayName": "HKQR",
+  "country": [
+    "HK"
+  ],
+  "category": "bank_transfer",
+  "standard": "HKMA Common QR Code Specification for Retail Payments in Hong Kong",
+  "parserVersion": "0.1.0",
+  "maturity": "beta",
+  "identification": "exact",
+  "supported": true,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": true,
+    "merchant": true,
+    "currency": true,
+    "dynamic": true
+  },
+  "references": [
+    "https://www.hkma.gov.hk/media/eng/doc/key-functions/financial-infrastructure/infrastructure/retail-payment-initiatives/Common_QR_Code_Specification.pdf"
+  ]
+}

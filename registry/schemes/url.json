@@ -1,0 +1,22 @@
+{
+  "scheme": "url",
+  "displayName": "Generic URL",
+  "country": [],
+  "category": "unknown",
+  "standard": "RFC 3986 URI",
+  "parserVersion": "0.1.0",
+  "maturity": "beta",
+  "identification": "exact",
+  "supported": true,
+  "nonPayment": true,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": false,
+    "merchant": false,
+    "currency": false,
+    "dynamic": false
+  },
+  "references": [
+    "https://www.rfc-editor.org/rfc/rfc3986"
+  ]
+}

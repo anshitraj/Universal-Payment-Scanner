@@ -1,0 +1,24 @@
+{
+  "scheme": "alipay",
+  "displayName": "Alipay",
+  "country": [
+    "CN"
+  ],
+  "category": "wallet",
+  "standard": "Proprietary (Alipay)",
+  "parserVersion": "0.1.0",
+  "maturity": "experimental",
+  "identification": "heuristic",
+  "supported": false,
+  "nonPayment": false,
+  "lastVerified": "2026-09-05",
+  "supports": {
+    "amount": false,
+    "merchant": false,
+    "currency": false,
+    "dynamic": false
+  },
+  "references": [
+    "https://global.alipay.com/"
+  ]
+}
