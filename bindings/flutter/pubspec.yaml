@@ -1,0 +1,25 @@
+name: universal_payment_qr
+description: >
+  Deterministic, local-first payment QR/address parsing - UPI, Pix, EMVCo, Bitcoin, Ethereum,
+  and more, one normalized result. Dart FFI bindings over the same Rust core every SDK in this
+  project uses.
+version: 0.1.0
+homepage: https://github.com/anshitraj/Universal-Payment-Scanner
+repository: https://github.com/anshitraj/Universal-Payment-Scanner
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.19.0"
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        ffiPlugin: true
+
+dependencies:
+  ffi: ^2.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  test: ^1.25.0

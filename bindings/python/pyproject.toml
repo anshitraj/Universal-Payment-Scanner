@@ -1,0 +1,28 @@
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "universal-payment-qr"
+description = "Deterministic, local-first payment QR/address parsing - UPI, Pix, EMVCo, Bitcoin, Ethereum, and more, one normalized result."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development :: Libraries",
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/anshitraj/Universal-Payment-Scanner"
+Repository = "https://github.com/anshitraj/Universal-Payment-Scanner"
+Documentation = "https://github.com/anshitraj/Universal-Payment-Scanner/blob/main/README.md"
+
+[tool.maturin]
+python-source = "."
+module-name = "universal_payment_qr._native"
+manifest-path = "Cargo.toml"

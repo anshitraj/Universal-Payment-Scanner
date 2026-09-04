@@ -1,0 +1,16 @@
+[package]
+name = "universal_payment_qr_android"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "JNI bindings for universal-payment-qr-core, consumed by the Kotlin/Android package"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+jni = "0.21"
+serde_json.workspace = true
+universal-payment-qr-core = { path = "../../../crates/core" }

@@ -1,0 +1,6 @@
+.gradle/
+build/
+local.properties
+# Rust build output - regenerate with `cargo ndk` (see README.md) before packaging the .aar.
+lib/src/main/jniLibs/*/
+lib/native-test-libs/

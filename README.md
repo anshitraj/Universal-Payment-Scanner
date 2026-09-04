@@ -97,20 +97,43 @@ of them, and this project does not ship a parser it cannot verify against one. S
 (distinct from a Swiss QR-bill a TWINT app can pay) and PayPal's seller/payment-link QR subtypes
 are similarly deferred pending a confirmed URL pattern.
 
+## Other languages and platforms
+
+Every binding below calls the exact same Rust core (`crates/core`) - no payment logic is ever
+reimplemented. "Verified" means real tests ran against a real build in this repository's own
+development session, not just that the code compiles by inspection.
+
+| Platform | Package | Status |
+|---|---|---|
+| Rust | `crates/core` (crates.io-ready) | Verified - 66 unit tests, fuzzed, benchmarked |
+| Browser / Node | [`@universal-payment-qr/core`](packages/core) (WASM) | Verified - live in the playground |
+| Python | [`bindings/python`](bindings/python) | Verified - 10/10 pytest, real built wheel |
+| Kotlin / Android | [`bindings/android`](bindings/android) | Verified - 9/9 JVM unit tests, real `.aar` built |
+| Flutter / Dart | [`bindings/flutter`](bindings/flutter) | Verified - 8/8 `flutter test`, Android packaging not yet built |
+| Swift / iOS | [`bindings/swift`](bindings/swift) | Written, **not compiled** - this repo was built on Windows; needs a Mac |
+| React Native | [`bindings/react-native`](bindings/react-native) | Interface only - see its README for why (Hermes has no WebAssembly) |
+| Go (hosted API) | [`services/api-go`](services/api-go) | Verified - delegates to the Rust CLI, same output |
+
 ## Repository map
 
 ```text
-crates/core/          Rust registry, policy, parsers, validation, CLI
-crates/wasm/          wasm-bindgen wrapper over the Rust core
-services/api-go/      Optional stateless HTTP service; delegates to the Rust CLI
-packages/wasm/        Generated WASM package wrapper
-packages/core/        TypeScript SDK
-packages/scanner/     Browser camera and image decoding (ZXing)
-packages/react/       Accessible ready-made scanner and headless hook
-apps/playground/      Local-first developer playground
-test-vectors/         Public/synthetic valid and malicious fixtures
-fuzz/                 cargo-fuzz targets
-docs/                 Architecture, schema, adapters, security, versioning
+crates/core/           Rust registry, policy, parsers, validation, CLI
+crates/wasm/            wasm-bindgen wrapper over the Rust core
+crates/ffi/             C ABI over the core, for Swift/Kotlin/anything else that isn't WASM or Rust
+services/api-go/       Optional stateless HTTP service; delegates to the Rust CLI
+bindings/python/       PyO3 bindings (pip install universal-payment-qr)
+bindings/android/      JNI bindings (Kotlin, Maven/Gradle)
+bindings/flutter/      dart:ffi bindings over crates/ffi
+bindings/swift/        Swift Package Manager wrapper over crates/ffi (uncompiled - needs a Mac)
+bindings/react-native/ Interface + architecture notes (native module wiring not built)
+packages/wasm/         Generated WASM package wrapper
+packages/core/         TypeScript SDK
+packages/scanner/      Browser camera and image decoding (ZXing)
+packages/react/        Accessible ready-made scanner and headless hook
+apps/playground/       Local-first developer playground
+test-vectors/          Public/synthetic valid and malicious fixtures
+fuzz/                  cargo-fuzz targets
+docs/                  Architecture, schema, adapters, security, versioning
 ```
 
 ## Quick start

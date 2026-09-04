@@ -1,0 +1,4 @@
+module CUniversalPaymentQR {
+    header "include/universal_payment_qr_ffi.h"
+    export *
+}

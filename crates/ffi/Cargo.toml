@@ -1,0 +1,16 @@
+[package]
+name = "universal-payment-qr-ffi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "C ABI bindings over universal-payment-qr-core, for Python/Swift/Kotlin bindings"
+
+[lib]
+# staticlib for iOS (linked into an XCFramework), cdylib for Android .so / Windows/Linux/macOS
+# shared libraries, rlib so other Rust crates (e.g. the PyO3 crate) can depend on it directly.
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[dependencies]
+serde_json.workspace = true
+universal-payment-qr-core = { path = "../core" }

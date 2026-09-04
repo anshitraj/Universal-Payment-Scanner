@@ -91,4 +91,41 @@
   Real-world personal/P2P transfers (confirmed against a real VietQR) omit these merchant-only
   fields even though the base EMVCo spec calls them mandatory. Now validated when present, not
   required; currency (53), country (58), and the CRC remain mandatory.
+- Added `crates/ffi`, a C ABI crate (`upqr_parse`/`upqr_detect`/`upqr_schemes`/`upqr_version`/
+  `upqr_free_string`, every pointer-taking function `unsafe` with a `# Safety` contract, every
+  entry point wrapped in `catch_unwind` since a panic crossing an FFI boundary is undefined
+  behavior even though the core itself is already panic-free) so platforms without a native Rust
+  or WASM story - Python, Swift, Kotlin/Android - can all link the same compiled core instead of
+  each getting its own reimplementation. 8 unit tests, clippy-clean under
+  `-D warnings` (including `not_unsafe_ptr_arg_deref`, which the initial draft violated on
+  `upqr_free_string`).
+- Added `bindings/python` (PyO3, `pip install universal-payment-qr`, mixed Python/Rust package via
+  maturin): a thin `_native` extension plus a pure-Python `parse_payment_qr`/`detect_payment_qr`/
+  `get_capabilities`/`get_supported_schemes`/`Scanner` API matching the TS/Rust surface. Verified:
+  10/10 `pytest` against a real `maturin develop --release` build.
+- Added `bindings/android` (JNI, Kotlin, Maven/Gradle): a `universal-payment-qr-android` Rust
+  cdylib exporting `Java_org_universalpaymentqr_NativeBridge_native{Parse,Detect,Schemes,Version}`,
+  cross-compiled to arm64-v8a/armeabi-v7a/x86_64 via `cargo-ndk`, wrapped by a
+  `UniversalPaymentQR` Kotlin class. Verified: 9/9 JVM unit tests, a real `lib-release.aar`
+  assembled by Gradle. Found along the way: Android's `org.json` classes are unimplemented stubs
+  on a desktop JVM, so 7/9 tests initially failed silently under
+  `unitTests.isReturnDefaultValues = true` (it swallowed the stub's `null`/default returns instead
+  of surfacing them) rather than loudly - removed that flag and added
+  `testImplementation("org.json:json:20240303")`, a real standalone implementation, for test-time
+  use only; documented in `bindings/android/README.md` since it isn't obvious from the code alone.
+- Added `bindings/flutter` (`dart:ffi` directly over `crates/ffi`'s C ABI, no JNI needed, standard
+  `ffiPlugin: true` layout). Verified: 8/8 `flutter test` against a host-built DLL via
+  `libraryPathOverride`; Android/iOS packaging (bundling the cross-compiled native libraries into
+  the plugin) is not yet built.
+- Added `bindings/swift` (Swift Package Manager, a C target wrapping `crates/ffi`'s header plus a
+  Swift API over it). Written following standard SPM binary-target patterns but **not compiled** -
+  this repository was built on Windows and Swift/Xcode has no toolchain here; its README says so
+  explicitly rather than claiming untested code works.
+- Added `bindings/react-native`: the same `parsePaymentQR`/`detectPaymentQR`/`Scanner` TypeScript
+  interface as every other binding, but every function currently throws
+  `NativeModuleNotLinkedError`. This is an architectural gap, not a packaging one - Hermes (React
+  Native's JS engine) has no WebAssembly support, so unlike a plain web or Node app this can't just
+  load `@universal-payment-qr/core`'s WASM build; it needs real Android/iOS native modules wrapping
+  the (already-verified) `bindings/android` and (uncompiled) `bindings/swift` packages instead. Its
+  README documents the gap and a pure-JS hosted-API fallback that would need no native code.
 

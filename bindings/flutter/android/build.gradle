@@ -1,0 +1,30 @@
+group 'org.universalpaymentqr.flutter'
+version '0.1.0'
+
+buildscript {
+    ext.kotlin_version = '2.0.21'
+    repositories { google(); mavenCentral() }
+    dependencies {
+        classpath "com.android.tools.build:gradle:8.7.0"
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    namespace 'org.universalpaymentqr.flutter'
+    compileSdk 35
+
+    defaultConfig {
+        minSdk 21
+    }
+
+    // The .so files here are the same crates/ffi C ABI the Python/desktop-Dart bindings use
+    // (not the JNI-specific build under bindings/android/) - Dart FFI calls C directly, no JNI
+    // glue needed. Build them first - see ../README.md "Building".
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['../../../target/android-jniLibs']
+        }
+    }
+}

@@ -1,0 +1,17 @@
+[package]
+name = "universal_payment_qr_python"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "PyO3 bindings for universal-payment-qr-core"
+publish = false
+
+[lib]
+name = "_native"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.23", features = ["extension-module"] }
+serde_json.workspace = true
+universal-payment-qr-core = { path = "../../crates/core" }
