@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:universal_payment_scanner/universal_payment_scanner.dart';
+import 'package:unipayscan/unipayscan.dart';
 
 // Points at a host build of crates/ffi (see bindings/flutter/README.md "Running tests") -
 // production Android use resolves the bundled .so via NativeBindings' default Android branch

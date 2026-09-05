@@ -130,7 +130,7 @@ development session, not just that the code compiles by inspection.
 | Browser / Node | [`unipayscan`](packages/core) (WASM) | Verified - live in the playground |
 | Python | [`bindings/python`](bindings/python) | Verified - 10/10 pytest, real built wheel |
 | Kotlin / Android | [`bindings/android`](bindings/android) | Verified - 9/9 JVM unit tests, real `.aar` built |
-| Flutter / Dart | [`bindings/flutter`](bindings/flutter) | Verified - 8/8 `flutter test`, Android packaging not yet built |
+| Flutter / Dart | [`bindings/flutter`](bindings/flutter) (`unipayscan` on pub.dev) | Verified - 8/8 `flutter test`, `flutter pub publish --dry-run` passes with 0 warnings; not yet actually published, and Android packaging not yet built |
 | Swift / iOS | [`bindings/swift`](bindings/swift) | Written, **not compiled** - this repo was built on Windows; needs a Mac |
 | React Native | [`bindings/react-native`](bindings/react-native) | Interface only - see its README for why (Hermes has no WebAssembly) |
 | Go (hosted API) | [`services/api-go`](services/api-go) | Verified - delegates to the Rust CLI, same output |

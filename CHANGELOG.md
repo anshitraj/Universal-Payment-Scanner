@@ -153,4 +153,10 @@
   metadata gaps - Pix, EPC QR, and Swiss QR-bill all populate a merchant name and a currency in
   their parsed output, but none of the three said so in their own `features` list - fixed by adding
   the two missing entries to each (`crates/core/src/schemes/mod.rs`, `epc_qr.rs`, `swiss_qr.rs`).
+- Renamed the Flutter package to `unipayscan` (from `universal_payment_scanner`) to match the npm
+  package name - `flutter pub add unipayscan` mirrors `npm i unipayscan` once published. Added the
+  `LICENSE` and `CHANGELOG.md` pub.dev expects at the package root (mirroring `bindings/python`'s);
+  `flutter pub publish --dry-run` now reports 0 warnings. Not yet actually published to pub.dev -
+  that step needs an interactive Google-account login this environment can't perform - so
+  `bindings/flutter/README.md` documents installing via a git dependency in the meantime.
 

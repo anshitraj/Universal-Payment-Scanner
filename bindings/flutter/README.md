@@ -1,11 +1,29 @@
-# universal_payment_scanner (Flutter)
+# unipayscan (Flutter)
 
 `dart:ffi` bindings over the same Rust core every SDK in this project uses (`crates/core`), via
 the generic C ABI in `crates/ffi` - no JNI needed, Dart FFI calls C directly. No parsing logic is
 reimplemented here.
 
+## Installing
+
+**Not yet published to pub.dev.** Once it is, this will work:
+
+```bash
+flutter pub add unipayscan
+```
+
+Until then, depend on it directly from this repository:
+
+```yaml
+dependencies:
+  unipayscan:
+    git:
+      url: https://github.com/anshitraj/Universal-Payment-Scanner.git
+      path: bindings/flutter
+```
+
 ```dart
-import 'package:universal_payment_scanner/universal_payment_scanner.dart';
+import 'package:unipayscan/unipayscan.dart';
 
 final result = UniversalPaymentQr.parse('upi://pay?pa=merchant%40bank&am=499.00&cu=INR');
 print(result['scheme']); // upi
@@ -19,8 +37,9 @@ scanner.scan(payload);
 ## Verified in this session
 
 `flutter test` (8/8 tests) against a real host build of `crates/ffi`, using
-`libraryPathOverride` to point at it directly - see `test/universal_payment_scanner_test.dart`. That
-proves the Dart↔Rust FFI contract (types, JSON shape, memory ownership) is correct end to end.
+`libraryPathOverride` to point at it directly - see `test/unipayscan_test.dart`. That proves the
+Dart↔Rust FFI contract (types, JSON shape, memory ownership) is correct end to end.
+`flutter pub publish --dry-run` reports 0 warnings against the current package.
 
 ## Not verified in this session
 
@@ -44,4 +63,5 @@ cargo build --release -p universal-payment-qr-ffi   # from the repository root
 cd bindings/flutter
 flutter pub get
 flutter test
+flutter pub publish --dry-run   # re-check pub.dev readiness after any change
 ```

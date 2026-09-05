@@ -1,4 +1,4 @@
-name: universal_payment_scanner
+name: unipayscan
 description: >
   Deterministic, local-first payment QR/address parsing - UPI, Pix, EMVCo, Bitcoin, Ethereum,
   and more, one normalized result. Dart FFI bindings over the same Rust core every SDK in this

@@ -7,7 +7,7 @@
 /// final result = UniversalPaymentQr.parse("upi://pay?pa=merchant%40bank&am=499.00&cu=INR");
 /// print(result['scheme']); // upi
 /// ```
-library universal_payment_scanner;
+library unipayscan;
 
 import 'dart:convert';
 import 'dart:ffi';
