@@ -53,5 +53,7 @@
 .upqr-status p { margin: 0; font-weight: 700; }
 .upqr-status dl { grid-column: 2; margin: .45rem 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--upqr-line); }
 .upqr-status dl div { padding: .8rem .8rem 0 0; min-width: 0; }.upqr-status dt { font-size: .58rem; letter-spacing: .12em; text-transform: uppercase; opacity: .58; }.upqr-status dd { margin: .3rem 0 0; font-size: .8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.upqr-rescan { grid-column: 2; justify-self: start; margin-top: .9rem; border: 0; background: var(--upqr-ink); color: var(--upqr-paper); padding: .75rem 1.1rem; font: 750 .7rem/1 var(--upqr-body); text-transform: uppercase; letter-spacing: .08em; cursor: pointer; }
+.upqr-rescan:hover { background: var(--upqr-accent); }
 @media (max-width: 560px) { .upqr-scanner { grid-template-columns: 1.8rem 1fr; min-height: 34rem; }.upqr-scanner__main { padding: 1.1rem; }.upqr-private { display: none; }.upqr-status dl { grid-template-columns: 1fr; }.upqr-scanner h2 { font-size: 2.65rem; } }
 @media (prefers-reduced-motion: no-preference) { .upqr-stage { animation: upqr-reveal .42s cubic-bezier(.2,.75,.2,1) both; } @keyframes upqr-reveal { from { opacity: 0; transform: translateY(8px); } } }

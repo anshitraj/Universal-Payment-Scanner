@@ -1,7 +1,7 @@
 /// Raw `dart:ffi` signatures matching `crates/ffi/src/lib.rs` exactly. Every function returns an
 /// owned, heap-allocated, NUL-terminated UTF-8 string that MUST be passed to `upqr_free_string`
 /// exactly once - see that crate's module docs for the full memory contract. Not part of the
-/// public API; [UniversalPaymentQr] in `universal_payment_qr.dart` is.
+/// public API; [UniversalPaymentQr] in `universal_payment_scanner.dart` is.
 library;
 
 import 'dart:ffi';

@@ -12,6 +12,8 @@ struct Vector {
 struct Expected {
     recognized: bool,
     scheme: String,
+    #[serde(default, rename = "possibleScheme")]
+    possible_scheme: Option<String>,
     valid: bool,
     amount: Option<String>,
     error: Option<String>,
@@ -29,6 +31,14 @@ fn shared_vectors_match_contract() {
             vector.name
         );
         assert_eq!(result.scheme, vector.expected.scheme, "{}", vector.name);
+        if let Some(possible_scheme) = vector.expected.possible_scheme {
+            assert_eq!(
+                result.possible_scheme.as_deref(),
+                Some(possible_scheme.as_str()),
+                "{}",
+                vector.name
+            );
+        }
         assert_eq!(
             result.validation.valid, vector.expected.valid,
             "{}",

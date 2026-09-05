@@ -1,14 +1,20 @@
 {
   "name": "@universal-payment-qr/react",
   "version": "0.1.0",
+  "description": "React components and hooks for scanning and parsing payment QR codes with UniPayScan.",
   "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/anshitraj/Universal-Payment-Scanner.git", "directory": "packages/react" },
+  "homepage": "https://unipayscan.xyz",
+  "bugs": "https://github.com/anshitraj/Universal-Payment-Scanner/issues",
+  "author": "anshitraj",
+  "keywords": ["qr", "react", "payment", "upi", "pix", "bitcoin", "unipayscan"],
   "type": "module",
   "sideEffects": ["**/*.css"],
   "exports": { ".": { "types": "./dist/index.d.mts", "import": "./dist/index.mjs" }, "./styles.css": "./dist/styles.css" },
   "files": ["dist"],
   "scripts": { "build": "tsc -p tsconfig.json && copyfiles -u 1 src/*.css dist", "typecheck": "tsc -p tsconfig.json --noEmit" },
   "dependencies": {
-    "@universal-payment-qr/core": "^0.1.0",
+    "unipayscan": "^0.1.0",
     "@universal-payment-qr/scanner": "^0.1.0"
   },
   "peerDependencies": { "react": ">=18", "react-dom": ">=18" },

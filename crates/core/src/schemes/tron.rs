@@ -69,11 +69,11 @@ impl PaymentScheme for Tron {
             "Address encoding is valid; ownership is not verified. A TRC-20 token (e.g. USDT) may \
              be the intended asset instead of native TRX; the bare address alone doesn't say which.",
         ));
-        intent.recommended_action = Some(RecommendedAction {
-            kind: ActionType::Wallet,
-            uri: Some(payload.into()),
-            requires_user_confirmation: true,
-        });
+        intent.recommended_action = Some(RecommendedAction::new(
+            ActionType::Wallet,
+            Some(payload.into()),
+            true,
+        ));
         Ok(intent)
     }
 }

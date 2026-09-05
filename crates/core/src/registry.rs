@@ -1,6 +1,6 @@
 use crate::schemes;
 use crate::{
-    ActionType, CapabilityPolicy, Detection, ErrorCode, Issue, ParseError, PaymentIntent,
+    ActionType, CapabilityPolicy, Category, Detection, ErrorCode, Issue, ParseError, PaymentIntent,
     RecommendedAction, SchemeMetadata, Support,
 };
 
@@ -138,6 +138,27 @@ impl Scanner {
                 intent
             }
         };
+        // Fill action-type-specific detail generically from fields the scheme parser already
+        // populated, so no scheme adapter has to know about `scheme`/`network`/`provider` itself -
+        // see `RecommendedAction`'s doc comment.
+        if let Some(action) = intent.recommended_action.as_mut() {
+            match action.kind {
+                ActionType::Wallet if action.network.is_none() => {
+                    action.network = intent.network.clone();
+                }
+                ActionType::Redirect if action.provider.is_none() => {
+                    action.provider = Some(intent.scheme.clone());
+                }
+                ActionType::Handoff | ActionType::Deeplink if action.scheme.is_none() => {
+                    action.scheme = action
+                        .uri
+                        .as_deref()
+                        .and_then(|uri| uri.split_once(':'))
+                        .map(|(scheme, _)| scheme.to_ascii_lowercase());
+                }
+                _ => {}
+            }
+        }
         if !self.policy.is_enabled(&metadata) && intent.supported {
             intent.supported = false;
             intent.support = Support {
@@ -148,12 +169,26 @@ impl Scanner {
                     metadata.display_name
                 )),
                 message_key: Some("scanner.scheme_disabled".into()),
+                details: None,
             };
-            intent.recommended_action = Some(RecommendedAction {
-                kind: ActionType::Unsupported,
-                uri: None,
-                requires_user_confirmation: true,
-            });
+            intent.recommended_action =
+                Some(RecommendedAction::new(ActionType::Unsupported, None, true));
+        }
+        if intent.supported
+            && metadata.category == Category::Crypto
+            && let Some(network) = intent.network.clone()
+        {
+            let symbol = intent.asset.as_ref().and_then(|a| a.symbol.clone());
+            let contract = intent.asset.as_ref().and_then(|a| a.contract.clone());
+            if let Err(rejection) =
+                self.policy
+                    .crypto_check(&network, symbol.as_deref(), contract.as_deref())
+            {
+                intent.supported = false;
+                intent.support = rejection.to_support();
+                intent.recommended_action =
+                    Some(RecommendedAction::new(ActionType::Unsupported, None, true));
+            }
         }
         intent
     }

@@ -69,11 +69,11 @@ impl PaymentScheme for Ton {
             ErrorCode::UnverifiedRecipient,
             "Address encoding is valid; ownership is not verified.",
         ));
-        intent.recommended_action = Some(RecommendedAction {
-            kind: ActionType::Wallet,
-            uri: Some(payload.into()),
-            requires_user_confirmation: true,
-        });
+        intent.recommended_action = Some(RecommendedAction::new(
+            ActionType::Wallet,
+            Some(payload.into()),
+            true,
+        ));
         Ok(intent)
     }
 }

@@ -1,11 +1,11 @@
-# universal_payment_qr (Flutter)
+# universal_payment_scanner (Flutter)
 
 `dart:ffi` bindings over the same Rust core every SDK in this project uses (`crates/core`), via
 the generic C ABI in `crates/ffi` - no JNI needed, Dart FFI calls C directly. No parsing logic is
 reimplemented here.
 
 ```dart
-import 'package:universal_payment_qr/universal_payment_qr.dart';
+import 'package:universal_payment_scanner/universal_payment_scanner.dart';
 
 final result = UniversalPaymentQr.parse('upi://pay?pa=merchant%40bank&am=499.00&cu=INR');
 print(result['scheme']); // upi
@@ -19,7 +19,7 @@ scanner.scan(payload);
 ## Verified in this session
 
 `flutter test` (8/8 tests) against a real host build of `crates/ffi`, using
-`libraryPathOverride` to point at it directly - see `test/universal_payment_qr_test.dart`. That
+`libraryPathOverride` to point at it directly - see `test/universal_payment_scanner_test.dart`. That
 proves the Dart↔Rust FFI contract (types, JSON shape, memory ownership) is correct end to end.
 
 ## Not verified in this session

@@ -1,4 +1,4 @@
-# @universal-payment-qr/react-native
+# react-native-universal-payment-scanner
 
 ## The real constraint, stated plainly
 
@@ -36,7 +36,7 @@ for the iOS half, a Mac - neither was available in the session that built this. 
 in this package right now throws `NativeModuleNotLinkedError` with a message pointing back here.
 
 ```ts
-import { parsePaymentQR } from "@universal-payment-qr/react-native";
+import { parsePaymentQR } from "react-native-universal-payment-scanner";
 
 // Throws NativeModuleNotLinkedError until android/ and ios/ are wired up - see above.
 const result = await parsePaymentQR(payload);

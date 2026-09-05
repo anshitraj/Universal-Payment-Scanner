@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 
-pub const SCHEMA_VERSION: &str = "1.1.0";
+pub const SCHEMA_VERSION: &str = "2.0.0";
 pub const DEFAULT_MAX_PAYLOAD_BYTES: usize = 8 * 1024;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -28,6 +28,9 @@ pub enum ErrorCode {
     InvalidNetwork,
     SchemeDisabled,
     SchemeUnsupported,
+    NetworkUnsupported,
+    AssetUnsupported,
+    AssetUnverifiable,
     ProprietaryFormat,
     Expired,
     PayloadTooLarge,
@@ -88,6 +91,12 @@ pub struct Recipient {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Asset {
+    /// Only ever set when the payload itself names the asset (a native coin like ETH/SOL, or an
+    /// explicit ticker in the URI). A contract address alone is never enough to fill this in - a
+    /// contract's symbol is not part of the payload and guessing it would misattribute an asset
+    /// the payload never actually claimed. `CryptoRejection::AssetUnverifiable` in `policy.rs`
+    /// depends on this staying honest: an accept-policy asset check fails closed exactly when
+    /// `symbol` is `None`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub symbol: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -109,6 +118,14 @@ pub enum ActionType {
     Unsupported,
 }
 
+/// Action-type-specific detail, filled in generically by `Scanner::scan` from fields the scheme
+/// parser already populated on the intent (`uri`'s scheme prefix, `network`, `scheme` id) - a
+/// scheme adapter constructs a `RecommendedAction` with `new()` and never sets these itself, so
+/// host apps get a consistent, typed instruction ("what UI should I show?") instead of having to
+/// parse `uri` themselves. Exactly one is meaningful per `ActionType`:
+/// - `scheme` - the URI scheme to hand off to an external app (`Handoff`/`Deeplink`, e.g. `"upi"`)
+/// - `network` - the chain/network a crypto wallet should handle (`Wallet`, e.g. `"solana"`)
+/// - `provider` - the web provider to redirect to (`Redirect`, e.g. `"paypal"`)
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct RecommendedAction {
@@ -117,6 +134,25 @@ pub struct RecommendedAction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub uri: Option<String>,
     pub requires_user_confirmation: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub network: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub provider: Option<String>,
+}
+
+impl RecommendedAction {
+    pub fn new(kind: ActionType, uri: Option<String>, requires_user_confirmation: bool) -> Self {
+        Self {
+            kind,
+            uri,
+            requires_user_confirmation,
+            scheme: None,
+            network: None,
+            provider: None,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -129,6 +165,12 @@ pub struct Support {
     pub message: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_key: Option<String>,
+    /// Structured, reason-specific detail a host UI can act on without parsing `message` - e.g.
+    /// `{"network":"ethereum","allowedNetworks":["base","bnb","solana"]}` for
+    /// `NETWORK_UNSUPPORTED`. Shape depends on `reason`; absent when `reason` needs no detail
+    /// beyond the message (or when `enabled` is true).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub details: Option<Value>,
 }
 
 impl Default for Support {
@@ -138,8 +180,30 @@ impl Default for Support {
             reason: None,
             message: None,
             message_key: None,
+            details: None,
         }
     }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum Identification {
+    /// A scheme-specific GUID (tag 00 inside a merchant account sub-template) was matched
+    /// against a value confirmed from an official/authoritative source. `scheme` names that
+    /// exact standard.
+    GuidMatch,
+    /// No scheme-specific GUID has been verified yet. The payload matched the generic EMVCo
+    /// envelope plus a country tag only - `scheme` stays the generic identity and the specific
+    /// guess moves to `possibleScheme`, because a country match alone cannot rule out some other,
+    /// unrelated EMVCo QR issued in that country.
+    CountryLevelInference,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum Confidence {
+    High,
+    Medium,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -155,6 +219,18 @@ pub struct PaymentIntent {
     /// address vs a full payment-request URI. Omitted when the scheme has no subtypes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subtype: Option<String>,
+    /// Set only when `scheme` had to fall back to a generic identity (e.g. `emvco_mpm`) because
+    /// `identification` is no stronger than `COUNTRY_LEVEL_INFERENCE` - see `identification`.
+    /// The specific standard this payload is most likely to be, not yet confirmed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub possible_scheme: Option<String>,
+    /// How `scheme` (or `possibleScheme`) was determined. Omitted when a scheme's own detection
+    /// is unambiguous by construction (a URI scheme prefix, a checksum-valid address format, ...)
+    /// rather than inferred. Never invents confidence a scheme's adapter doesn't actually have.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub identification: Option<Identification>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub confidence: Option<Confidence>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -193,6 +269,9 @@ impl PaymentIntent {
             category,
             scheme: scheme.into(),
             subtype: None,
+            possible_scheme: None,
+            identification: None,
+            confidence: None,
             standard: None,
             country: None,
             network: None,
@@ -225,12 +304,10 @@ impl PaymentIntent {
             reason: Some(ErrorCode::SchemeUnsupported),
             message: Some("No supported payment scheme recognized this payload.".into()),
             message_key: Some("scanner.not_payment_qr".into()),
+            details: None,
         };
-        result.recommended_action = Some(RecommendedAction {
-            kind: ActionType::Unsupported,
-            uri: None,
-            requires_user_confirmation: true,
-        });
+        result.recommended_action =
+            Some(RecommendedAction::new(ActionType::Unsupported, None, true));
         result
     }
 

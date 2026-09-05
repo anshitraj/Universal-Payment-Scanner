@@ -1,15 +1,21 @@
 {
   "name": "universal-payment-qr",
   "private": true,
+  "description": "Monorepo for UniPayScan — open-source payment QR detection, validation, and normalization across fiat and crypto.",
+  "repository": { "type": "git", "url": "https://github.com/anshitraj/Universal-Payment-Scanner.git" },
+  "homepage": "https://unipayscan.xyz",
+  "bugs": "https://github.com/anshitraj/Universal-Payment-Scanner/issues",
   "packageManager": "npm@11.6.1",
   "scripts": {
-    "build:wasm": "wasm-pack build crates/wasm --target web --out-dir ../../packages/wasm/generated --out-name index --release && wasm-pack build crates/wasm --target nodejs --out-dir ../../packages/wasm/generated-node --out-name index --release && node scripts/prepare-wasm-package.mjs",
-    "build:packages": "tsup packages/wasm/src/index.ts packages/wasm/src/node.ts --format esm --dts --out-dir packages/wasm/dist --tsconfig tsconfig.web.json --external ../generated/index.js --external ../generated-node/index.js && tsup packages/core/src/index.ts --format esm --dts --out-dir packages/core/dist --tsconfig tsconfig.web.json --external @universal-payment-qr/wasm && tsup packages/scanner/src/index.ts --format esm --dts --out-dir packages/scanner/dist --tsconfig tsconfig.web.json --external @zxing/browser && tsup packages/react/src/index.ts --format esm --dts --out-dir packages/react/dist --tsconfig tsconfig.web.json --external react --external @universal-payment-qr/core --external @universal-payment-qr/scanner && node scripts/distribute-packages.mjs",
+    "build:wasm": "wasm-pack build crates/wasm --target web --out-dir ../../packages/core/generated --out-name index --release && wasm-pack build crates/wasm --target nodejs --out-dir ../../packages/core/generated-node --out-name index --release && node scripts/prepare-wasm-package.mjs",
+    "build:packages": "tsup packages/core/src/index.ts packages/core/src/node.ts --format esm --dts --out-dir packages/core/dist --tsconfig tsconfig.web.json --external ../generated/index.js --external ../generated-node/index.js && tsup packages/scanner/src/index.ts --format esm --dts --out-dir packages/scanner/dist --tsconfig tsconfig.web.json --external @zxing/browser && tsup packages/react/src/index.ts --format esm --dts --out-dir packages/react/dist --tsconfig tsconfig.web.json --external react --external unipayscan --external @universal-payment-qr/scanner && tsup bindings/react-native/src/index.ts --format esm --dts --out-dir bindings/react-native/dist --tsconfig tsconfig.web.json && node scripts/distribute-packages.mjs",
     "build": "npm run build:wasm && npm run typecheck && npm run build:packages && vite build apps/playground",
     "build:vercel": "npm run build:packages && vite build apps/playground",
     "test": "vitest run packages/core/src --config vitest.config.ts",
     "typecheck": "tsc -p tsconfig.web.json --noEmit",
-    "dev": "vite apps/playground"
+    "dev": "vite apps/playground",
+    "registry:generate": "node scripts/generate-registry.mjs",
+    "registry:check": "node scripts/generate-registry.mjs --check"
   },
   "dependencies": {
     "@fontsource-variable/bodoni-moda": "^5.2.8",

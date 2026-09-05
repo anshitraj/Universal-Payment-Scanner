@@ -5,21 +5,33 @@
 //! with a country-specific Globally Unique Identifier registered inside the merchant account
 //! information fields (tags 26-51). Adding a country here is a config entry, not a new parser.
 //!
-//! Two confidence tiers, reflected honestly in `maturity` and in `detect()`'s confidence score:
+//! Two confidence tiers, reflected honestly in `maturity`, in `detect()`'s confidence score, and -
+//! critically - in the `PaymentIntent` a successful `parse()` actually returns:
 //! - **Tier 1** (`guids` non-empty): a specific GUID string was confirmed against a public
 //!   central-bank/scheme-operator source. `parse` verifies that GUID actually tags a merchant
-//!   account sub-template, not just that the string appears somewhere in the payload.
+//!   account sub-template, not just that the string appears somewhere in the payload. The result
+//!   reports `scheme: config.id` directly, `identification: GUID_MATCH`, `confidence: high`.
 //! - **Tier 2** (`guids` empty): the national standard is confirmed real and EMVCo-based, but no
-//!   specific GUID has been verified yet. Detection and normalization fall back to the generic
-//!   EMVCo envelope plus the country field (tag 58), which is honest but less precise - reflected
-//!   in `Maturity::Community` rather than `Beta`.
+//!   specific GUID has been verified yet - only the generic EMVCo envelope plus the country field
+//!   (tag 58) matched. A country match alone can't rule out some other, unrelated EMVCo QR issued
+//!   in that country, so the result does **not** claim `scheme: config.id`: it reports
+//!   `scheme: "emvco_mpm"` (the confirmed identity), `possibleScheme: config.id` (the guess),
+//!   `identification: COUNTRY_LEVEL_INFERENCE`, `confidence: medium`. `Maturity::Community`
+//!   (rather than `Beta`) reflects the same gap at the capability-metadata level.
 
 use crate::emv::{self, TlvMap};
 use crate::registry::PaymentScheme;
 use crate::{
-    ActionType, Asset, Category, ErrorCode, Issue, Maturity, ParseError, PaymentIntent, Recipient,
-    RecommendedAction, SchemeMetadata,
+    ActionType, Asset, Category, Confidence, ErrorCode, Identification, Issue, Maturity,
+    ParseError, PaymentIntent, Recipient, RecommendedAction, SchemeMetadata,
 };
+
+/// The generic EMVCo MPM identity (`schemes::EmvCo` in `mod.rs`) a Tier 2 overlay falls back to
+/// for `scheme`/`standard`/`network` - kept as one constant so both stay byte-identical to what a
+/// plain, country-less EMVCo QR would report.
+const GENERIC_EMVCO_ID: &str = "emvco_mpm";
+const GENERIC_EMVCO_STANDARD: &str = "EMV QRCPS MPM v1.1";
+const GENERIC_EMVCO_NETWORK: &str = "EMVCo";
 
 pub struct NationalOverlayConfig {
     pub id: &'static str,
@@ -131,10 +143,27 @@ impl PaymentScheme for NationalOverlay {
             ));
         }
 
-        let mut intent = PaymentIntent::recognized(config.id, Category::BankTransfer);
-        intent.standard = Some(config.standard.into());
+        let mut intent = if config.guids.is_empty() {
+            // Tier 2: only the generic EMVCo envelope plus a country tag matched, so `scheme`
+            // stays the identity that's actually confirmed - claiming the specific national
+            // standard here would let an unrelated EMVCo QR from the same country be presented to
+            // an application as that standard. See this module's doc comment.
+            let mut intent = PaymentIntent::recognized(GENERIC_EMVCO_ID, Category::BankTransfer);
+            intent.standard = Some(GENERIC_EMVCO_STANDARD.into());
+            intent.network = Some(GENERIC_EMVCO_NETWORK.into());
+            intent.possible_scheme = Some(config.id.into());
+            intent.identification = Some(Identification::CountryLevelInference);
+            intent.confidence = Some(Confidence::Medium);
+            intent
+        } else {
+            let mut intent = PaymentIntent::recognized(config.id, Category::BankTransfer);
+            intent.standard = Some(config.standard.into());
+            intent.network = Some(config.network.into());
+            intent.identification = Some(Identification::GuidMatch);
+            intent.confidence = Some(Confidence::High);
+            intent
+        };
         intent.country = Some(config.country.into());
-        intent.network = Some(config.network.into());
         intent.currency = emv::currency_from_numeric(config.currency.0).map(str::to_owned);
         if let Some(value) = fields.get("54") {
             intent.amount = Some(crate::decimal::validate_decimal(value, 12)?);
@@ -157,11 +186,7 @@ impl PaymentScheme for NationalOverlay {
             ErrorCode::UnverifiedRecipient,
             "Checksum and structure are valid; merchant identity is not verified.",
         ));
-        intent.recommended_action = Some(RecommendedAction {
-            kind: ActionType::Handoff,
-            uri: None,
-            requires_user_confirmation: true,
-        });
+        intent.recommended_action = Some(RecommendedAction::new(ActionType::Handoff, None, true));
         Ok(intent)
     }
 }
@@ -511,10 +536,19 @@ mod tests {
     }
 
     #[test]
-    fn tier2_khqr_is_recognized_via_country_tag_without_a_confirmed_guid() {
+    fn tier2_khqr_reports_the_generic_emvco_identity_not_the_unconfirmed_guess() {
+        use crate::{Confidence, Identification};
         let intent = parse_payment_qr(KHQR);
         assert!(intent.validation.valid, "{:?}", intent.validation.errors);
-        assert_eq!(intent.scheme, "khqr");
+        // Not "khqr": no GUID was confirmed, so the confirmed identity is the generic envelope.
+        assert_eq!(intent.scheme, "emvco_mpm");
+        assert_eq!(intent.possible_scheme.as_deref(), Some("khqr"));
+        assert_eq!(
+            intent.identification,
+            Some(Identification::CountryLevelInference)
+        );
+        assert_eq!(intent.confidence, Some(Confidence::Medium));
+        assert_eq!(intent.country.as_deref(), Some("KH"));
         assert_eq!(intent.currency.as_deref(), Some("KHR"));
     }
 
@@ -577,19 +611,31 @@ mod tests {
     }
 
     #[test]
-    fn lankaqr_is_recognized_via_country_tag() {
+    fn lankaqr_is_recognized_via_country_tag_as_a_possible_scheme() {
         let intent = parse_payment_qr(LANKAQR);
         assert!(intent.validation.valid, "{:?}", intent.validation.errors);
-        assert_eq!(intent.scheme, "lankaqr");
+        assert_eq!(intent.scheme, "emvco_mpm");
+        assert_eq!(intent.possible_scheme.as_deref(), Some("lankaqr"));
         assert_eq!(intent.currency.as_deref(), Some("LKR"));
     }
 
     #[test]
-    fn mmqr_is_recognized_via_country_tag() {
+    fn mmqr_is_recognized_via_country_tag_as_a_possible_scheme() {
         let intent = parse_payment_qr(MMQR);
         assert!(intent.validation.valid, "{:?}", intent.validation.errors);
-        assert_eq!(intent.scheme, "mmqr");
+        assert_eq!(intent.scheme, "emvco_mpm");
+        assert_eq!(intent.possible_scheme.as_deref(), Some("mmqr"));
         assert_eq!(intent.currency.as_deref(), Some("MMK"));
+    }
+
+    #[test]
+    fn tier1_promptpay_carries_guid_match_identification_and_high_confidence() {
+        use crate::{Confidence, Identification};
+        let intent = parse_payment_qr(PROMPTPAY);
+        assert_eq!(intent.scheme, "promptpay");
+        assert_eq!(intent.possible_scheme, None);
+        assert_eq!(intent.identification, Some(Identification::GuidMatch));
+        assert_eq!(intent.confidence, Some(Confidence::High));
     }
 
     #[test]

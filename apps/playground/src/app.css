@@ -4,7 +4,17 @@ html { scroll-behavior: smooth; }
 body { margin: 0; min-width: 320px; background: var(--mint); }
 button, input, textarea { font: inherit; }
 .masthead { height: 4.5rem; padding: 0 clamp(1.25rem, 4vw, 4rem); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; border-bottom: 1px solid var(--line); font-size: .7rem; letter-spacing: .11em; font-weight: 750; }
-.masthead a { color: inherit; text-decoration: none; }.masthead > a:last-child { justify-self: end; }.masthead p { margin: 0; opacity: .65; }.wordmark span { display: inline-grid; place-items: center; width: 1.8rem; height: 1.8rem; margin-right: .55rem; background: var(--ink); color: var(--mint); border-radius: 50%; font-family: "Bodoni Moda Variable"; font-size: 1rem; }
+.masthead a { color: inherit; text-decoration: none; }.masthead > a:last-child { justify-self: end; }.wordmark span { display: inline-grid; place-items: center; width: 1.8rem; height: 1.8rem; margin-right: .55rem; background: var(--ink); color: var(--mint); border-radius: 50%; font-family: "Bodoni Moda Variable"; font-size: 1rem; }
+.masthead__links { display: flex; gap: 1.6rem; justify-self: center; }
+.masthead__links a { opacity: .65; transition: opacity .15s ease; }
+.masthead__links a:hover { opacity: 1; }
+.btn { display: inline-flex; align-items: center; gap: .4rem; border: 1px solid var(--ink); padding: .8rem 1.3rem; font: 750 .72rem/1 "Manrope Variable", sans-serif; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.btn--primary { background: var(--ink); color: var(--mint); }
+.btn--primary:hover { background: var(--accent); border-color: var(--accent); color: var(--ink); }
+.btn--ghost { background: transparent; color: var(--ink); }
+.btn--ghost:hover { background: var(--ink); color: var(--mint); }
+.hero__cta { position: relative; z-index: 1; display: flex; gap: 1rem; flex-wrap: wrap; margin: 2rem 0 0 min(31vw, 27rem); }
+.hero .hero__install { position: relative; z-index: 1; margin: 1rem 0 0 min(31vw, 27rem); max-width: none; font-size: .68rem; letter-spacing: .07em; opacity: .6; font-weight: 700; line-height: 1; }
 .hero { padding: clamp(4rem, 9vw, 8.5rem) clamp(1.25rem, 7vw, 7rem) 3rem; min-height: 42rem; position: relative; overflow: hidden; }
 .hero::after { content: "QR"; position: absolute; right: -3vw; top: 2rem; color: color-mix(in srgb, var(--ink) 5%, transparent); font: 800 clamp(16rem, 38vw, 36rem)/.8 "Manrope Variable"; letter-spacing: -.12em; pointer-events: none; }
 .hero__index { position: relative; z-index: 1; width: max-content; padding: .4rem .65rem; background: var(--ink); color: var(--mint); font-size: .65rem; letter-spacing: .14em; }
@@ -12,12 +22,100 @@ button, input, textarea { font: inherit; }
 .hero h1 em, .output h2 em { color: var(--accent); }
 .hero > p { position: relative; z-index: 1; margin-left: min(31vw, 27rem); max-width: 35rem; font-size: clamp(1rem, 1.5vw, 1.35rem); line-height: 1.55; font-weight: 550; }
 .hero__rule { position: absolute; inset: auto clamp(1.25rem, 4vw, 4rem) 1.6rem; display: flex; justify-content: space-between; border-top: 1px solid var(--line); padding-top: .8rem; font-size: .62rem; letter-spacing: .13em; font-weight: 800; }
+.problem { padding: clamp(3rem, 7vw, 6rem) clamp(1.25rem, 7vw, 7rem); text-align: center; }
+.problem__intro h2 { margin: .6rem 0 2.5rem; font: 560 clamp(1.8rem, 3.4vw, 3rem)/1.05 "Bodoni Moda Variable"; letter-spacing: -.03em; }
+.section-index { display: inline-block; padding: .3rem .6rem; background: var(--ink); color: var(--mint); font-size: .62rem; letter-spacing: .14em; font-weight: 800; }
+.problem__diagram { display: grid; justify-items: center; gap: .5rem; }
+.problem__node { padding: .9rem 1.6rem; border: 1px solid var(--ink); font: 750 .78rem/1 "Manrope Variable", sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+.problem__node--core { background: var(--ink); color: var(--mint); border-color: var(--ink); font-family: "Bodoni Moda Variable"; font-size: 1.1rem; letter-spacing: 0; text-transform: none; padding: 1rem 2rem; }
+.problem__arrow { opacity: .5; font-size: 1.1rem; }
+.problem__outputs { margin-top: 1rem; display: grid; grid-template-columns: repeat(3, minmax(9rem, 1fr)); gap: .75rem 2rem; max-width: 46rem; }
+.problem__outputs > div { display: flex; justify-content: space-between; gap: .6rem; border-bottom: 1px solid var(--line); padding-bottom: .5rem; font-size: .82rem; text-align: left; }
+.problem__outputs strong { font-weight: 750; }
+.problem__outputs span { opacity: .6; white-space: nowrap; }
+.problem__outputs--muted { opacity: .55; }
+.problem__outputs--muted span { color: var(--accent); opacity: 1; }
+.problem__outro { margin: 2.5rem 0 0; font: 560 clamp(1.3rem, 2.4vw, 1.9rem)/1.2 "Bodoni Moda Variable"; }
+.try-examples { margin-bottom: 1rem; color: var(--paper); }
+.try-examples > p { margin: 0 0 .6rem; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; opacity: .6; }
+.try-examples__buttons { display: flex; flex-wrap: wrap; gap: .5rem; }
+.try-examples__buttons button { border: 1px solid color-mix(in srgb, white 35%, transparent); background: transparent; color: var(--paper); padding: .5rem .9rem; font: 700 .68rem/1 "Manrope Variable", sans-serif; letter-spacing: .04em; cursor: pointer; }
+.try-examples__buttons button:hover { background: var(--mint); color: var(--ink); border-color: var(--mint); }
 .workspace { background: var(--ink); padding: clamp(2rem, 6vw, 6rem); display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(18rem, .65fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: start; }
 .workspace__scanner { transform: rotate(-.35deg); }.control-panel { color: var(--paper); padding-top: 1.5rem; }.panel-heading { display: flex; gap: 1rem; align-items: center; border-bottom: 1px solid color-mix(in srgb, white 16%, transparent); padding-bottom: 1.2rem; }.panel-heading > span { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border: 1px solid var(--accent); border-radius: 50%; color: var(--accent); }.panel-heading small { font-size: .58rem; letter-spacing: .16em; opacity: .65; }.panel-heading h2 { margin: .25rem 0 0; font: 520 1.8rem/1 "Bodoni Moda Variable"; }.panel-copy { font-size: .82rem; line-height: 1.6; opacity: .7; max-width: 26rem; }
 .scheme-list { margin-top: 2rem; max-height: 26rem; overflow-y: auto; }.scheme-group__label { margin: 1.1rem 0 .2rem; font-size: .58rem; letter-spacing: .16em; text-transform: uppercase; opacity: .55; }.scheme-group:first-child .scheme-group__label { margin-top: 0; }.scheme-list label { cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: .85rem 0; border-bottom: 1px solid color-mix(in srgb, white 12%, transparent); }.scheme-list label > span { display: grid; grid-template-columns: 1fr auto; gap: 1rem; width: 60%; align-items: baseline; }.scheme-list strong { font-size: .78rem; }.scheme-list small { font-size: .55rem; letter-spacing: .1em; opacity: .5; }.scheme-list input { position: absolute; opacity: 0; }.scheme-list i { width: 2.6rem; height: 1.35rem; border: 1px solid color-mix(in srgb, white 35%, transparent); border-radius: 2rem; position: relative; }.scheme-list i::after { content: ""; position: absolute; width: .85rem; height: .85rem; left: .2rem; top: .18rem; background: #83908b; border-radius: 50%; transition: .2s ease; }.scheme-list input:checked + i { border-color: var(--mint); }.scheme-list input:checked + i::after { transform: translateX(1.2rem); background: var(--mint); }.scheme-list input:focus-visible + i { outline: 2px solid var(--accent); outline-offset: 3px; }
+.scheme-list label > span { gap: .6rem; }
+.maturity { justify-self: start; padding: .12rem .5rem; border: 1px solid currentColor; font-size: .55rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 800; white-space: nowrap; }
+.maturity--stable { color: #62dca6; }
+.maturity--beta { color: #d8c86b; }
+.maturity--community { color: #9fb8ff; }
+.maturity--experimental { color: var(--accent); }
+.panel-heading--secondary { border-top: 1px solid color-mix(in srgb, white 16%, transparent); border-bottom: none; margin-top: 2.2rem; padding-top: 1.5rem; }
+.scheme-list--static { margin-top: 1rem; max-height: none; }
+.scheme-static-row { display: flex; justify-content: space-between; align-items: center; padding: .7rem 0; border-bottom: 1px solid color-mix(in srgb, white 12%, transparent); font-size: .78rem; }
+.scheme-static-row span { font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; opacity: .55; }
+.config-gen { margin-top: 2rem; background: #07140f; color: #b8d5c7; }
+.config-gen header { display: flex; align-items: center; justify-content: space-between; padding: .7rem .9rem; border-bottom: 1px solid #254036; font: .65rem ui-monospace, monospace; letter-spacing: .04em; text-transform: uppercase; }
+.config-gen header button { border: 1px solid #39584c; background: transparent; color: inherit; padding: .4rem .65rem; font-size: .62rem; cursor: pointer; }
+.config-gen pre { margin: 0; padding: 1rem; overflow-x: auto; font: .72rem/1.55 ui-monospace, monospace; white-space: pre; }
 .output { background: var(--paper); padding: clamp(4rem, 8vw, 8rem) clamp(1.25rem, 7vw, 7rem); display: grid; grid-template-columns: .7fr 1.3fr; gap: clamp(2rem, 7vw, 8rem); }.output__intro > span { font-size: .65rem; font-weight: 800; letter-spacing: .15em; }.output h2 { margin: 1.5rem 0; font: 560 clamp(2.8rem, 5vw, 5.5rem)/.9 "Bodoni Moda Variable"; letter-spacing: -.05em; }.output__intro p { max-width: 28rem; line-height: 1.65; }.json-panel { background: #07140f; color: #cfe7db; min-height: 30rem; box-shadow: 1.2rem 1.2rem 0 var(--accent); overflow: hidden; }.json-panel header { height: 3.4rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #254036; padding: 0 1rem; font: .7rem ui-monospace, monospace; }.json-panel header span { display: flex; align-items: center; gap: .55rem; }.json-panel header i { width: .55rem; height: .55rem; border-radius: 50%; background: #62dca6; }.json-panel button { border: 1px solid #39584c; background: transparent; color: inherit; padding: .45rem .7rem; font-size: .65rem; cursor: pointer; }.json-panel button:disabled { opacity: .35; }.json-panel pre { margin: 0; padding: 1.2rem; max-height: 38rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font: .72rem/1.55 ui-monospace, monospace; color: #b8d5c7; }
-footer { background: var(--accent); min-height: 9rem; padding: 2rem clamp(1.25rem, 4vw, 4rem); display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; font-weight: 800; } footer p { margin: 0; font: 520 clamp(1.4rem, 2.6vw, 2.5rem)/1.05 "Bodoni Moda Variable"; max-width: 42rem; } footer span { font-size: .6rem; letter-spacing: .12em; white-space: nowrap; }
-@media (max-width: 900px) { .workspace, .output { grid-template-columns: 1fr; }.hero > p { margin-left: 0; }.masthead { grid-template-columns: 1fr auto; }.masthead p { display: none; } }
-@media (max-width: 560px) { .hero { min-height: 35rem; }.hero h1 { font-size: 4.2rem; }.hero__rule span:nth-child(2) { display: none; }.workspace { padding: 2.5rem 1rem; }.output { padding-bottom: 5rem; }.json-panel { box-shadow: .6rem .6rem 0 var(--accent); } footer { align-items: flex-start; flex-direction: column; } }
+.output__panels { display: flex; flex-direction: column; gap: 1.5rem; }
+.result-card { border: 1px solid var(--line); padding: 1.3rem 1.5rem; }
+.result-card__title { margin: 0 0 1rem; font: 750 .85rem/1 "Manrope Variable", sans-serif; letter-spacing: .08em; }
+.result-card dl { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem 1.2rem; }
+.result-card dt { font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; opacity: .55; }
+.result-card dd { margin: .3rem 0 0; font-size: .85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.result-card__trust { margin: 1.2rem 0 0; padding-top: 1rem; border-top: 1px solid var(--line); font-size: .78rem; }
+.result-card__trust strong { color: var(--accent); letter-spacing: .05em; }
+.schemes-directory, .sdks, .why, .security, .contribute { padding: clamp(3rem, 7vw, 6rem) clamp(1.25rem, 7vw, 7rem); border-top: 1px solid var(--line); }
+.schemes-directory h2, .sdks h2, .why h2, .security h2, .contribute h2 { margin: .25rem 0 0; font: 520 1.8rem/1 "Bodoni Moda Variable"; }
+.schemes-directory__controls { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin: 2rem 0 1.5rem; }
+.schemes-directory__controls input[type="search"] { flex: 1 1 16rem; border: 1px solid var(--line); background: transparent; padding: .7rem .9rem; font: .82rem/1 "Manrope Variable", sans-serif; color: var(--ink); }
+.chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+.chips button { border: 1px solid var(--line); background: transparent; color: var(--ink); padding: .5rem .9rem; font: 700 .68rem/1 "Manrope Variable", sans-serif; text-transform: capitalize; cursor: pointer; }
+.chips button.is-active { background: var(--ink); color: var(--mint); border-color: var(--ink); }
+.schemes-directory__groups { display: grid; gap: 2rem; }
+.directory-group .scheme-group__label { font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; opacity: .55; margin: 0 0 .6rem; }
+.directory-row { border-bottom: 1px solid var(--line); padding: .2rem 0; }
+.directory-row summary { display: flex; align-items: center; gap: 1rem; padding: .8rem 0; cursor: pointer; list-style: none; }
+.directory-row summary::-webkit-details-marker { display: none; }
+.directory-row__name { font-weight: 750; font-size: .88rem; }
+.directory-row dl { margin: 0 0 1.2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 1rem; }
+.directory-row dt { font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; opacity: .55; }
+.directory-row dd { margin: .25rem 0 0; font-size: .8rem; }
+.directory-row dd a { color: var(--accent); }
+.schemes-directory__empty { opacity: .6; font-size: .85rem; }
+.sdks__grid { margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.sdk-card { background: var(--paper); padding: 1.3rem; }
+.sdk-card__header { display: flex; align-items: center; gap: .55rem; margin-bottom: .6rem; }
+.sdk-card__header i { width: .6rem; height: .6rem; border-radius: 50%; background: #888; flex: none; }
+.sdk-card--verified .sdk-card__header i { background: #20a672; }
+.sdk-card--partial .sdk-card__header i { background: #d8860b; }
+.sdk-card--unverified .sdk-card__header i { background: var(--accent); }
+.sdk-card__status { margin: 0 0 .4rem; font-size: .65rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 800; opacity: .7; }
+.sdk-card__note { margin: 0; font-size: .78rem; line-height: 1.5; opacity: .75; }
+.why__columns { margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 2.5rem; }
+.why__columns h3 { margin: 0 0 .6rem; font: 560 1.4rem/1.1 "Bodoni Moda Variable"; }
+.why__columns p { margin: 0; font-size: .88rem; line-height: 1.6; opacity: .8; }
+.why__columns code { background: color-mix(in srgb, var(--ink) 8%, transparent); padding: .1rem .3rem; }
+.security__body { margin-top: 2rem; display: grid; grid-template-columns: minmax(14rem, .8fr) 1fr; gap: 3rem; align-items: center; }
+.security__diagram { border: 1px solid var(--line); padding: 2rem; text-align: center; display: grid; gap: .4rem; font: 750 .85rem/1 "Manrope Variable", sans-serif; }
+.security__diagram i { opacity: .4; font-style: normal; }
+.security__diagram small { margin-top: 1rem; opacity: .55; font-weight: 600; font-size: .68rem; letter-spacing: .06em; }
+.security ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .8rem; font-size: .9rem; }
+.security ul li { padding-left: 1.4rem; position: relative; }
+.security ul li::before { content: "—"; position: absolute; left: 0; opacity: .5; }
+.contribute__copy { max-width: 34rem; margin: 1rem 0 2rem; opacity: .75; line-height: 1.6; }
+.contribute__cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+footer { background: var(--accent); padding: 2.5rem clamp(1.25rem, 4vw, 4rem) 2rem; display: flex; flex-direction: column; gap: 1.5rem; font-weight: 800; }
+.footer__top { display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap; }
+.footer__brand { margin: 0; font: 520 1.6rem/1 "Bodoni Moda Variable"; }
+.footer__tagline { margin: .4rem 0 0; font-size: .78rem; font-weight: 600; opacity: .8; }
+.footer__top nav { display: flex; gap: 1.3rem; flex-wrap: wrap; align-items: center; font-size: .65rem; letter-spacing: .08em; }
+.footer__top nav a { color: inherit; text-decoration: none; opacity: .85; }
+.footer__top nav a:hover { opacity: 1; text-decoration: underline; }
+footer > p { margin: 0; font: 520 clamp(1.4rem, 2.6vw, 2.5rem)/1.05 "Bodoni Moda Variable"; max-width: 42rem; }
+@media (max-width: 900px) { .workspace, .output, .security__body { grid-template-columns: 1fr; }.hero > p, .hero .hero__cta, .hero .hero__install { margin-left: 0; }.masthead { grid-template-columns: 1fr auto; }.masthead__links { display: none; }.problem__outputs, .result-card dl { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .hero { min-height: 35rem; }.hero h1 { font-size: 4.2rem; }.hero__rule span:nth-child(2) { display: none; }.workspace { padding: 2.5rem 1rem; }.output { padding-bottom: 5rem; }.json-panel { box-shadow: .6rem .6rem 0 var(--accent); }.problem__outputs, .result-card dl { grid-template-columns: 1fr; }.footer__top { flex-direction: column; } }
 @media (prefers-reduced-motion: no-preference) { .hero h1 { animation: rise .8s cubic-bezier(.2,.75,.2,1) both; }.hero > p { animation: rise .8s .12s cubic-bezier(.2,.75,.2,1) both; } @keyframes rise { from { opacity: 0; transform: translateY(1.5rem); } } }
 

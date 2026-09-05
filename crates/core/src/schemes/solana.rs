@@ -66,11 +66,11 @@ impl PaymentScheme for SolanaPay {
                 ErrorCode::UnverifiedRecipient,
                 "Transaction request URL is not fetched or verified.",
             ));
-            intent.recommended_action = Some(RecommendedAction {
-                kind: ActionType::Wallet,
-                uri: Some(payload.into()),
-                requires_user_confirmation: true,
-            });
+            intent.recommended_action = Some(RecommendedAction::new(
+                ActionType::Wallet,
+                Some(payload.into()),
+                true,
+            ));
             return Ok(intent);
         }
         let normalized = format!("solana://{}", body.trim_start_matches("//"));
@@ -127,11 +127,11 @@ impl PaymentScheme for SolanaPay {
             intent.metadata.insert("memo".into(), memo.into());
         }
         intent.validation.warnings.push(Issue::error(ErrorCode::UnverifiedRecipient, "Solana address encoding is valid; account ownership and mint metadata are not verified."));
-        intent.recommended_action = Some(RecommendedAction {
-            kind: ActionType::Wallet,
-            uri: Some(payload.into()),
-            requires_user_confirmation: true,
-        });
+        intent.recommended_action = Some(RecommendedAction::new(
+            ActionType::Wallet,
+            Some(payload.into()),
+            true,
+        ));
         Ok(intent)
     }
 }
@@ -157,11 +157,11 @@ fn parse_bare_pubkey(payload: &str) -> Result<PaymentIntent, ParseError> {
         "Address encoding is valid; this is a bare public key with no URI scheme, amount, or \
          memo. Account ownership and mint metadata are not verified.",
     ));
-    intent.recommended_action = Some(RecommendedAction {
-        kind: ActionType::Wallet,
-        uri: Some(payload.into()),
-        requires_user_confirmation: true,
-    });
+    intent.recommended_action = Some(RecommendedAction::new(
+        ActionType::Wallet,
+        Some(payload.into()),
+        true,
+    ));
     Ok(intent)
 }
 

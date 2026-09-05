@@ -51,11 +51,8 @@ impl PaymentScheme for WeChatPay {
             ErrorCode::ProprietaryFormat,
             "WeChat Pay link shape detected; payload contents are not publicly documented.",
         ));
-        intent.recommended_action = Some(RecommendedAction {
-            kind: ActionType::Unsupported,
-            uri: None,
-            requires_user_confirmation: true,
-        });
+        intent.recommended_action =
+            Some(RecommendedAction::new(ActionType::Unsupported, None, true));
         Ok(intent)
     }
 }

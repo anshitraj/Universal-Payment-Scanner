@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ALL_SCHEME_IDS, createScanner, type PaymentIntent, type Scanner } from "@universal-payment-qr/core";
+import { ALL_SCHEME_IDS, createScanner, type PaymentIntent, type Scanner } from "unipayscan";
 import { CameraSession, decodePaymentQRImage } from "@universal-payment-qr/scanner";
 import "./styles.css";
 
@@ -33,6 +33,9 @@ export interface PaymentQRScannerProps {
   headless?: boolean;
   messages?: Partial<ScannerMessages>;
   className?: string;
+  /** Drives the paste tab from outside (e.g. a host app's "try an example" button) — set a new
+   * `key` each time to force a re-scan, even if `payload` is unchanged from the last one. */
+  example?: { key: string | number; payload: string } | undefined;
   onDetected?(intent: PaymentIntent): void;
   onUnsupported?(intent: PaymentIntent): void;
   onError?(error: Error, intent?: PaymentIntent): void;
@@ -93,6 +96,14 @@ export function PaymentQRScanner(props: PaymentQRScannerProps) {
 
   useEffect(() => () => cameraRef.current?.stop(), []);
 
+  useEffect(() => {
+    if (!props.example) return;
+    setMode("paste");
+    setPayload(props.example.payload);
+    void controller.scan(props.example.payload);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.example?.key]);
+
   const startCamera = async (deviceId?: string) => {
     setMode("camera");
     controller.setState("requesting");
@@ -138,7 +149,15 @@ export function PaymentQRScanner(props: PaymentQRScannerProps) {
     await controller.scanImage(file);
   };
 
+  const scanAnother = () => {
+    controller.reset();
+    if (mode === "camera") void startCamera(cameras[activeCamera]?.deviceId);
+    else if (mode === "paste") setPayload("");
+  };
+
   if (props.headless) return null;
+
+  const done = controller.state === "success" || controller.state === "unsupported" || controller.state === "error";
 
   const statusText = controller.state === "scanning" ? messages.scanning
     : controller.state === "unsupported" ? (controller.intent?.support.message ?? messages.unsupported)
@@ -206,6 +225,9 @@ export function PaymentQRScanner(props: PaymentQRScannerProps) {
               <div><dt>Recipient</dt><dd>{controller.intent.recipient?.name ?? controller.intent.recipient?.id ?? controller.intent.recipient?.address ?? "Unspecified"}</dd></div>
               <div><dt>Amount</dt><dd>{controller.intent.amount ? `${controller.intent.amount} ${controller.intent.currency ?? controller.intent.asset?.symbol ?? ""}` : "Open amount"}</dd></div>
             </dl>
+          )}
+          {done && (
+            <button type="button" className="upqr-rescan" onClick={scanAnother}>Scan another →</button>
           )}
         </div>
       </div>

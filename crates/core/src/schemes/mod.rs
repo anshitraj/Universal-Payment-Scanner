@@ -81,7 +81,7 @@ impl crate::registry::PaymentScheme for Pix {
             id: "pix".into(), display_name: "Pix / BR Code".into(), countries: vec!["BR".into()], category: crate::Category::BankTransfer,
             standard: "Pix initiation manual 2.9.0 / BR Code".into(), parser_version: env!("CARGO_PKG_VERSION").into(), maturity: crate::Maturity::Stable,
             static_supported: true, dynamic_supported: true,
-            features: vec!["crc16".into(), "pix-key".into(), "dynamic-url".into(), "txid".into(), "amount".into()],
+            features: vec!["crc16".into(), "pix-key".into(), "dynamic-url".into(), "txid".into(), "amount".into(), "merchant".into(), "currency".into()],
             references: vec!["https://www.bcb.gov.br/content/estabilidadefinanceira/pix/Regulamento_Pix/II_ManualdePadroesparaIniciacaodoPix.pdf".into()],
         }
     }
@@ -212,11 +212,7 @@ fn parse_emv_intent(payload: &str, pix: bool) -> Result<crate::PaymentIntent, cr
         ErrorCode::UnverifiedRecipient,
         "Checksum and structure are valid; merchant identity is not verified.",
     ));
-    intent.recommended_action = Some(RecommendedAction {
-        kind: ActionType::Handoff,
-        uri: None,
-        requires_user_confirmation: true,
-    });
+    intent.recommended_action = Some(RecommendedAction::new(ActionType::Handoff, None, true));
     Ok(intent)
 }
 

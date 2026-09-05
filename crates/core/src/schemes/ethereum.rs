@@ -131,11 +131,11 @@ impl PaymentScheme for Ethereum {
             ErrorCode::UnverifiedRecipient,
             "ERC-681 syntax is valid; address ownership and chain state are not verified.",
         ));
-        intent.recommended_action = Some(RecommendedAction {
-            kind: ActionType::Wallet,
-            uri: Some(payload.into()),
-            requires_user_confirmation: true,
-        });
+        intent.recommended_action = Some(RecommendedAction::new(
+            ActionType::Wallet,
+            Some(payload.into()),
+            true,
+        ));
         Ok(intent)
     }
 }
@@ -164,11 +164,11 @@ fn parse_bare_address(payload: &str) -> Result<PaymentIntent, ParseError> {
          scheme, so the intended network (Ethereum, Base, or another EVM chain) could not be \
          determined from the QR alone.",
     ));
-    intent.recommended_action = Some(RecommendedAction {
-        kind: ActionType::Wallet,
-        uri: Some(payload.into()),
-        requires_user_confirmation: true,
-    });
+    intent.recommended_action = Some(RecommendedAction::new(
+        ActionType::Wallet,
+        Some(payload.into()),
+        true,
+    ));
     Ok(intent)
 }
 

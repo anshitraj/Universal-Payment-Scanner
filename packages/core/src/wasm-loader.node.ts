@@ -16,4 +16,3 @@ export async function createWasmScanner(policy: unknown): Promise<{
 }> {
   return new WasmScanner(policy);
 }
-

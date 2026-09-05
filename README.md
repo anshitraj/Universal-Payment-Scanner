@@ -8,7 +8,7 @@ normalizes, and classifies a decoded QR payload. It does **not** process payment
 open links automatically, sign transactions, or verify recipient identity.
 
 ```ts
-import { createScanner } from "@universal-payment-qr/core";
+import { createScanner } from "unipayscan";
 
 const scanner = createScanner({
   schemes: { upi: true, pix: true, bitcoin: true, ethereum: true, solana_pay: false },
@@ -97,6 +97,27 @@ of them, and this project does not ship a parser it cannot verify against one. S
 (distinct from a Swiss QR-bill a TWINT app can pay) and PayPal's seller/payment-link QR subtypes
 are similarly deferred pending a confirmed URL pattern.
 
+## Scheme Registry
+
+The table above, machine-readable: one JSON file per scheme under [`registry/schemes/`](registry/),
+plus a generated aggregate at [`registry/schemes.json`](registry/schemes.json) - generated straight
+from the Rust core's own metadata, so it can't drift from what the parser actually does (checked in
+CI via `npm run registry:check`). Useful for anything that wants to know what's supported without
+linking the library - a compatibility dashboard, a linter, another project's own scheme picker.
+
+```bash
+curl -s https://raw.githubusercontent.com/anshitraj/Universal-Payment-Scanner/main/registry/schemes/upi.json
+```
+
+```json
+{
+  "scheme": "upi", "country": ["IN"], "maturity": "stable", "identification": "exact",
+  "supported": true, "supports": { "amount": true, "merchant": true, "currency": true, "dynamic": true }
+}
+```
+
+See [registry/README.md](registry/README.md) for the full field reference and the JSON Schema.
+
 ## Other languages and platforms
 
 Every binding below calls the exact same Rust core (`crates/core`) - no payment logic is ever
@@ -106,7 +127,7 @@ development session, not just that the code compiles by inspection.
 | Platform | Package | Status |
 |---|---|---|
 | Rust | `crates/core` (crates.io-ready) | Verified - 66 unit tests, fuzzed, benchmarked |
-| Browser / Node | [`@universal-payment-qr/core`](packages/core) (WASM) | Verified - live in the playground |
+| Browser / Node | [`unipayscan`](packages/core) (WASM) | Verified - live in the playground |
 | Python | [`bindings/python`](bindings/python) | Verified - 10/10 pytest, real built wheel |
 | Kotlin / Android | [`bindings/android`](bindings/android) | Verified - 9/9 JVM unit tests, real `.aar` built |
 | Flutter / Dart | [`bindings/flutter`](bindings/flutter) | Verified - 8/8 `flutter test`, Android packaging not yet built |
@@ -143,7 +164,7 @@ Prerequisites: Rust 1.92+, Node 24+, npm 11+, and `wasm-pack` 0.15+.
 For an application consuming a published release:
 
 ```bash
-npm install @universal-payment-qr/core
+npm install unipayscan
 ```
 
 For this repository:

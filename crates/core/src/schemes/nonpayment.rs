@@ -28,11 +28,7 @@ fn not_a_payment(
         .validation
         .warnings
         .push(Issue::error(ErrorCode::NotPaymentQr, message));
-    intent.recommended_action = Some(RecommendedAction {
-        kind: ActionType::DisplayOnly,
-        uri: None,
-        requires_user_confirmation: false,
-    });
+    intent.recommended_action = Some(RecommendedAction::new(ActionType::DisplayOnly, None, false));
     intent
 }
 

@@ -5,7 +5,7 @@
     <form id="parser"><label>Payment payload <input id="payload" required></label><button>Parse</button></form>
     <pre id="result"></pre>
     <script type="module">
-      import { createScanner } from "@universal-payment-qr/core";
+      import { createScanner } from "unipayscan";
       const scanner = createScanner({ preset: "all-stable" });
       document.querySelector("#parser").addEventListener("submit", async (event) => {
         event.preventDefault();

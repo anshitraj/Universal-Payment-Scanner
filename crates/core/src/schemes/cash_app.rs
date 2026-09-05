@@ -88,11 +88,11 @@ impl PaymentScheme for CashApp {
             ErrorCode::ProprietaryFormat,
             "Link structure is public, but recipient and payment details require Cash App verification.",
         ));
-        intent.recommended_action = Some(RecommendedAction {
-            kind: ActionType::Redirect,
-            uri: Some(payload.into()),
-            requires_user_confirmation: true,
-        });
+        intent.recommended_action = Some(RecommendedAction::new(
+            ActionType::Redirect,
+            Some(payload.into()),
+            true,
+        ));
         Ok(intent)
     }
 }

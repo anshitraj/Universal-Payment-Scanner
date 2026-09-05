@@ -17,6 +17,9 @@ export type ErrorCode =
   | "INVALID_NETWORK"
   | "SCHEME_DISABLED"
   | "SCHEME_UNSUPPORTED"
+  | "NETWORK_UNSUPPORTED"
+  | "ASSET_UNSUPPORTED"
+  | "ASSET_UNVERIFIABLE"
   | "PROPRIETARY_FORMAT"
   | "EXPIRED"
   | "PAYLOAD_TOO_LARGE"
@@ -31,6 +34,13 @@ export interface Issue {
   messageKey: string;
 }
 
+/** How `scheme` (or `possibleScheme`) was determined. Omitted when a scheme's detection is
+ * unambiguous by construction (a URI scheme prefix, a checksum-valid address format, ...) rather
+ * than inferred. */
+export type Identification = "GUID_MATCH" | "COUNTRY_LEVEL_INFERENCE";
+
+export type Confidence = "high" | "medium";
+
 export interface PaymentIntent {
   schemaVersion: string;
   recognized: boolean;
@@ -38,6 +48,12 @@ export interface PaymentIntent {
   category: PaymentCategory;
   scheme: string;
   subtype?: string;
+  /** Set only when `scheme` had to fall back to a generic identity (e.g. `emvco_mpm`) because
+   * `identification` is no stronger than `COUNTRY_LEVEL_INFERENCE` - the specific standard this
+   * payload is most likely to be, not yet confirmed. */
+  possibleScheme?: string;
+  identification?: Identification;
+  confidence?: Confidence;
   standard?: string;
   country?: string;
   network?: string;
@@ -56,11 +72,23 @@ export interface PaymentIntent {
     reason?: ErrorCode;
     message?: string;
     messageKey?: string;
+    /** Structured, reason-specific detail a host UI can act on without parsing `message` - e.g.
+     * `{ network: "ethereum", allowedNetworks: ["base", "bnb", "solana"] }` for
+     * `NETWORK_UNSUPPORTED`. Shape depends on `reason`. */
+    details?: Record<string, unknown>;
   };
+  /** What UI a host app should show next, and the one piece of detail that action needs - never
+   * performed automatically. Exactly one of `scheme`/`network`/`provider` is populated, matching
+   * `type`: `scheme` for `handoff`/`deeplink` (the URI scheme to hand off to, e.g. `"upi"`),
+   * `network` for `wallet` (the chain a crypto wallet should handle, e.g. `"solana"`), `provider`
+   * for `redirect` (the web provider, e.g. `"paypal"`). */
   recommendedAction?: {
     type: "handoff" | "deeplink" | "wallet" | "redirect" | "display_only" | "unsupported";
     uri?: string;
     requiresUserConfirmation: boolean;
+    scheme?: string;
+    network?: string;
+    provider?: string;
   };
 }
 
@@ -139,6 +167,22 @@ export interface ScannerOptions {
   categories?: Partial<Record<PaymentCategory, boolean>>;
   countries?: Record<string, Record<string, boolean>>;
   maxPayloadBytes?: number;
+  /**
+   * Fine-grained accept policy below the scheme/category level - today just crypto network/asset
+   * allow-listing, since a host that accepts the `crypto` category still needs to say *which*
+   * chains and tokens it can actually settle. Keyed by network id (as reported in
+   * `PaymentIntent.network`, e.g. `"base"`) -> allowed asset symbols on that network; an empty
+   * array allows any asset on that network. Omitted (the default) applies no crypto-specific
+   * restriction - crypto intents are governed only by `schemes`/`categories`/`countries`, same as
+   * before this option existed.
+   *
+   * An asset whose identity can't be confirmed from the QR alone (e.g. an ERC-20 transfer where
+   * only the contract address is known) is rejected with `ASSET_UNVERIFIABLE` rather than guessed
+   * - see `support.details` on the returned intent.
+   */
+  accept?: {
+    crypto?: Record<string, string[]>;
+  };
   engine?: PaymentEngine;
 }
 

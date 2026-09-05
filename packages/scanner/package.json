@@ -1,7 +1,13 @@
 {
   "name": "@universal-payment-qr/scanner",
   "version": "0.1.0",
+  "description": "Camera and image QR decoding for UniPayScan — feeds decoded payloads to the core payment QR parser.",
   "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/anshitraj/Universal-Payment-Scanner.git", "directory": "packages/scanner" },
+  "homepage": "https://unipayscan.xyz",
+  "bugs": "https://github.com/anshitraj/Universal-Payment-Scanner/issues",
+  "author": "anshitraj",
+  "keywords": ["qr", "qr-scanner", "camera", "payment", "unipayscan"],
   "type": "module",
   "sideEffects": false,
   "exports": { ".": { "types": "./dist/index.d.mts", "import": "./dist/index.mjs" } },

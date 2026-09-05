@@ -113,11 +113,11 @@ impl PaymentScheme for Upi {
             ErrorCode::UnverifiedRecipient,
             "UPI syntax is valid; recipient identity is not verified.",
         ));
-        intent.recommended_action = Some(RecommendedAction {
-            kind: ActionType::Deeplink,
-            uri: Some(payload.into()),
-            requires_user_confirmation: true,
-        });
+        intent.recommended_action = Some(RecommendedAction::new(
+            ActionType::Deeplink,
+            Some(payload.into()),
+            true,
+        ));
         Ok(intent)
     }
 }

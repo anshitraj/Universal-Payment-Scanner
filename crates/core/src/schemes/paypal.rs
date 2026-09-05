@@ -125,11 +125,11 @@ fn parse_paypal_me(payload: &str, url: &Url) -> Result<PaymentIntent, ParseError
         ErrorCode::ProprietaryFormat,
         "Link structure is public, but recipient and payment details require PayPal verification.",
     ));
-    intent.recommended_action = Some(RecommendedAction {
-        kind: ActionType::Redirect,
-        uri: Some(payload.into()),
-        requires_user_confirmation: true,
-    });
+    intent.recommended_action = Some(RecommendedAction::new(
+        ActionType::Redirect,
+        Some(payload.into()),
+        true,
+    ));
     Ok(intent)
 }
 
@@ -155,11 +155,11 @@ fn parse_invoice_link(payload: &str, url: &Url) -> Result<PaymentIntent, ParseEr
         ErrorCode::ProprietaryFormat,
         "Link structure is public, but invoice amount, currency, and payee require PayPal verification.",
     ));
-    intent.recommended_action = Some(RecommendedAction {
-        kind: ActionType::Redirect,
-        uri: Some(payload.into()),
-        requires_user_confirmation: true,
-    });
+    intent.recommended_action = Some(RecommendedAction::new(
+        ActionType::Redirect,
+        Some(payload.into()),
+        true,
+    ));
     Ok(intent)
 }
 

@@ -1,13 +1,17 @@
 {
-  "name": "@universal-payment-qr/react-native",
+  "name": "react-native-universal-payment-scanner",
   "version": "0.1.0",
   "license": "MIT",
   "type": "module",
-  "description": "React Native bindings for universal-payment-qr - interface defined, native module wiring not yet built. See README.md.",
+  "description": "React Native bindings for unipayscan - interface defined, native module wiring not yet built. See README.md.",
   "main": "dist/index.mjs",
   "types": "dist/index.d.mts",
   "exports": { ".": { "types": "./dist/index.d.mts", "import": "./dist/index.mjs" } },
   "files": ["dist", "android", "ios", "*.podspec"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --out-dir dist --tsconfig tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
   "peerDependencies": { "react-native": ">=0.71" },
   "devDependencies": { "typescript": "^5.9.2" }
 }

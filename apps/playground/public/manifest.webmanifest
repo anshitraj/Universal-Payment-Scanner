@@ -1,0 +1,10 @@
+{
+  "name": "UniPayScan",
+  "short_name": "UniPayScan",
+  "description": "Open-source SDK for detecting and parsing payment QR codes across fiat and crypto through one normalized interface.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#b8f0d4",
+  "theme_color": "#10231e",
+  "icons": [{ "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any" }]
+}

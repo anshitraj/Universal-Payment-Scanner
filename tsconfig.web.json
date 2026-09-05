@@ -4,11 +4,10 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@universal-payment-qr/wasm": ["packages/wasm/src/index.ts"],
-      "@universal-payment-qr/core": ["packages/core/src/index.ts"],
+      "unipayscan": ["packages/core/src/index.ts"],
       "@universal-payment-qr/scanner": ["packages/scanner/src/index.ts"],
       "@universal-payment-qr/react": ["packages/react/src/index.ts"]
     }
   },
-  "include": ["packages/*/src", "packages/wasm/generated/index.d.ts", "apps/playground/src", "apps/playground/vite.config.ts", "vitest.config.ts"]
+  "include": ["packages/*/src", "packages/core/generated/index.d.ts", "apps/playground/src", "apps/playground/vite.config.ts", "vitest.config.ts", "bindings/react-native/src"]
 }

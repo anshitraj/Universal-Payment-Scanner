@@ -66,11 +66,11 @@ impl PaymentScheme for Xrp {
             "Address encoding is valid; ownership is not verified. Exchanges often require a \
              destination tag alongside this address; a bare classic address does not encode one.",
         ));
-        intent.recommended_action = Some(RecommendedAction {
-            kind: ActionType::Wallet,
-            uri: Some(payload.into()),
-            requires_user_confirmation: true,
-        });
+        intent.recommended_action = Some(RecommendedAction::new(
+            ActionType::Wallet,
+            Some(payload.into()),
+            true,
+        ));
         Ok(intent)
     }
 }

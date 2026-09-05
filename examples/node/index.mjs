@@ -1,4 +1,4 @@
-import { createScanner, preset } from "@universal-payment-qr/core";
+import { createScanner, preset } from "unipayscan";
 
 const scanner = createScanner(preset("all-stable", {
   schemes: { solana_pay: false },

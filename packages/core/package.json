@@ -1,18 +1,21 @@
 {
-  "name": "@universal-payment-qr/core",
-  "version": "0.1.0",
+  "name": "unipayscan",
+  "version": "0.1.1",
+  "description": "Detect, validate, and normalize payment QR codes, wallet addresses, and payment links across fiat and crypto through one normalized interface. Zero network calls, no custody.",
   "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/anshitraj/Universal-Payment-Scanner.git", "directory": "packages/core" },
+  "homepage": "https://unipayscan.xyz",
+  "bugs": "https://github.com/anshitraj/Universal-Payment-Scanner/issues",
+  "author": "anshitraj",
+  "keywords": ["qr", "qr-code", "payment", "upi", "pix", "emvco", "bitcoin", "ethereum", "solana-pay", "paypal", "crypto", "wallet"],
   "type": "module",
   "sideEffects": false,
-  "exports": { ".": { "types": "./dist/index.d.mts", "import": "./dist/index.mjs" } },
-  "files": ["dist"],
+  "exports": { ".": { "types": "./dist/index.d.mts", "browser": "./dist/index.mjs", "node": "./dist/node.mjs", "import": "./dist/index.mjs" } },
+  "files": ["dist", "generated", "generated-node"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run"
-  },
-  "dependencies": {
-    "@universal-payment-qr/wasm": "^0.1.0"
   },
   "devDependencies": {
     "typescript": "^5.9.2",

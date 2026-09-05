@@ -33,7 +33,12 @@ impl PaymentScheme for SwissQr {
             maturity: Maturity::Experimental,
             static_supported: true,
             dynamic_supported: false,
-            features: vec!["iban-checksum".into(), "amount".into()],
+            features: vec![
+                "iban-checksum".into(),
+                "amount".into(),
+                "merchant".into(),
+                "currency".into(),
+            ],
             references: vec!["https://www.six-group.com/en/products-services/banking-services/payment-standardization/standards/qr-bill.html".into()],
         }
     }
@@ -156,11 +161,7 @@ impl PaymentScheme for SwissQr {
             "IBAN checksum is valid; account ownership is not verified. Debtor address fields and \
              the QRR reference's own check digit are not independently verified in this release.",
         ));
-        intent.recommended_action = Some(RecommendedAction {
-            kind: ActionType::Handoff,
-            uri: None,
-            requires_user_confirmation: true,
-        });
+        intent.recommended_action = Some(RecommendedAction::new(ActionType::Handoff, None, true));
         Ok(intent)
     }
 }

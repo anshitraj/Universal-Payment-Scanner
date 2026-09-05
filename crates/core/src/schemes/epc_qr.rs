@@ -27,6 +27,8 @@ impl PaymentScheme for EpcQr {
             features: vec![
                 "iban-checksum".into(),
                 "amount".into(),
+                "merchant".into(),
+                "currency".into(),
                 "structured-reference".into(),
             ],
             references: vec!["https://www.europeanpaymentscouncil.eu/document-library/guidance-documents/quick-response-code-guidelines-enable-data-capture-initiation".into()],
@@ -119,11 +121,7 @@ impl PaymentScheme for EpcQr {
             ErrorCode::UnverifiedRecipient,
             "IBAN checksum is valid; account ownership is not verified.",
         ));
-        intent.recommended_action = Some(RecommendedAction {
-            kind: ActionType::Handoff,
-            uri: None,
-            requires_user_confirmation: true,
-        });
+        intent.recommended_action = Some(RecommendedAction::new(ActionType::Handoff, None, true));
         Ok(intent)
     }
 }

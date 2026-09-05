@@ -87,12 +87,12 @@
   {
     "name": "KHQR (Tier 2, generic country-tag detection, no confirmed GUID yet)",
     "payload": "00020101021129300010kh.gov.nbc0112someone@wing52045999530311654041.005802KH5913TEST MERCHANT6010PHNOM PENH6304D6A2",
-    "expected": { "recognized": true, "scheme": "khqr", "valid": true, "amount": "1.00" }
+    "expected": { "recognized": true, "scheme": "emvco_mpm", "possibleScheme": "khqr", "valid": true, "amount": "1.00" }
   },
   {
     "name": "LankaQR (Tier 2, generic country-tag detection, no confirmed GUID yet)",
     "payload": "00020101021129320011lk.gov.cbsl0113123456789012352045999530314454041.005802LK5913TEST MERCHANT6007COLOMBO630440A5",
-    "expected": { "recognized": true, "scheme": "lankaqr", "valid": true, "amount": "1.00" }
+    "expected": { "recognized": true, "scheme": "emvco_mpm", "possibleScheme": "lankaqr", "valid": true, "amount": "1.00" }
   },
   {
     "name": "Alipay link shape is recognized but marked proprietary, not parsed",

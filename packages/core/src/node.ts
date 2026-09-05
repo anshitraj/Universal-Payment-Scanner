@@ -1,4 +1,4 @@
-import { createWasmScanner } from "./wasm-loader.js";
+import { createWasmScanner } from "./wasm-loader.node.js";
 import { buildApi, preset, type Scanner } from "./scanner-factory.js";
 
 export * from "./types.js";

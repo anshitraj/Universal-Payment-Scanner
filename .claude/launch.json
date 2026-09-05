@@ -6,6 +6,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["vite", "preview", "apps/playground", "--port", "58211", "--strictPort"],
       "port": 58211
+    },
+    {
+      "name": "playground-dev",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "apps/playground", "--port", "4173", "--strictPort"],
+      "port": 4173
     }
   ]
 }
