@@ -5,14 +5,14 @@ Rust core every other SDK in this project uses - see `crates/core`). No network 
 credentials, no payment execution: this only recognizes, validates, and normalizes a payload
 you already have (from your own QR decoder, a pasted string, whatever) into a PaymentIntent dict.
 
-    >>> from universal_payment_qr import parse_payment_qr
+    >>> from unipayscan import parse_payment_qr
     >>> result = parse_payment_qr("upi://pay?pa=merchant%40bank&am=499.00&cu=INR")
     >>> result["scheme"]
     'upi'
 
 Selectively enable schemes the same way the JS/Rust SDKs do:
 
-    >>> from universal_payment_qr import create_scanner
+    >>> from unipayscan import create_scanner
     >>> scanner = create_scanner(schemes={"upi": True, "bitcoin": False})
     >>> scanner.scan("bitcoin:1BoatSLRHtKNngkdXEeobR76b53LETtpyT")["supported"]
     False

@@ -1,4 +1,4 @@
-from universal_payment_qr import (
+from unipayscan import (
     create_scanner,
     detect_payment_qr,
     get_capabilities,
