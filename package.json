@@ -2,7 +2,10 @@
   "name": "universal-payment-qr",
   "private": true,
   "description": "Monorepo for UniPayScan — open-source payment QR detection, validation, and normalization across fiat and crypto.",
-  "repository": { "type": "git", "url": "https://github.com/anshitraj/Universal-Payment-Scanner.git" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anshitraj/Universal-Payment-Scanner.git"
+  },
   "homepage": "https://unipayscan.xyz",
   "bugs": "https://github.com/anshitraj/Universal-Payment-Scanner/issues",
   "packageManager": "npm@11.6.1",
@@ -18,16 +21,15 @@
     "registry:check": "node scripts/generate-registry.mjs --check"
   },
   "dependencies": {
-    "@fontsource-variable/bodoni-moda": "^5.2.8",
     "@fontsource-variable/manrope": "^5.2.8",
     "@zxing/browser": "^0.1.5",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
+    "@types/node": "^24.3.0",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
-    "@types/node": "^24.3.0",
     "@vitejs/plugin-react": "^5.0.2",
     "tsup": "^8.5.0",
     "typescript": "^5.9.2",

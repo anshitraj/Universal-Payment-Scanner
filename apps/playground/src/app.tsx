@@ -1,18 +1,61 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createScanner, type PaymentIntent, type SchemeMetadata } from "unipayscan";
 import { PaymentQRScanner } from "@universal-payment-qr/react";
 import { REGION_ORDER, NON_PAYMENT_SCHEME_IDS, regionFor } from "./data/regions";
 import { SCANNER_EXAMPLES } from "./data/examples";
 import { SDK_STATUSES } from "./data/sdks";
+import { SCHEME_LOGOS } from "./data/logos";
 
 const GITHUB_URL = "https://github.com/anshitraj/Universal-Payment-Scanner";
 const DOCS_URL = `${GITHUB_URL}/blob/main/docs/schema.md`;
 const CONTRIBUTING_URL = `${GITHUB_URL}/blob/main/CONTRIBUTING.md`;
 const NON_PAYMENT_IDS = new Set<string>(NON_PAYMENT_SCHEME_IDS);
 const MATURITIES = ["stable", "beta", "community", "experimental"] as const;
+const DIRECTORY_PAGE_SIZE = 10;
 
 function MaturityBadge({ maturity }: { maturity: string }) {
   return <span className={`maturity maturity--${maturity}`}>{maturity}</span>;
+}
+
+function SchemeIcon({ id }: { id: string }) {
+  const src = SCHEME_LOGOS[id];
+  if (src) return <img className="scheme-icon" src={src} alt="" width={16} height={16} />;
+  if (id === "upi") return <span className="scheme-icon scheme-icon--text" aria-hidden="true">U</span>;
+  return null;
+}
+
+const PACKAGE_TABS = [
+  { id: "npm", label: "JavaScript", logo: "/logos/nodedotjs.svg", command: "npm install unipayscan" },
+  { id: "python", label: "Python", logo: "/logos/python.svg", command: "pip install unipayscan" },
+  { id: "flutter", label: "Flutter", logo: "/logos/flutter.svg", command: "flutter pub add unipayscan" },
+] as const;
+
+function InstallBox({ dark }: { dark?: boolean }) {
+  const [tab, setTab] = useState<(typeof PACKAGE_TABS)[number]["id"]>("npm");
+  const [copied, setCopied] = useState(false);
+  const active = PACKAGE_TABS.find((t) => t.id === tab) ?? PACKAGE_TABS[0];
+  const copy = async () => {
+    await navigator.clipboard.writeText(active.command);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+  return (
+    <div className={`install${dark ? " install--dark" : ""}`}>
+      <div className="install-tabs" role="tablist" aria-label="Install command by package">
+        {PACKAGE_TABS.map((t) => (
+          <button key={t.id} type="button" role="tab" aria-selected={t.id === tab} className={t.id === tab ? "is-active" : ""} onClick={() => { setTab(t.id); setCopied(false); }}>
+            <img src={t.logo} alt="" width={16} height={16} />
+            {t.label}
+          </button>
+        ))}
+      </div>
+      <div className={`install-box${dark ? " install-box--dark" : ""}`}>
+        <span className="install-box__prompt" aria-hidden="true">&gt;</span>
+        <code>{active.command}</code>
+        <button type="button" onClick={() => void copy()}>{copied ? "Copied" : "Copy"}</button>
+      </div>
+    </div>
+  );
 }
 
 function groupByRegion(schemes: readonly SchemeMetadata[]) {
@@ -33,6 +76,9 @@ export function App() {
   const [example, setExample] = useState<{ key: string | number; payload: string }>();
   const [schemeQuery, setSchemeQuery] = useState("");
   const [maturityFilter, setMaturityFilter] = useState<"all" | (typeof MATURITIES)[number]>("all");
+  const [rawDirectoryPage, setRawDirectoryPage] = useState(0);
+  const outputRef = useRef<HTMLElement>(null);
+  const directoryRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,7 +106,20 @@ export function App() {
       return [s.displayName, s.id, s.standard, ...s.countries].join(" ").toLowerCase().includes(query);
     });
   }, [paymentSchemes, schemeQuery, maturityFilter]);
-  const groupedDirectory = useMemo(() => groupByRegion(filteredDirectory), [filteredDirectory]);
+  const flatDirectory = useMemo(() => groupByRegion(filteredDirectory).flatMap(([, list]) => list), [filteredDirectory]);
+  const directoryPageCount = Math.max(1, Math.ceil(flatDirectory.length / DIRECTORY_PAGE_SIZE));
+  const directoryPage = Math.min(rawDirectoryPage, directoryPageCount - 1);
+  const pagedDirectory = useMemo(
+    () => flatDirectory.slice(directoryPage * DIRECTORY_PAGE_SIZE, (directoryPage + 1) * DIRECTORY_PAGE_SIZE),
+    [flatDirectory, directoryPage],
+  );
+  const groupedDirectory = useMemo(() => groupByRegion(pagedDirectory), [pagedDirectory]);
+
+  useEffect(() => { setRawDirectoryPage(0); }, [schemeQuery, maturityFilter]);
+  const goToDirectoryPage = (next: number) => {
+    setRawDirectoryPage(next);
+    directoryRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const turnedOff = paymentSchemes.filter((s) => !enabled.includes(s.id)).map((s) => s.id);
   const configCode = turnedOff.length === 0
@@ -81,6 +140,11 @@ export function App() {
 
   const intentMeta = intent ? capabilities.find((s) => s.id === intent.scheme) : undefined;
 
+  useEffect(() => {
+    if (!intent) return;
+    outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [intent]);
+
   return (
     <main>
       <header className="masthead">
@@ -91,38 +155,88 @@ export function App() {
           <a href="#sdks">SDKs</a>
           <a href={DOCS_URL} target="_blank" rel="noreferrer">Docs</a>
         </nav>
-        <a href={GITHUB_URL} target="_blank" rel="noreferrer">GitHub ↗</a>
+        <div className="masthead__actions">
+          <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="btn btn--ghost btn--sm">GitHub ↗</a>
+          <a href="#playground" className="btn btn--primary btn--sm">Try Playground</a>
+        </div>
       </header>
 
       <section className="hero" id="top">
-        <div className="hero__index">01 / PARSE</div>
-        <h1>One scanner for<br /><em>every payment QR.</em></h1>
-        <p>Open-source infrastructure for detecting, validating, and normalizing payment QRs, wallet addresses, and payment links across fiat and crypto. Recognize the standard. Validate the structure. Normalize the intent. Your application decides what happens next.</p>
-        <div className="hero__cta">
-          <a href="#playground" className="btn btn--primary">Try Playground</a>
-          <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="btn btn--ghost">View on GitHub ↗</a>
-        </div>
-        <p className="hero__install">Packages publishing soon · Use from GitHub today</p>
-        <div className="hero__rule"><span>NO CUSTODY</span><span>NO AUTO-NAVIGATION</span><span>LOCAL BY DEFAULT</span></div>
-      </section>
+        <div className="hero__grid">
+          <div className="hero__copy">
+            <h1>Scan any payment QR.<br /><span className="accent">Get one clean intent.</span></h1>
+            <p className="hero__lead">Open-source infrastructure for detecting, validating, and normalizing payment QRs, wallet addresses, and payment links across fiat and crypto. Recognize the standard. Validate the structure. Normalize the intent. Your application decides what happens next.</p>
 
-      <section className="problem" aria-label="What UniPayScan does">
-        <div className="problem__intro"><span className="section-index">01a</span><h2>One input.<br /><em>Different payment systems.</em></h2></div>
-        <div className="problem__diagram">
-          <div className="problem__node problem__node--in">SCAN QR</div>
-          <div className="problem__arrow" aria-hidden="true">↓</div>
-          <div className="problem__node problem__node--core">UniPayScan</div>
-          <div className="problem__arrow" aria-hidden="true">↓</div>
-          <div className="problem__outputs">
-            <div><strong>UPI</strong><span>→ payment intent</span></div>
-            <div><strong>Pix</strong><span>→ payment intent</span></div>
-            <div><strong>PayPal</strong><span>→ payment link</span></div>
-            <div><strong>Bitcoin</strong><span>→ payment intent</span></div>
-            <div><strong>Solana Pay</strong><span>→ payment intent</span></div>
-            <div className="problem__outputs--muted"><strong>WalletConnect</strong><span>→ not a payment</span></div>
+            <InstallBox />
+            <p className="hero__subinstall">Or via the CLI: <code>npx unipayscan scan "upi://pay?..."</code></p>
+
+            <div className="hero__cta">
+              <a href="#playground" className="btn btn--primary">Try Playground</a>
+              <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="btn btn--ghost">View on GitHub ↗</a>
+            </div>
+            <div className="hero__rule"><span>NO CUSTODY</span><span>NO AUTO-NAVIGATION</span><span>LOCAL BY DEFAULT</span></div>
+          </div>
+
+          <div className="terminal hero__terminal" aria-hidden="true">
+            <div className="terminal__bar"><i /><i /><i /><span>unipayscan</span></div>
+            <div className="terminal__body">
+              <p><span className="t-prompt">&gt;</span> scanner.scan(qr)</p>
+              <p className="t-dim">upi://pay?pa=merchant@bank&amp;am=499.00&amp;cu=INR</p>
+              <p className="t-ok">✓ Recognized <span className="t-dim">upi</span></p>
+              <p className="t-ok">✓ Valid <span className="t-dim">structurally</span></p>
+              <p className="t-ok">✓ Normalized <span className="t-dim">→ PaymentIntent</span></p>
+              <p className="t-json">{"{"}</p>
+              <p className="t-json">&nbsp;&nbsp;"scheme": "upi",</p>
+              <p className="t-json">&nbsp;&nbsp;"amount": "499.00",</p>
+              <p className="t-json">&nbsp;&nbsp;"currency": "INR"</p>
+              <p className="t-json">{"}"}</p>
+              <p><span className="t-cursor" /></p>
+            </div>
+            <div className="terminal__stats">
+              <div><strong>{paymentSchemes.length || 36}</strong><span>Schemes</span></div>
+              <div><strong>0</strong><span>Network calls</span></div>
+              <div><strong>{SDK_STATUSES.length}</strong><span>SDKs</span></div>
+            </div>
           </div>
         </div>
-        <p className="problem__outro">Your application gets one normalized interface.</p>
+      </section>
+
+      <section className="compare" aria-label="What UniPayScan does">
+        <div className="section-head">
+          <span className="eyebrow">How it works</span>
+          <h2>One input. <span className="accent">Different payment systems.</span></h2>
+        </div>
+        <div className="compare__grid">
+          <div className="compare__old">
+            <p className="compare__tag">Without UniPayScan</p>
+            <ul>
+              <li><SchemeIcon id="upi" />UPI parser</li>
+              <li><SchemeIcon id="pix" />Pix parser</li>
+              <li><SchemeIcon id="bitcoin" />Bitcoin parser</li>
+              <li><SchemeIcon id="paypal" />PayPal link parser</li>
+              <li><SchemeIcon id="solana_pay" />Solana Pay parser</li>
+              <li className="compare__muted"><SchemeIcon id="walletconnect" />WalletConnect — not a payment</li>
+            </ul>
+            <p className="compare__foot">Five formats to maintain. Five places to get it wrong.</p>
+          </div>
+          <div className="compare__new">
+            <p className="compare__tag compare__tag--accent">With UniPayScan</p>
+            <h3>One normalized <code>PaymentIntent</code></h3>
+            <div className="terminal terminal--mini">
+              <div className="terminal__body">
+                <p><span className="t-prompt">&gt;</span> scanner.scan(qr)</p>
+                <p className="t-ok">✓ Recognize <span className="t-dim">→ format detected</span></p>
+                <p className="t-ok">✓ Validate <span className="t-dim">→ structure checked</span></p>
+                <p className="t-ok">✓ Normalize <span className="t-dim">→ PaymentIntent</span></p>
+              </div>
+            </div>
+            <div className="compare__footstrip">
+              <div><strong>Detect</strong><span>Identify the standard</span></div>
+              <div><strong>Validate</strong><span>Check the structure</span></div>
+              <div><strong>Normalize</strong><span>One typed contract</span></div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="workspace" aria-label="Scanner playground" id="playground">
@@ -131,7 +245,7 @@ export function App() {
             <p>Try an example:</p>
             <div className="try-examples__buttons">
               {SCANNER_EXAMPLES.map((ex) => (
-                <button key={ex.key} type="button" onClick={() => setExample({ key: `${ex.key}-${Date.now()}`, payload: ex.payload })}>{ex.label}</button>
+                <button key={ex.key} type="button" onClick={() => setExample({ key: `${ex.key}-${Date.now()}`, payload: ex.payload })}><SchemeIcon id={ex.key} />{ex.label}</button>
               ))}
             </div>
           </div>
@@ -148,7 +262,7 @@ export function App() {
                   const checked = enabled.includes(s.id);
                   return (
                     <label key={s.id}>
-                      <span><strong>{s.displayName}</strong><MaturityBadge maturity={s.maturity} /></span>
+                      <span><SchemeIcon id={s.id} /><strong>{s.displayName}</strong><MaturityBadge maturity={s.maturity} /></span>
                       <input type="checkbox" checked={checked} onChange={() => setEnabled((current) => checked ? current.filter((value) => value !== s.id) : [...current, s.id])} />
                       <i aria-hidden="true" />
                     </label>
@@ -163,7 +277,7 @@ export function App() {
           <div className="scheme-list scheme-list--static">
             {nonPaymentSchemes.map((s) => (
               <div key={s.id} className="scheme-static-row">
-                <strong>{s.displayName}</strong>
+                <span className="scheme-static-row__name"><SchemeIcon id={s.id} /><strong>{s.displayName}</strong></span>
                 <span>Recognized · Not payment</span>
               </div>
             ))}
@@ -176,8 +290,8 @@ export function App() {
         </aside>
       </section>
 
-      <section className="output" aria-label="Normalized output">
-        <div className="output__intro"><span>03 / NORMALIZE</span><h2>A boring contract.<br /><em>By design.</em></h2><p>The same versioned shape across banks, wallets, links, and chains. Amounts remain exact strings.</p></div>
+      <section className="output" aria-label="Normalized output" ref={outputRef}>
+        <div className="output__intro"><span className="eyebrow eyebrow--inverse">Normalize</span><h2>A boring contract.<br /><span className="accent">By design.</span></h2><p>The same versioned shape across banks, wallets, links, and chains. Amounts remain exact strings.</p><a className="link-arrow" href={DOCS_URL} target="_blank" rel="noreferrer">Read the schema reference ↗</a></div>
         <div className="output__panels">
           {intent && (
             <div className="result-card">
@@ -211,13 +325,14 @@ export function App() {
             ))}
           </div>
         </div>
-        <div className="schemes-directory__groups">
+        <div className="schemes-directory__groups" ref={directoryRef}>
           {groupedDirectory.map(([region, list]) => (
             <div className="directory-group" key={region}>
               <p className="scheme-group__label">{region}</p>
               {list.map((s) => (
                 <details className="directory-row" key={s.id}>
                   <summary>
+                    <SchemeIcon id={s.id} />
                     <span className="directory-row__name">{s.displayName}</span>
                     <MaturityBadge maturity={s.maturity} />
                   </summary>
@@ -236,6 +351,13 @@ export function App() {
           ))}
           {groupedDirectory.length === 0 && <p className="schemes-directory__empty">No schemes match "{schemeQuery}".</p>}
         </div>
+        {flatDirectory.length > DIRECTORY_PAGE_SIZE && (
+          <div className="directory-pagination">
+            <button type="button" onClick={() => goToDirectoryPage(directoryPage - 1)} disabled={directoryPage === 0}>← Previous</button>
+            <span>Page {directoryPage + 1} of {directoryPageCount} · {flatDirectory.length} schemes</span>
+            <button type="button" onClick={() => goToDirectoryPage(directoryPage + 1)} disabled={directoryPage >= directoryPageCount - 1}>Next →</button>
+          </div>
+        )}
       </section>
 
       <section className="sdks" id="sdks" aria-label="SDKs and platform bindings">
@@ -243,7 +365,7 @@ export function App() {
         <div className="sdks__grid">
           {SDK_STATUSES.map((sdk) => (
             <div className={`sdk-card sdk-card--${sdk.status}`} key={sdk.name}>
-              <div className="sdk-card__header"><i aria-hidden="true" /><strong>{sdk.name}</strong></div>
+              <div className="sdk-card__header"><img className="sdk-card__logo" src={sdk.logo} alt="" width={22} height={22} /><strong>{sdk.name}</strong><i aria-hidden="true" /></div>
               <p className="sdk-card__status">{sdk.status === "verified" ? "Verified" : sdk.status === "partial" ? "Partially verified" : "Unverified"}</p>
               <p className="sdk-card__note">{sdk.note}</p>
             </div>
@@ -287,13 +409,39 @@ export function App() {
         </div>
       </section>
 
-      <section className="contribute" aria-label="Contribute">
-        <div className="panel-heading"><span>08</span><div><small>OPEN SOURCE</small><h2>Payments are global. UniPayScan should be too.</h2></div></div>
-        <p className="contribute__copy">Missing a payment standard from your country? Add an adapter, test vectors, and specification references.</p>
-        <div className="contribute__cta">
-          <a href={CONTRIBUTING_URL} target="_blank" rel="noreferrer" className="btn btn--primary">Add a Scheme</a>
-          <a href={CONTRIBUTING_URL} target="_blank" rel="noreferrer" className="btn btn--ghost">Contribution Guide</a>
+      <section className="faq" aria-label="Frequently asked questions">
+        <div className="panel-heading"><span>08</span><div><small>FAQ</small><h2>Questions, answered.</h2></div></div>
+        <div className="faq__list">
+          <details>
+            <summary><span>What payment formats does UniPayScan support?</span><i aria-hidden="true">+</i></summary>
+            <p>{paymentSchemes.length || 36} schemes across UPI, Pix, EMVCo, PayPal, Bitcoin, Ethereum, Solana Pay, and more — see the full directory above.</p>
+          </details>
+          <details>
+            <summary><span>Does scanning make any network calls?</span><i aria-hidden="true">+</i></summary>
+            <p>No. The core parser runs entirely on-device — 0 network calls, no telemetry, no custody of funds or keys.</p>
+          </details>
+          <details>
+            <summary><span>What license is it under?</span><i aria-hidden="true">+</i></summary>
+            <p>MIT. Free to use in commercial and open-source projects.</p>
+          </details>
+          <details>
+            <summary><span>How do I add a payment format that's missing?</span><i aria-hidden="true">+</i></summary>
+            <p>Open a pull request with an adapter, test vectors, and a specification reference — see the Contribution Guide below.</p>
+          </details>
         </div>
+      </section>
+
+      <section className="cta-band" aria-label="Contribute">
+        <div className="cta-band__copy">
+          <span className="eyebrow eyebrow--inverse">Open source · MIT licensed</span>
+          <h2>Payments are global.<br /><span className="accent">UniPayScan should be too.</span></h2>
+          <p>Missing a payment standard from your country? Add an adapter, test vectors, and specification references.</p>
+          <div className="cta-band__buttons">
+            <a href={CONTRIBUTING_URL} target="_blank" rel="noreferrer" className="btn btn--primary">Add a Scheme</a>
+            <a href={CONTRIBUTING_URL} target="_blank" rel="noreferrer" className="btn btn--ghost btn--inverse">Contribution Guide</a>
+          </div>
+        </div>
+        <InstallBox dark />
       </section>
 
       <footer>

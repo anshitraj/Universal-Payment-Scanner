@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": { "dev": "vite", "build": "tsc -b && vite build", "typecheck": "tsc -b --pretty false" },
   "dependencies": {
-    "@fontsource-variable/bodoni-moda": "^5.2.8",
     "@fontsource-variable/manrope": "^5.2.8",
     "unipayscan": "^0.1.0",
     "@universal-payment-qr/react": "^0.1.0",
