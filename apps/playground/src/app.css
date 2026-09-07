@@ -306,11 +306,14 @@ footer > p { margin: 0; font-size: .8rem; color: var(--ink-soft); max-width: 42r
   .masthead { grid-template-columns: 1fr auto; }
   .masthead__links { display: none; }
   .result-card dl { grid-template-columns: 1fr 1fr; }
+  .sdks__grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 560px) {
   .masthead__actions .btn--ghost { display: none; }
   .wordmark { font-size: .82rem; }
   .hero__copy h1 { font-size: 2.6rem; }
+  .sdks__grid { grid-template-columns: 1fr; }
+  .directory-pagination { flex-direction: column; gap: .75rem; }
   .install-box { flex-wrap: wrap; }
   .install-box code { white-space: normal; word-break: break-all; }
   .terminal__stats { grid-template-columns: 1fr; }

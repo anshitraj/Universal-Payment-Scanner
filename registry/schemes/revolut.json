@@ -1,11 +1,11 @@
 {
-  "scheme": "venmo",
-  "displayName": "Venmo",
+  "scheme": "revolut",
+  "displayName": "Revolut",
   "country": [
-    "US"
+    "GB"
   ],
   "category": "payment_link",
-  "standard": "Public Venmo profile link",
+  "standard": "Public Revolut.Me link",
   "parserVersion": "0.1.0",
   "maturity": "beta",
   "identification": "exact",
@@ -13,12 +13,12 @@
   "nonPayment": false,
   "lastVerified": "2026-09-07",
   "supports": {
-    "amount": false,
+    "amount": true,
     "merchant": false,
-    "currency": false,
+    "currency": true,
     "dynamic": false
   },
   "references": [
-    "https://help.venmo.com/cs/articles/personal-qr-codes-on-venmo-faq-vhel316"
+    "https://www.revolut.com/revolut-me/"
   ]
 }

@@ -1,11 +1,9 @@
 {
-  "scheme": "venmo",
-  "displayName": "Venmo",
-  "country": [
-    "US"
-  ],
+  "scheme": "wise",
+  "displayName": "Wise",
+  "country": [],
   "category": "payment_link",
-  "standard": "Public Venmo profile link",
+  "standard": "Public Wise pay link",
   "parserVersion": "0.1.0",
   "maturity": "beta",
   "identification": "exact",
@@ -19,6 +17,6 @@
     "dynamic": false
   },
   "references": [
-    "https://help.venmo.com/cs/articles/personal-qr-codes-on-venmo-faq-vhel316"
+    "https://wise.com/help/articles/2978066/how-do-i-request-money"
   ]
 }

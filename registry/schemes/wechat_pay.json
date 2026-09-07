@@ -11,7 +11,7 @@
   "identification": "heuristic",
   "supported": false,
   "nonPayment": false,
-  "lastVerified": "2026-09-05",
+  "lastVerified": "2026-09-07",
   "supports": {
     "amount": false,
     "merchant": false,

@@ -1,11 +1,11 @@
 {
-  "scheme": "venmo",
-  "displayName": "Venmo",
+  "scheme": "zelle",
+  "displayName": "Zelle",
   "country": [
     "US"
   ],
   "category": "payment_link",
-  "standard": "Public Venmo profile link",
+  "standard": "Zelle personal QR enrollment link",
   "parserVersion": "0.1.0",
   "maturity": "beta",
   "identification": "exact",
@@ -19,6 +19,6 @@
     "dynamic": false
   },
   "references": [
-    "https://help.venmo.com/cs/articles/personal-qr-codes-on-venmo-faq-vhel316"
+    "https://www.zellepay.com/how-it-works"
   ]
 }

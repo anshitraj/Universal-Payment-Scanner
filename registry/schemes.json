@@ -1,8 +1,8 @@
 {
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-09-05",
-  "sourceCommit": "f3d198e6f630c459c6d30d919a530a855e33507d",
-  "count": 39,
+  "generatedAt": "2026-09-07",
+  "sourceCommit": "87ef550345e368df9380a1ecc11d69ca0a52510f",
+  "count": 43,
   "schemes": [
     {
       "scheme": "alipay",
@@ -17,7 +17,7 @@
       "identification": "heuristic",
       "supported": false,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -41,7 +41,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -63,7 +63,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": false,
@@ -88,7 +88,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": false,
@@ -112,7 +112,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -134,7 +134,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -156,7 +156,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -178,7 +178,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": false,
@@ -202,7 +202,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -226,7 +226,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -250,7 +250,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -274,7 +274,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -298,7 +298,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -320,7 +320,7 @@
       "identification": "heuristic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -344,7 +344,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -368,7 +368,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -377,6 +377,30 @@
       },
       "references": [
         "https://myanmarpay.com.mm/frontend/assets/files/MyanmarQRSpecification.pdf"
+      ]
+    },
+    {
+      "scheme": "monzo",
+      "displayName": "Monzo",
+      "country": [
+        "GB"
+      ],
+      "category": "payment_link",
+      "standard": "Public Monzo.Me link",
+      "parserVersion": "0.1.0",
+      "maturity": "beta",
+      "identification": "exact",
+      "supported": true,
+      "nonPayment": false,
+      "lastVerified": "2026-09-07",
+      "supports": {
+        "amount": true,
+        "merchant": false,
+        "currency": false,
+        "dynamic": false
+      },
+      "references": [
+        "https://monzo.com/monzo-me/"
       ]
     },
     {
@@ -392,7 +416,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -414,7 +438,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": true,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -438,7 +462,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -460,7 +484,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": false,
@@ -485,7 +509,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -509,7 +533,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -533,7 +557,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -557,7 +581,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -581,7 +605,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -590,6 +614,30 @@
       },
       "references": [
         "https://www.sbp.org.pk/PS/Raast.html"
+      ]
+    },
+    {
+      "scheme": "revolut",
+      "displayName": "Revolut",
+      "country": [
+        "GB"
+      ],
+      "category": "payment_link",
+      "standard": "Public Revolut.Me link",
+      "parserVersion": "0.1.0",
+      "maturity": "beta",
+      "identification": "exact",
+      "supported": true,
+      "nonPayment": false,
+      "lastVerified": "2026-09-07",
+      "supports": {
+        "amount": true,
+        "merchant": false,
+        "currency": true,
+        "dynamic": false
+      },
+      "references": [
+        "https://www.revolut.com/revolut-me/"
       ]
     },
     {
@@ -603,7 +651,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": false,
@@ -625,7 +673,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -650,7 +698,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -672,7 +720,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -694,7 +742,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -718,7 +766,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -742,7 +790,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -764,7 +812,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": true,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -788,7 +836,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -812,7 +860,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -834,7 +882,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": true,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -858,7 +906,7 @@
       "identification": "heuristic",
       "supported": false,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -867,6 +915,28 @@
       },
       "references": [
         "https://pay.weixin.qq.com/"
+      ]
+    },
+    {
+      "scheme": "wise",
+      "displayName": "Wise",
+      "country": [],
+      "category": "payment_link",
+      "standard": "Public Wise pay link",
+      "parserVersion": "0.1.0",
+      "maturity": "beta",
+      "identification": "exact",
+      "supported": true,
+      "nonPayment": false,
+      "lastVerified": "2026-09-07",
+      "supports": {
+        "amount": false,
+        "merchant": false,
+        "currency": false,
+        "dynamic": false
+      },
+      "references": [
+        "https://wise.com/help/articles/2978066/how-do-i-request-money"
       ]
     },
     {
@@ -880,7 +950,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -889,6 +959,30 @@
       },
       "references": [
         "https://xrpl.org/docs/concepts/accounts/addresses"
+      ]
+    },
+    {
+      "scheme": "zelle",
+      "displayName": "Zelle",
+      "country": [
+        "US"
+      ],
+      "category": "payment_link",
+      "standard": "Zelle personal QR enrollment link",
+      "parserVersion": "0.1.0",
+      "maturity": "beta",
+      "identification": "exact",
+      "supported": true,
+      "nonPayment": false,
+      "lastVerified": "2026-09-07",
+      "supports": {
+        "amount": false,
+        "merchant": false,
+        "currency": false,
+        "dynamic": false
+      },
+      "references": [
+        "https://www.zellepay.com/how-it-works"
       ]
     },
     {
@@ -904,7 +998,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-05",
+      "lastVerified": "2026-09-07",
       "supports": {
         "amount": true,
         "merchant": true,

@@ -7,4 +7,8 @@ export const SCHEME_LOGOS: Record<string, string> = {
   solana_pay: "/logos/solana.svg",
   paypal: "/logos/paypal.svg",
   walletconnect: "/logos/walletconnect.svg",
+  zelle: "/logos/zelle.svg",
+  revolut: "/logos/revolut.svg",
+  wise: "/logos/wise.svg",
+  monzo: "/logos/monzo.svg",
 };
