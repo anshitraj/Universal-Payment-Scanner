@@ -1,9 +1,9 @@
 {
-  "scheme": "stellar",
-  "displayName": "Stellar",
+  "scheme": "monero",
+  "displayName": "Monero",
   "country": [],
   "category": "crypto",
-  "standard": "Stellar strkey (ed25519 public key)",
+  "standard": "CryptoNote Base58 address (Monero)",
   "parserVersion": "0.1.0",
   "maturity": "beta",
   "identification": "exact",
@@ -11,12 +11,13 @@
   "nonPayment": false,
   "lastVerified": "2026-09-08",
   "supports": {
-    "amount": false,
+    "amount": true,
     "merchant": false,
     "currency": false,
     "dynamic": false
   },
   "references": [
-    "https://developers.stellar.org/docs/learn/encyclopedia/security/signatures-multisig"
+    "https://www.getmonero.org/resources/developer-guides/wallet-rpc.html",
+    "https://github.com/monero-project/monero/blob/master/src/common/base58.cpp"
   ]
 }

@@ -17,4 +17,8 @@ export const SCANNER_EXAMPLES: readonly ScannerExample[] = [
   { key: "revolut", label: "Revolut", payload: "https://revolut.me/exampleuser?amount=12.50&currency=GBP" },
   { key: "wise", label: "Wise", payload: "https://wise.com/pay/me/exampleuser" },
   { key: "monzo", label: "Monzo", payload: "https://monzo.me/exampleuser?amount=8.00&d=Dinner" },
+  { key: "interac", label: "Interac", payload: "https://etransfer.interac.ca/qr/AbCdEf123456" },
+  { key: "swish", label: "Swish", payload: "https://app.swish.nu/1/p/sw/?sw=AbCdEf123456" },
+  { key: "vipps", label: "Vipps", payload: "https://qr.vipps.no/AbCdEf123456" },
+  { key: "monero", label: "Monero", payload: "monero:44AFFq5kSiGBoZ4NMDwYtN18obc8AemS33DBLWs3H7otXft3XjrpDtQGv7SqSsaBYBb98uNbr2VBBEt7f2wfn3RVGQBEP3A?tx_amount=1.25" },
 ];

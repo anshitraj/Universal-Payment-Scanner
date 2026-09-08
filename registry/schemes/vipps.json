@@ -1,9 +1,11 @@
 {
-  "scheme": "wise",
-  "displayName": "Wise",
-  "country": [],
+  "scheme": "vipps",
+  "displayName": "Vipps",
+  "country": [
+    "NO"
+  ],
   "category": "payment_link",
-  "standard": "Public Wise pay link",
+  "standard": "Vipps QR redirect link",
   "parserVersion": "0.1.0",
   "maturity": "beta",
   "identification": "exact",
@@ -14,9 +16,9 @@
     "amount": false,
     "merchant": false,
     "currency": false,
-    "dynamic": false
+    "dynamic": true
   },
   "references": [
-    "https://wise.com/help/articles/2978066/how-do-i-request-money"
+    "https://developer.vippsmobilepay.com/"
   ]
 }

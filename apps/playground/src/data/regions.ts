@@ -13,9 +13,9 @@ const REGION_BY_COUNTRY: Record<string, (typeof REGION_ORDER)[number]> = {
   TH: "Southeast Asia", VN: "Southeast Asia", SG: "Southeast Asia", MY: "Southeast Asia",
   ID: "Southeast Asia", PH: "Southeast Asia", KH: "Southeast Asia", LA: "Southeast Asia", MM: "Southeast Asia",
   HK: "East Asia", JP: "East Asia", TW: "East Asia", KR: "East Asia", CN: "East Asia",
-  US: "North America",
+  US: "North America", CA: "North America",
   BR: "Latin America", AR: "Latin America",
-  CH: "Europe", LI: "Europe", GB: "Europe",
+  CH: "Europe", LI: "Europe", GB: "Europe", SE: "Europe", NO: "Europe",
 };
 
 export function regionFor(countries: readonly string[]): (typeof REGION_ORDER)[number] {

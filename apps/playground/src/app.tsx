@@ -4,7 +4,7 @@ import { PaymentQRScanner } from "@universal-payment-qr/react";
 import { REGION_ORDER, NON_PAYMENT_SCHEME_IDS, regionFor } from "./data/regions";
 import { SCANNER_EXAMPLES } from "./data/examples";
 import { SDK_STATUSES } from "./data/sdks";
-import { SCHEME_LOGOS } from "./data/logos";
+import { SCHEME_LOGOS, WIDE_LOGOS } from "./data/logos";
 
 const GITHUB_URL = "https://github.com/anshitraj/Universal-Payment-Scanner";
 const DOCS_URL = `${GITHUB_URL}/blob/main/docs/schema.md`;
@@ -19,9 +19,10 @@ function MaturityBadge({ maturity }: { maturity: string }) {
 
 function SchemeIcon({ id }: { id: string }) {
   const src = SCHEME_LOGOS[id];
-  if (src) return <img className="scheme-icon" src={src} alt="" width={16} height={16} />;
-  if (id === "upi") return <span className="scheme-icon scheme-icon--text" aria-hidden="true">U</span>;
-  return null;
+  if (!src) return null;
+  const wide = WIDE_LOGOS.has(id);
+  const className = wide ? "scheme-icon scheme-icon--wide" : "scheme-icon";
+  return <img className={className} src={src} alt="" height={16} {...(wide ? {} : { width: 16 })} />;
 }
 
 const PACKAGE_TABS = [

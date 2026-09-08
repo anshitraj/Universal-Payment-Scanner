@@ -1,11 +1,11 @@
 {
-  "scheme": "alipay",
-  "displayName": "Alipay",
+  "scheme": "unionpay",
+  "displayName": "UnionPay QR",
   "country": [
     "CN"
   ],
-  "category": "wallet",
-  "standard": "Proprietary (Alipay)",
+  "category": "card",
+  "standard": "Proprietary (UnionPay QR)",
   "parserVersion": "0.1.0",
   "maturity": "experimental",
   "identification": "heuristic",
@@ -19,6 +19,6 @@
     "dynamic": false
   },
   "references": [
-    "https://global.alipay.com/"
+    "https://www.unionpayintl.com/"
   ]
 }

@@ -73,7 +73,7 @@ code { font-family: var(--mono); }
 
 /* Small brand marks reused across the hero, comparison list, scheme picker and directory */
 .scheme-icon { width: 1.05rem; height: 1.05rem; border-radius: 50%; background: #fff; padding: 2px; object-fit: contain; flex: none; box-shadow: 0 0 0 1px var(--line-soft); }
-.scheme-icon--text { display: inline-grid; place-items: center; font: 800 .62rem/1 var(--sans); color: var(--accent); background: var(--accent-soft); box-shadow: none; }
+.scheme-icon--wide { width: auto; max-width: 2.9rem; border-radius: 4px; padding: 2px 4px; }
 
 /* Hero */
 .hero { padding: clamp(3rem, 7vw, 6rem) clamp(1.25rem, 5vw, 3rem) clamp(3rem, 6vw, 5rem); }

@@ -1,6 +1,12 @@
-// Brand marks for schemes/platforms we can legally show a real logo for (Simple Icons, CC0).
-// Schemes without an official mark (e.g. UPI has none) fall back to a text badge — see SchemeIcon in app.tsx.
+// Brand marks for schemes/platforms we can legally show a real logo for.
+// Most are Simple Icons (CC0). upi.svg is NPCI's own official UPI mark (public domain per
+// Wikimedia Commons - simple geometric shapes/text don't meet the threshold of originality for
+// copyright - but still trademarked; shown here only to indicate format compatibility, the same
+// nominative use as every other brand mark on this page), cropped to drop the "UNIFIED PAYMENTS
+// INTERFACE" tagline so it reads as a compact mark like the others. Wider than the square icons
+// (it's a wordmark+glyph lockup, not a glyph alone) - see the `.scheme-icon--wide` rule in app.css.
 export const SCHEME_LOGOS: Record<string, string> = {
+  upi: "/logos/upi.svg",
   pix: "/logos/pix.svg",
   bitcoin: "/logos/bitcoin.svg",
   ethereum: "/logos/ethereum.svg",
@@ -11,4 +17,9 @@ export const SCHEME_LOGOS: Record<string, string> = {
   revolut: "/logos/revolut.svg",
   wise: "/logos/wise.svg",
   monzo: "/logos/monzo.svg",
+  monero: "/logos/monero.svg",
+  zcash: "/logos/zcash.svg",
 };
+
+// Scheme ids whose mark is a wide wordmark+glyph lockup rather than a square glyph.
+export const WIDE_LOGOS = new Set(["upi"]);

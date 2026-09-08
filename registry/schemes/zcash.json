@@ -1,9 +1,9 @@
 {
-  "scheme": "wise",
-  "displayName": "Wise",
+  "scheme": "zcash",
+  "displayName": "Zcash",
   "country": [],
-  "category": "payment_link",
-  "standard": "Public Wise pay link",
+  "category": "crypto",
+  "standard": "Zcash transparent (t-addr) Base58Check",
   "parserVersion": "0.1.0",
   "maturity": "beta",
   "identification": "exact",
@@ -11,12 +11,13 @@
   "nonPayment": false,
   "lastVerified": "2026-09-08",
   "supports": {
-    "amount": false,
+    "amount": true,
     "merchant": false,
     "currency": false,
     "dynamic": false
   },
   "references": [
-    "https://wise.com/help/articles/2978066/how-do-i-request-money"
+    "https://zips.z.cash/protocol/protocol.pdf",
+    "https://zips.z.cash/zip-0321"
   ]
 }

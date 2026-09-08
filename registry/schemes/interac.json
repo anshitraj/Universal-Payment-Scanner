@@ -1,9 +1,11 @@
 {
-  "scheme": "wise",
-  "displayName": "Wise",
-  "country": [],
+  "scheme": "interac",
+  "displayName": "Interac e-Transfer",
+  "country": [
+    "CA"
+  ],
   "category": "payment_link",
-  "standard": "Public Wise pay link",
+  "standard": "Interac e-Transfer QR link",
   "parserVersion": "0.1.0",
   "maturity": "beta",
   "identification": "exact",
@@ -17,6 +19,6 @@
     "dynamic": false
   },
   "references": [
-    "https://wise.com/help/articles/2978066/how-do-i-request-money"
+    "https://www.interac.ca/en/interac-e-transfer/"
   ]
 }
