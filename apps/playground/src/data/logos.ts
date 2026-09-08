@@ -20,6 +20,11 @@ export const SCHEME_LOGOS: Record<string, string> = {
   monero: "/logos/monero.svg",
   zcash: "/logos/zcash.svg",
   venmo: "/logos/venmo.svg",
+  cash_app: "/logos/cash_app.svg",
+  // Interac has no Simple Icons entry; sourced from Wikimedia Commons' official upload
+  // (upload.wikimedia.org/wikipedia/commons/3/31/InteracLogo.svg), same nominative-use basis as
+  // every other trademarked mark on this page.
+  interac: "/logos/interac.svg",
 };
 
 // Wallet-app brand marks used by the payment-launcher buttons (PaymentActionPanel), keyed by

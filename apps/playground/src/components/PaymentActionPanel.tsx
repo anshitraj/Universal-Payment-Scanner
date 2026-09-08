@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { PaymentIntent } from "unipayscan";
-import { WALLET_LOGOS } from "../data/logos";
+import { SCHEME_LOGOS, WALLET_LOGOS } from "../data/logos";
 import {
   UPI_APPS,
   attemptAppLaunch,
@@ -28,6 +28,10 @@ function formatAmount(intent: PaymentIntent): string {
 
 function recipientLabel(intent: PaymentIntent): string {
   return intent.recipient?.name ?? intent.recipient?.id ?? intent.recipient?.address ?? "an unspecified recipient";
+}
+
+function providerLabel(provider: string): string {
+  return provider.split("_").map((word) => word[0]!.toUpperCase() + word.slice(1)).join(" ");
 }
 
 // A bare crypto address (no `bitcoin:`/`ethereum:` prefix - what most wallets' own "receive"
@@ -194,9 +198,10 @@ export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
 
             {action.type === "redirect" && action.provider !== "venmo" && genericLink && (
               <WalletButton
-                name={action.provider ?? "Open link"}
-                state={buttonStates[action.provider ?? "link"]}
-                onClick={() => launchDeepLink(action.provider ?? "link", genericLink)}
+                name={action.provider ? providerLabel(action.provider) : "Open link"}
+                logo={action.provider ? SCHEME_LOGOS[action.provider] : undefined}
+                state={buttonStates[action.provider ? providerLabel(action.provider) : "link"]}
+                onClick={() => launchDeepLink(action.provider ? providerLabel(action.provider) : "link", genericLink)}
               />
             )}
 
