@@ -19,6 +19,17 @@ export const SCHEME_LOGOS: Record<string, string> = {
   monzo: "/logos/monzo.svg",
   monero: "/logos/monero.svg",
   zcash: "/logos/zcash.svg",
+  venmo: "/logos/venmo.svg",
+};
+
+// Wallet-app brand marks used by the payment-launcher buttons (PaymentActionPanel), keyed by
+// the wallet id each launcher defines - not scheme ids, since several wallets can serve one
+// scheme (three different apps all handle "upi").
+export const WALLET_LOGOS: Record<string, string> = {
+  googlepay: "/logos/googlepay.svg",
+  phonepe: "/logos/phonepe.svg",
+  paytm: "/logos/paytm.svg",
+  venmo: "/logos/venmo.svg",
 };
 
 // Scheme ids whose mark is a wide wordmark+glyph lockup rather than a square glyph.

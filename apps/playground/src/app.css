@@ -206,6 +206,39 @@ code { font-family: var(--mono); }
 .result-card dd { margin: .3rem 0 0; font-size: .85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--on-panel); }
 .result-card__trust { margin: 1.2rem 0 0; padding-top: 1rem; border-top: 1px solid var(--panel-line); font-size: .78rem; color: var(--on-panel-muted); }
 .result-card__trust strong { color: #ff8a8a; letter-spacing: .05em; }
+
+/* Payment handoff panel — deep-link/wallet-standard launcher, no custody */
+.pay-panel { margin-top: 1rem; }
+.pay-panel__trigger { width: 100%; padding: .8rem 1rem; border: none; border-radius: .6rem; background: var(--accent); color: #fff; font: 700 .82rem var(--sans); cursor: pointer; }
+.pay-panel__trigger:hover { filter: brightness(1.08); }
+.pay-panel__confirm { position: relative; border: 1px solid var(--panel-line); border-radius: .7rem; padding: 1.1rem 1.2rem 1.2rem; background: rgba(255, 255, 255, .03); }
+.pay-panel__close { position: absolute; top: .6rem; right: .7rem; width: 1.6rem; height: 1.6rem; border: none; border-radius: 50%; background: transparent; color: var(--on-panel-muted); font-size: 1.1rem; line-height: 1; cursor: pointer; }
+.pay-panel__close:hover { background: var(--panel-line-soft); color: var(--on-panel); }
+.pay-panel__summary { margin: 0 1.6rem .6rem 0; font: 700 .9rem/1.4 var(--sans); color: var(--on-panel); }
+.pay-panel__warning { margin: 0 0 1rem; padding: .7rem .8rem; border-radius: .5rem; background: rgba(194, 118, 11, .12); border: 1px solid rgba(194, 118, 11, .3); color: #e3ac5c; font-size: .74rem; line-height: 1.6; }
+.pay-panel__wallets { display: flex; flex-wrap: wrap; gap: .6rem; }
+.pay-panel__hint { width: 100%; margin: 0 0 .3rem; font-size: .76rem; color: var(--on-panel-muted); line-height: 1.6; }
+.pay-panel__hint a { color: var(--accent-on-panel); }
+.pay-panel__inline-copy { border: none; background: var(--accent-soft); color: var(--accent-on-panel); font: 700 .68rem var(--sans); padding: .15rem .5rem; border-radius: .3rem; cursor: pointer; }
+.wallet-button-wrap { display: flex; flex-direction: column; gap: .3rem; }
+.wallet-button { display: flex; align-items: center; gap: .5rem; padding: .55rem .9rem; border: 1px solid var(--panel-line); border-radius: .5rem; background: var(--panel-2); color: var(--on-panel); font: 600 .78rem var(--sans); cursor: pointer; }
+.wallet-button:hover:not(:disabled) { border-color: var(--accent-on-panel); }
+.wallet-button:disabled { opacity: .55; cursor: not-allowed; }
+.wallet-button img { width: 1rem; height: 1rem; object-fit: contain; flex: none; }
+.wallet-button__fallback { display: inline-grid; place-items: center; width: 1rem; height: 1rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent-on-panel); font-size: .6rem; font-weight: 800; }
+.wallet-button em { font-style: normal; font-size: .68rem; color: var(--on-panel-muted); }
+.wallet-button--success { border-color: rgba(22, 163, 74, .5); }
+.wallet-button--error { border-color: rgba(255, 138, 138, .5); }
+.wallet-button__note { max-width: 14rem; margin: 0; font-size: .68rem; line-height: 1.5; }
+.wallet-button__note--warn { color: #e3ac5c; }
+.wallet-button__note--ok { color: #4ade80; }
+.wallet-button__note a { color: inherit; }
+.pay-panel__log { margin-top: 1rem; border-top: 1px solid var(--panel-line); padding-top: .7rem; }
+.pay-panel__log summary { cursor: pointer; font-size: .74rem; color: var(--on-panel-muted); }
+.pay-panel__log ul { margin: .6rem 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: .35rem; }
+.pay-panel__log li { font-size: .72rem; color: var(--on-panel-muted); font-family: var(--mono); }
+.pay-panel__log li strong { color: var(--on-panel); text-transform: capitalize; }
+.pay-panel__log a { color: var(--accent-on-panel); }
 .json-panel { background: var(--panel-2); border: 1px solid var(--panel-line); border-radius: .9rem; overflow: hidden; min-height: 26rem; }
 .json-panel header { height: 3.2rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--panel-line); padding: 0 1.1rem; font: .72rem var(--mono); color: var(--on-panel-muted); }
 .json-panel header span { display: flex; align-items: center; gap: .55rem; }

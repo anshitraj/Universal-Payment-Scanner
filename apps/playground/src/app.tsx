@@ -5,6 +5,7 @@ import { REGION_ORDER, NON_PAYMENT_SCHEME_IDS, regionFor } from "./data/regions"
 import { SCANNER_EXAMPLES } from "./data/examples";
 import { SDK_STATUSES } from "./data/sdks";
 import { SCHEME_LOGOS, WIDE_LOGOS } from "./data/logos";
+import { PaymentActionPanel } from "./components/PaymentActionPanel";
 
 const GITHUB_URL = "https://github.com/anshitraj/Universal-Payment-Scanner";
 const DOCS_URL = `${GITHUB_URL}/blob/main/docs/schema.md`;
@@ -306,6 +307,7 @@ export function App() {
                 <div><dt>Amount</dt><dd>{intent.amount ? `${intent.amount} ${intent.currency ?? intent.asset?.symbol ?? ""}`.trim() : "Open amount"}</dd></div>
               </dl>
               <p className="result-card__trust">Recipient trust <strong>UNVERIFIED</strong></p>
+              <PaymentActionPanel intent={intent} />
             </div>
           )}
           <div className="json-panel">
