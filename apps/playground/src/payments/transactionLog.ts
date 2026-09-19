@@ -12,7 +12,8 @@ export interface PaymentAttempt {
   currency?: string | undefined;
   recipient?: string | undefined;
   outcome: "opened" | "signed" | "not_installed" | "failed";
-  detail?: string | undefined; // e.g. a Solana signature, or an error message
+  detail?: string | undefined; // e.g. a signature/tx hash, or an error message
+  explorerUrl?: string | undefined; // set alongside detail for "signed", when a block explorer link applies
 }
 
 const STORAGE_KEY = "unipayscan.playground.paymentLog.v1";

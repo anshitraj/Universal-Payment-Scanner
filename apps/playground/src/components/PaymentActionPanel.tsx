@@ -16,6 +16,13 @@ import {
   solanaExplorerUrl,
   type SolanaWalletOption,
 } from "../payments/solanaWallets";
+import {
+  genericEthereumLink,
+  isKnownEvmChain,
+  listEthereumWallets,
+  payWithEthereumWallet,
+  type EthereumWalletOption,
+} from "../payments/ethereumWallets";
 import { listPaymentAttempts, recordPaymentAttempt, type PaymentAttempt } from "../payments/transactionLog";
 
 type ButtonState = { status: "idle" } | { status: "busy" } | { status: "warning"; text: string } | { status: "success"; text: string; link?: string } | { status: "error"; text: string };
@@ -50,6 +57,7 @@ function copyableRecipient(intent: PaymentIntent): string | undefined {
 export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
   const [open, setOpen] = useState(false);
   const [solanaWallets, setSolanaWallets] = useState<SolanaWalletOption[]>([]);
+  const [ethereumWallets, setEthereumWallets] = useState<EthereumWalletOption[] | null>(null);
   const [buttonStates, setButtonStates] = useState<Record<string, ButtonState>>({});
   const [log, setLog] = useState<PaymentAttempt[]>([]);
 
@@ -66,6 +74,13 @@ export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
   useEffect(() => {
     if (open && action?.type === "wallet" && action.network === "solana") {
       setSolanaWallets(listSolanaWallets());
+    }
+  }, [open, action]);
+
+  useEffect(() => {
+    if (open && action?.type === "wallet" && isKnownEvmChain(action.network)) {
+      setEthereumWallets(null);
+      void listEthereumWallets().then(setEthereumWallets);
     }
   }, [open, action]);
 
@@ -102,10 +117,24 @@ export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
     setState(option.name, { status: "busy" });
     try {
       const { signature } = await payWithSolanaWallet(option, intent);
-      setState(option.name, { status: "success", text: "Signed and submitted.", link: solanaExplorerUrl(signature) });
-      log_({ scheme: intent.scheme, wallet: option.name, amount: intent.amount, currency: intent.currency ?? intent.asset?.symbol, recipient: recipientLabel(intent), outcome: "signed", detail: signature });
+      const explorerUrl = solanaExplorerUrl(signature);
+      setState(option.name, { status: "success", text: "Signed and submitted.", link: explorerUrl });
+      log_({ scheme: intent.scheme, wallet: option.name, amount: intent.amount, currency: intent.currency ?? intent.asset?.symbol, recipient: recipientLabel(intent), outcome: "signed", detail: signature, explorerUrl });
     } catch (error) {
       const message = error instanceof Error ? error.message : "The wallet rejected or failed to sign this transaction.";
+      setState(option.name, { status: "error", text: message });
+      log_({ scheme: intent.scheme, wallet: option.name, amount: intent.amount, currency: intent.currency ?? intent.asset?.symbol, recipient: recipientLabel(intent), outcome: "failed", detail: message });
+    }
+  };
+
+  const payEthereum = async (option: EthereumWalletOption) => {
+    setState(option.name, { status: "busy" });
+    try {
+      const { txHash, explorerUrl } = await payWithEthereumWallet(option, intent);
+      setState(option.name, { status: "success", text: "Sent and submitted.", link: explorerUrl });
+      log_({ scheme: intent.scheme, wallet: option.name, amount: intent.amount, currency: intent.currency ?? intent.asset?.symbol, recipient: recipientLabel(intent), outcome: "signed", detail: txHash, explorerUrl });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "The wallet rejected or failed to send this transaction.";
       setState(option.name, { status: "error", text: message });
       log_({ scheme: intent.scheme, wallet: option.name, amount: intent.amount, currency: intent.currency ?? intent.asset?.symbol, recipient: recipientLabel(intent), outcome: "failed", detail: message });
     }
@@ -118,6 +147,14 @@ export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
     if (action.type !== "wallet" || action.network !== "solana") return undefined;
     try {
       return genericSolanaLink(intent);
+    } catch {
+      return undefined;
+    }
+  }, [action, intent]);
+  const ethereumLink = useMemo(() => {
+    if (action.type !== "wallet" || !isKnownEvmChain(action.network)) return undefined;
+    try {
+      return genericEthereumLink(intent);
     } catch {
       return undefined;
     }
@@ -196,6 +233,25 @@ export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
               />
             )}
 
+            {action.type === "wallet" && isKnownEvmChain(action.network) && (
+              <>
+                {ethereumWallets === null && <p className="pay-panel__hint">Looking for a wallet extension…</p>}
+                {ethereumWallets?.length === 0 && (
+                  <p className="pay-panel__hint">
+                    No {action.network} wallet extension detected in this browser.{" "}
+                    {ethereumLink && (
+                      <a href={ethereumLink} onClick={() => log_({ scheme: intent.scheme, wallet: `${action.network} (generic)`, amount: intent.amount, currency: intent.asset?.symbol, recipient: recipientLabel(intent), outcome: "opened" })}>
+                        Open in a compatible wallet app
+                      </a>
+                    )}
+                  </p>
+                )}
+                {ethereumWallets?.map((w) => (
+                  <WalletButton key={w.name} name={w.name} icon={w.icon} state={buttonStates[w.name]} onClick={() => void payEthereum(w)} />
+                ))}
+              </>
+            )}
+
             {action.type === "redirect" && action.provider !== "venmo" && genericLink && (
               <WalletButton
                 name={action.provider ? providerLabel(action.provider) : "Open link"}
@@ -205,7 +261,7 @@ export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
               />
             )}
 
-            {action.type === "wallet" && action.network !== "solana" && (
+            {action.type === "wallet" && action.network !== "solana" && !isKnownEvmChain(action.network) && (
               <>
                 {hasUriScheme(genericLink) && (
                   <WalletButton
@@ -236,10 +292,10 @@ export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
                 {log.map((entry) => (
                   <li key={entry.id}>
                     <span>{new Date(entry.at).toLocaleTimeString()}</span> — {entry.wallet}: <strong>{entry.outcome.replace("_", " ")}</strong>
-                    {entry.detail && entry.outcome === "signed" && (
+                    {entry.explorerUrl && entry.outcome === "signed" && (
                       <>
                         {" "}
-                        (<a href={solanaExplorerUrl(entry.detail)} target="_blank" rel="noreferrer">view</a>)
+                        (<a href={entry.explorerUrl} target="_blank" rel="noreferrer">view</a>)
                       </>
                     )}
                   </li>
