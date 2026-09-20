@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import { createScanner, type PaymentIntent, type SchemeMetadata } from "unipayscan";
 import { PaymentQRScanner } from "@universal-payment-qr/react";
 import { REGION_ORDER, NON_PAYMENT_SCHEME_IDS, regionFor } from "./data/regions";
@@ -24,6 +24,52 @@ function SchemeIcon({ id }: { id: string }) {
   const wide = WIDE_LOGOS.has(id);
   const className = wide ? "scheme-icon scheme-icon--wide" : "scheme-icon";
   return <img className={className} src={src} alt="" height={16} {...(wide ? {} : { width: 16 })} />;
+}
+
+const FLOW_ICON_PATHS: Record<string, ReactElement> = {
+  qr: (
+    <>
+      <rect x="4" y="4" width="6" height="6" rx="1" />
+      <rect x="18" y="4" width="6" height="6" rx="1" />
+      <rect x="4" y="18" width="6" height="6" rx="1" />
+      <rect x="6.5" y="6.5" width="1" height="1" fill="currentColor" stroke="none" />
+      <rect x="20.5" y="6.5" width="1" height="1" fill="currentColor" stroke="none" />
+      <rect x="6.5" y="20.5" width="1" height="1" fill="currentColor" stroke="none" />
+      <rect x="15" y="4" width="3" height="3" fill="currentColor" stroke="none" />
+      <rect x="18" y="15" width="3" height="3" fill="currentColor" stroke="none" />
+      <rect x="15" y="18" width="3" height="3" fill="currentColor" stroke="none" />
+      <rect x="15" y="12" width="3" height="2" fill="currentColor" stroke="none" />
+    </>
+  ),
+  scan: (
+    <>
+      <rect x="7" y="2.5" width="14" height="23" rx="2.5" />
+      <path d="M7 6.5h14" strokeDasharray="1 2.2" />
+      <path d="M4 9v-2a2 2 0 0 1 2-2h1M23 9v-2a2 2 0 0 1-2-2h-1M4 19v2a2 2 0 0 0 2 2h1M23 19v2a2 2 0 0 1-2 2h-1" />
+    </>
+  ),
+  intent: (
+    <>
+      <rect x="5" y="3" width="18" height="22" rx="2" />
+      <path d="M9 9h10M9 13h10M9 17h6" />
+      <path d="m9 21 2 2 4-4" />
+    </>
+  ),
+  open: (
+    <>
+      <rect x="5" y="9" width="15" height="15" rx="3" />
+      <path d="M15 5h8v8" />
+      <path d="M23 5 12 16" />
+    </>
+  ),
+};
+
+function FlowIcon({ kind }: { kind: keyof typeof FLOW_ICON_PATHS }) {
+  return (
+    <svg className="flow__icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {FLOW_ICON_PATHS[kind]}
+    </svg>
+  );
 }
 
 const PACKAGE_TABS = [
@@ -237,6 +283,38 @@ export function App() {
               <div><strong>Validate</strong><span>Check the structure</span></div>
               <div><strong>Normalize</strong><span>One typed contract</span></div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="flow" aria-label="How scanning works end to end">
+        <div className="section-head">
+          <span className="eyebrow">End to end</span>
+          <h2>From QR to payment. <span className="accent">Four steps.</span></h2>
+        </div>
+        <div className="flow__steps">
+          <div className="flow__step">
+            <div className="flow__badge"><FlowIcon kind="qr" /></div>
+            <h3>Any QR code</h3>
+            <p>UPI, Pix, a wallet address, a payment link — scan it or paste the raw payload.</p>
+          </div>
+          <i className="flow__arrow" aria-hidden="true">→</i>
+          <div className="flow__step">
+            <div className="flow__badge"><FlowIcon kind="scan" /></div>
+            <h3>Scan on your phone</h3>
+            <p>Camera, paste, or upload — the same normalization runs on mobile and desktop.</p>
+          </div>
+          <i className="flow__arrow" aria-hidden="true">→</i>
+          <div className="flow__step">
+            <div className="flow__badge"><FlowIcon kind="intent" /></div>
+            <h3>Get a PaymentIntent</h3>
+            <p>Recognized, validated, normalized — one typed shape, ready for your app to act on.</p>
+          </div>
+          <i className="flow__arrow" aria-hidden="true">→</i>
+          <div className="flow__step">
+            <div className="flow__badge"><FlowIcon kind="open" /></div>
+            <h3>Open the app</h3>
+            <p>Hand off to the real wallet or payment app to finish it — UniPayScan never touches the funds.</p>
           </div>
         </div>
       </section>
