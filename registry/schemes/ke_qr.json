@@ -1,14 +1,14 @@
 {
-  "scheme": "twqr",
-  "displayName": "TWQR",
+  "scheme": "ke_qr",
+  "displayName": "KE-QR",
   "country": [
-    "TW"
+    "KE"
   ],
   "category": "bank_transfer",
-  "standard": "Taiwan EMVCo-based common QR code",
+  "standard": "Central Bank of Kenya KE-QR Code Standard (EMVCo Merchant-Presented Mode)",
   "parserVersion": "0.1.0",
-  "maturity": "community",
-  "identification": "generic",
+  "maturity": "beta",
+  "identification": "exact",
   "supported": true,
   "nonPayment": false,
   "lastVerified": "2026-09-20",
@@ -19,6 +19,6 @@
     "dynamic": true
   },
   "references": [
-    "https://www.emvco.com/emv-technologies/qr-codes/"
+    "https://www.centralbank.go.ke/QR/KenyaQuickResponseCodeStandard.pdf"
   ]
 }

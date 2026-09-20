@@ -159,4 +159,23 @@
   `flutter pub publish --dry-run` now reports 0 warnings. Not yet actually published to pub.dev -
   that step needs an interactive Google-account login this environment can't perform - so
   `bindings/flutter/README.md` documents installing via a git dependency in the meantime.
+- Added two national EMVCo overlays after researching which of the wishlist's remaining countries
+  actually have a public payload spec (most didn't): **KE-QR** (`ke_qr`, Kenya) at `beta` maturity
+  with a confirmed GUID - `ke.go.qr`, quoted verbatim from the Central Bank of Kenya's own KE-QR
+  Code Standard PDF ("The Kenya default Globally Unique Identifier will be 'ke.go.qr'") - and
+  **NQR** (`nqr`, Nigeria) at `community` maturity - CBN's own framework confirms NQR "is based on
+  EMV® QR Code Specification", but no specific GUID could be confirmed from available public
+  sources, so it's detected the same generic country-tag way as the other nine `community`-tier
+  overlays. Added the two missing `currency_from_numeric` entries this needed (KES/404, NGN/566).
+  Also researched and explicitly deferred, same standard as everywhere else in this project: UAE
+  (Aani uses ISO 20022, not a confirmed EMVCo QR payload), Saudi Arabia (SAMA's national QR
+  platform was still in development, not yet launched), Russia (no public SBP QR payload format
+  found), and Costa Rica (SINPE Móvil has no QR support at all yet - BCCR's own public roadmap
+  targets 2028, confirming why this was deferred back when this project's original country
+  wishlist was first scoped). Corrected README.md's "researched, not covered" note, which had
+  drifted stale and was incorrectly still listing Zelle as having no public spec at all - it does
+  now (the public enrollment-link shape, added since that note was written; the underlying
+  transfer QR payload genuinely still has none), and backfilled the README scheme table with ten
+  other real, shipped schemes (Zelle, Revolut, Wise, Monzo, Interac, Swish, Vipps, Monero, Zcash,
+  UnionPay) that were implemented without the table being updated alongside them.
 

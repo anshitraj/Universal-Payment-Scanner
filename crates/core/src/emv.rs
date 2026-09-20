@@ -194,6 +194,8 @@ pub fn currency_from_numeric(code: &str) -> Option<&'static str> {
         "410" => Some("KRW"),
         "344" => Some("HKD"),
         "032" => Some("ARS"),
+        "404" => Some("KES"),
+        "566" => Some("NGN"),
         _ => None,
     }
 }

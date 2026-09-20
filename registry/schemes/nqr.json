@@ -1,11 +1,11 @@
 {
-  "scheme": "twqr",
-  "displayName": "TWQR",
+  "scheme": "nqr",
+  "displayName": "NQR",
   "country": [
-    "TW"
+    "NG"
   ],
   "category": "bank_transfer",
-  "standard": "Taiwan EMVCo-based common QR code",
+  "standard": "CBN/NIBSS Nigeria Quick Response Code (EMV QR Code Specification, Merchant-Presented Mode)",
   "parserVersion": "0.1.0",
   "maturity": "community",
   "identification": "generic",
@@ -19,6 +19,7 @@
     "dynamic": true
   },
   "references": [
-    "https://www.emvco.com/emv-technologies/qr-codes/"
+    "https://www.cbn.gov.ng/out/2021/ccd/framework%20for%20quick%20response%20(qr)%20code%20payments%20in%20nigeria.pdf",
+    "https://nibss-plc.com.ng/nqr/"
   ]
 }

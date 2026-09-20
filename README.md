@@ -60,16 +60,28 @@ A disabled scheme remains recognized:
 | TWQR | TW | Community | EMV structure/CRC, generic country-tag detection (GUID not yet confirmed) | None |
 | ZeroPay | KR | Community | EMV structure/CRC, generic country-tag detection (GUID not yet confirmed) | None |
 | Mercado Pago | AR | Community | EMV structure/CRC, generic country-tag detection (BCRA mandates EMVCo; GUID not yet confirmed) | None |
+| KE-QR | KE | Beta | EMV structure/CRC, confirmed GUID `ke.go.qr` (Central Bank of Kenya) | None |
+| NQR | NG | Community | EMV structure/CRC, generic country-tag detection (CBN/NIBSS mandates EMVCo; GUID not yet confirmed) | None |
 | PayPal | Global | Beta | public link shape (`paypal_me`, `invoice_qr` subtypes) | None |
 | Venmo | US | Beta | public profile link shape (`/u/<handle>` only, to avoid misreading other venmo.com pages) | None |
 | Cash App | US, GB | Beta | public `$cashtag` link shape | None |
+| Zelle | US | Beta | `enroll.zellepay.com/qr-codes` enrollment link shape - not the underlying transfer payload, which has no public spec | None |
+| Revolut | GB | Beta | public `revolut.me` link shape | None |
+| Wise | Global | Beta | public Wise pay-link shape | None |
+| Monzo | GB | Beta | public `monzo.me` link shape | None |
+| Interac e-Transfer | CA | Beta | `etransfer.interac.ca` link shape (opaque reference; the transfer itself is bank-mediated, no public payload spec) | None |
+| Swish | SE | Beta | public Swish universal link shape | None |
+| Vipps | NO | Beta | public Vipps QR redirect link shape | None |
 | Lightning BOLT-11 | Global | Experimental | recognizable invoice prefix and bounds only | None |
 | Alipay | CN | Experimental | link shape only; proprietary, `PROPRIETARY_FORMAT` | None |
 | WeChat Pay | CN | Experimental | link shape only; proprietary, `PROPRIETARY_FORMAT` | None |
+| UnionPay QR | CN | Experimental | `qr.95516.com` link shape only; proprietary, `PROPRIETARY_FORMAT` | None |
 | TRON (TRC-20) | Global | Beta | Base58Check address, double-SHA256 checksum | None |
 | TON | Global | Beta | user-friendly address, CRC16/XMODEM checksum | None |
 | XRP Ledger | Global | Beta | classic address, XRPL base58 alphabet, checksum | None |
 | Stellar | Global | Beta | strkey ed25519 public key, CRC16/XMODEM checksum | None |
+| Monero | Global | Beta | CryptoNote Base58 (not Bitcoin-style Base58Check), Keccak-256 checksum | None |
+| Zcash | Global | Beta | transparent t-addr, Base58Check with a 2-byte version prefix, double-SHA256 checksum | None |
 | WalletConnect | Global | Beta | pairing URI shape; recognized, flagged `NOT_PAYMENT_QR` | None |
 | Authenticator (OTP) setup | Global | Beta | `otpauth://` shape; secret never extracted or stored | None |
 | Generic URL | Global | Beta | any other well-formed `http(s)://` link; flagged `NOT_PAYMENT_QR` | None |
@@ -90,12 +102,16 @@ scanner that can only say "unknown QR" for a wallet-connection request or a 2FA 
 less trustworthy than one that says what it actually found - see
 [architecture](docs/architecture.md).
 
-Bhutan, Brunei, Mongolia (QPay), Kazakhstan (Unified QR), Kyrgyzstan (ELQR), and Zelle (no public
-payload spec exists at all - confirmed bank-proprietary, no public API or URI scheme) are not yet
+Bhutan, Brunei, Mongolia (QPay), Kazakhstan (Unified QR), and Kyrgyzstan (ELQR) are not yet
 covered: research for this release did not surface a usable public payload specification for any
 of them, and this project does not ship a parser it cannot verify against one. Standalone TWINT
 (distinct from a Swiss QR-bill a TWINT app can pay) and PayPal's seller/payment-link QR subtypes
-are similarly deferred pending a confirmed URL pattern.
+are similarly deferred pending a confirmed URL pattern. Also researched and deferred: UAE (Aani
+uses ISO 20022, not a confirmed EMVCo QR payload), Saudi Arabia (SAMA's national QR platform was
+still in development as of this research), Russia (SBP's QR payload format could not be confirmed
+publicly), and Costa Rica (SINPE Móvil has no QR support yet - BCCR's own roadmap targets 2028).
+Zelle's underlying transfer QR has no public spec either (bank-proprietary, confirmed via Early
+Warning Services), but its public enrollment link does and is covered above.
 
 ## Scheme Registry
 

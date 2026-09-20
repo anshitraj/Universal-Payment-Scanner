@@ -1,8 +1,8 @@
 {
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-09-08",
-  "sourceCommit": "4fe6d06e772fe1aa1c70657f6c2d0a3d2d7b1e6b",
-  "count": 49,
+  "generatedAt": "2026-09-20",
+  "sourceCommit": "e6bc402130c501e787a9bcbec75612709d893ec7",
+  "count": 51,
   "schemes": [
     {
       "scheme": "alipay",
@@ -17,7 +17,7 @@
       "identification": "heuristic",
       "supported": false,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -41,7 +41,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -63,7 +63,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": false,
@@ -88,7 +88,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": false,
@@ -112,7 +112,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -134,7 +134,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -156,7 +156,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -178,7 +178,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": false,
@@ -202,7 +202,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -226,7 +226,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -250,7 +250,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -259,6 +259,30 @@
       },
       "references": [
         "https://www.paymentsjapan.or.jp"
+      ]
+    },
+    {
+      "scheme": "ke_qr",
+      "displayName": "KE-QR",
+      "country": [
+        "KE"
+      ],
+      "category": "bank_transfer",
+      "standard": "Central Bank of Kenya KE-QR Code Standard (EMVCo Merchant-Presented Mode)",
+      "parserVersion": "0.1.0",
+      "maturity": "beta",
+      "identification": "exact",
+      "supported": true,
+      "nonPayment": false,
+      "lastVerified": "2026-09-20",
+      "supports": {
+        "amount": true,
+        "merchant": true,
+        "currency": true,
+        "dynamic": true
+      },
+      "references": [
+        "https://www.centralbank.go.ke/QR/KenyaQuickResponseCodeStandard.pdf"
       ]
     },
     {
@@ -274,7 +298,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -298,7 +322,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -322,7 +346,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -344,7 +368,7 @@
       "identification": "heuristic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -368,7 +392,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -392,7 +416,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -414,7 +438,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": false,
@@ -439,7 +463,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": false,
@@ -463,7 +487,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -472,6 +496,31 @@
       },
       "references": [
         "https://www.nrb.org.np/contents/uploads/2021/01/QR-Code-Guidelines-and-Framework-and-Specifications.pdf"
+      ]
+    },
+    {
+      "scheme": "nqr",
+      "displayName": "NQR",
+      "country": [
+        "NG"
+      ],
+      "category": "bank_transfer",
+      "standard": "CBN/NIBSS Nigeria Quick Response Code (EMV QR Code Specification, Merchant-Presented Mode)",
+      "parserVersion": "0.1.0",
+      "maturity": "community",
+      "identification": "generic",
+      "supported": true,
+      "nonPayment": false,
+      "lastVerified": "2026-09-20",
+      "supports": {
+        "amount": true,
+        "merchant": true,
+        "currency": true,
+        "dynamic": true
+      },
+      "references": [
+        "https://www.cbn.gov.ng/out/2021/ccd/framework%20for%20quick%20response%20(qr)%20code%20payments%20in%20nigeria.pdf",
+        "https://nibss-plc.com.ng/nqr/"
       ]
     },
     {
@@ -485,7 +534,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": true,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -509,7 +558,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -531,7 +580,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": false,
@@ -556,7 +605,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -580,7 +629,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -604,7 +653,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -628,7 +677,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -652,7 +701,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -676,7 +725,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": false,
@@ -698,7 +747,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": false,
@@ -720,7 +769,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -744,7 +793,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -769,7 +818,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -791,7 +840,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -813,7 +862,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -837,7 +886,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -861,7 +910,7 @@
       "identification": "heuristic",
       "supported": false,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -885,7 +934,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -907,7 +956,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": true,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -931,7 +980,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -955,7 +1004,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,
@@ -979,7 +1028,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -1001,7 +1050,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": true,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -1025,7 +1074,7 @@
       "identification": "heuristic",
       "supported": false,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -1047,7 +1096,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -1069,7 +1118,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -1091,7 +1140,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": false,
@@ -1116,7 +1165,7 @@
       "identification": "exact",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": false,
         "merchant": false,
@@ -1140,7 +1189,7 @@
       "identification": "generic",
       "supported": true,
       "nonPayment": false,
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-20",
       "supports": {
         "amount": true,
         "merchant": true,

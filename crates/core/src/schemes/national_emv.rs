@@ -324,6 +324,18 @@ overlay!(
         "https://www.nrb.org.np/contents/uploads/2021/01/QR-Code-Guidelines-and-Framework-and-Specifications.pdf"
     ]
 );
+overlay!(
+    KE_QR,
+    "ke_qr",
+    "KE-QR",
+    "PesaLink",
+    "KE",
+    ("404", "KES"),
+    &["ke.go.qr"],
+    "Central Bank of Kenya KE-QR Code Standard (EMVCo Merchant-Presented Mode)",
+    Maturity::Beta,
+    &["https://www.centralbank.go.ke/QR/KenyaQuickResponseCodeStandard.pdf"]
+);
 
 // Tier 2: the national standard and its EMVCo basis are confirmed from a public source, but no
 // specific GUID has been verified yet. Detected via the generic envelope plus the country field
@@ -448,6 +460,21 @@ overlay!(
     Maturity::Community,
     &["https://www.bcra.gob.ar"]
 );
+overlay!(
+    NQR,
+    "nqr",
+    "NQR",
+    "NIBSS",
+    "NG",
+    ("566", "NGN"),
+    &[],
+    "CBN/NIBSS Nigeria Quick Response Code (EMV QR Code Specification, Merchant-Presented Mode)",
+    Maturity::Community,
+    &[
+        "https://www.cbn.gov.ng/out/2021/ccd/framework%20for%20quick%20response%20(qr)%20code%20payments%20in%20nigeria.pdf",
+        "https://nibss-plc.com.ng/nqr/"
+    ]
+);
 
 pub const OVERLAYS: &[&NationalOverlayConfig] = &[
     &PROMPTPAY,
@@ -458,6 +485,7 @@ pub const OVERLAYS: &[&NationalOverlayConfig] = &[
     &QR_PH,
     &HKQR,
     &NEPALPAY_QR,
+    &KE_QR,
     &KHQR,
     &LANKAQR,
     &BANGLA_QR,
@@ -468,6 +496,7 @@ pub const OVERLAYS: &[&NationalOverlayConfig] = &[
     &TWQR,
     &ZEROPAY,
     &MERCADO_PAGO,
+    &NQR,
 ];
 
 #[cfg(test)]
@@ -491,6 +520,11 @@ mod tests {
     const NEPALPAY_QR: &str = "00020101021126300010np.gov.nrb0112NCHL0000123452045999530352454041.005802NP5913TEST MERCHANT6009KATHMANDU6304A6A5";
     const LANKAQR: &str = "00020101021129320011lk.gov.cbsl0113123456789012352045999530314454041.005802LK5913TEST MERCHANT6007COLOMBO630440A5";
     const MMQR: &str = "00020101021129290011mm.com.mmqr0110091234567852045999530310454041.005802MM5913TEST MERCHANT6006YANGON630483CE";
+    // GUID "ke.go.qr" confirmed verbatim from the Central Bank of Kenya's own KE-QR Code
+    // Standard PDF ("The Kenya default Globally Unique Identifier will be 'ke.go.qr'"), nested
+    // in tag 28 per that document's own sample payloads - not guessed.
+    const KE_QR: &str = "00020101021128260008ke.go.qr011001234567895204599953034045406500.005802KE5913TEST MERCHANT6007NAIROBI6304D640";
+    const NQR: &str = "00020101021126330012ng.com.nibss0113012345678901252045999530356654071000.005802NG5913TEST MERCHANT6005LAGOS63044795";
     /// A real VietQR personal-account transfer has no merchant category code, name, or city -
     /// those are merchant-only fields the base EMVCo spec calls mandatory but NAPAS omits for
     /// P2P. Reported against a real scanned VietQR that failed with "Required EMV field 52 is
@@ -636,6 +670,31 @@ mod tests {
         assert_eq!(intent.possible_scheme, None);
         assert_eq!(intent.identification, Some(Identification::GuidMatch));
         assert_eq!(intent.confidence, Some(Confidence::High));
+    }
+
+    #[test]
+    fn ke_qr_guid_is_recognized_and_normalized() {
+        let intent = parse_payment_qr(KE_QR);
+        assert!(intent.validation.valid, "{:?}", intent.validation.errors);
+        assert_eq!(intent.scheme, "ke_qr");
+        assert_eq!(intent.currency.as_deref(), Some("KES"));
+        assert_eq!(intent.amount.as_deref(), Some("500.00"));
+    }
+
+    #[test]
+    fn nqr_country_tag_is_recognized_generically() {
+        use crate::Identification;
+        let intent = parse_payment_qr(NQR);
+        assert!(intent.validation.valid, "{:?}", intent.validation.errors);
+        // Tier 2: no confirmed GUID yet, so `scheme` stays the generic EMVCo identity and the
+        // specific guess moves to `possibleScheme` - same as every other Tier 2 overlay.
+        assert_eq!(intent.scheme, "emvco_mpm");
+        assert_eq!(intent.possible_scheme.as_deref(), Some("nqr"));
+        assert_eq!(
+            intent.identification,
+            Some(Identification::CountryLevelInference)
+        );
+        assert_eq!(intent.currency.as_deref(), Some("NGN"));
     }
 
     #[test]
