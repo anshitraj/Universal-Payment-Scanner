@@ -23,6 +23,7 @@ import {
   payWithEthereumWallet,
   type EthereumWalletOption,
 } from "../payments/ethereumWallets";
+import { listTronWallets, payWithTronWallet, tronExplorerUrl, type TronWalletOption } from "../payments/tronWallets";
 import { listPaymentAttempts, recordPaymentAttempt, type PaymentAttempt } from "../payments/transactionLog";
 
 type ButtonState = { status: "idle" } | { status: "busy" } | { status: "warning"; text: string } | { status: "success"; text: string; link?: string } | { status: "error"; text: string };
@@ -58,6 +59,7 @@ export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
   const [open, setOpen] = useState(false);
   const [solanaWallets, setSolanaWallets] = useState<SolanaWalletOption[]>([]);
   const [ethereumWallets, setEthereumWallets] = useState<EthereumWalletOption[] | null>(null);
+  const [tronWallets, setTronWallets] = useState<TronWalletOption[] | null>(null);
   const [buttonStates, setButtonStates] = useState<Record<string, ButtonState>>({});
   const [log, setLog] = useState<PaymentAttempt[]>([]);
 
@@ -81,6 +83,13 @@ export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
     if (open && action?.type === "wallet" && isKnownEvmChain(action.network)) {
       setEthereumWallets(null);
       void listEthereumWallets().then(setEthereumWallets);
+    }
+  }, [open, action]);
+
+  useEffect(() => {
+    if (open && action?.type === "wallet" && action.network === "tron") {
+      setTronWallets(null);
+      void listTronWallets().then(setTronWallets);
     }
   }, [open, action]);
 
@@ -135,6 +144,20 @@ export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
       log_({ scheme: intent.scheme, wallet: option.name, amount: intent.amount, currency: intent.currency ?? intent.asset?.symbol, recipient: recipientLabel(intent), outcome: "signed", detail: txHash, explorerUrl });
     } catch (error) {
       const message = error instanceof Error ? error.message : "The wallet rejected or failed to send this transaction.";
+      setState(option.name, { status: "error", text: message });
+      log_({ scheme: intent.scheme, wallet: option.name, amount: intent.amount, currency: intent.currency ?? intent.asset?.symbol, recipient: recipientLabel(intent), outcome: "failed", detail: message });
+    }
+  };
+
+  const payTron = async (option: TronWalletOption) => {
+    setState(option.name, { status: "busy" });
+    try {
+      const { txId } = await payWithTronWallet(option, intent);
+      const explorerUrl = tronExplorerUrl(txId);
+      setState(option.name, { status: "success", text: "Signed and broadcast.", link: explorerUrl });
+      log_({ scheme: intent.scheme, wallet: option.name, amount: intent.amount, currency: intent.currency ?? intent.asset?.symbol, recipient: recipientLabel(intent), outcome: "signed", detail: txId, explorerUrl });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "The wallet rejected or failed to sign this transaction.";
       setState(option.name, { status: "error", text: message });
       log_({ scheme: intent.scheme, wallet: option.name, amount: intent.amount, currency: intent.currency ?? intent.asset?.symbol, recipient: recipientLabel(intent), outcome: "failed", detail: message });
     }
@@ -252,6 +275,21 @@ export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
               </>
             )}
 
+            {action.type === "wallet" && action.network === "tron" && (
+              <>
+                {tronWallets === null && <p className="pay-panel__hint">Looking for a wallet extension…</p>}
+                {tronWallets?.length === 0 && (
+                  <>
+                    <p className="pay-panel__hint">No TRON wallet extension (e.g. TronLink) detected in this browser.</p>
+                    {copyableRecipient(intent) && <CopyButton value={copyableRecipient(intent)!} label="Copy address" />}
+                  </>
+                )}
+                {tronWallets?.map((w) => (
+                  <WalletButton key={w.name} name={w.name} icon={w.icon} state={buttonStates[w.name]} onClick={() => void payTron(w)} />
+                ))}
+              </>
+            )}
+
             {action.type === "redirect" && action.provider !== "venmo" && genericLink && (
               <WalletButton
                 name={action.provider ? providerLabel(action.provider) : "Open link"}
@@ -261,7 +299,7 @@ export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
               />
             )}
 
-            {action.type === "wallet" && action.network !== "solana" && !isKnownEvmChain(action.network) && (
+            {action.type === "wallet" && action.network !== "solana" && action.network !== "tron" && !isKnownEvmChain(action.network) && (
               <>
                 {hasUriScheme(genericLink) && (
                   <WalletButton
