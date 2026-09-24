@@ -2,6 +2,7 @@ import { Buffer } from "buffer";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "@fontsource-variable/manrope";
+import "@fontsource-variable/space-grotesk";
 import { App } from "./app.js";
 import "./app.css";
 
@@ -12,4 +13,3 @@ import "./app.css";
 window.Buffer = Buffer;
 
 ReactDOM.createRoot(document.getElementById("root")!).render(<React.StrictMode><App /></React.StrictMode>);
-

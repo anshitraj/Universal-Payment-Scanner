@@ -16,7 +16,7 @@ with sync_playwright() as playwright:
 
     page.goto("http://127.0.0.1:4173")
     page.wait_for_load_state("networkidle")
-    assert page.get_by_role("heading", name="One scanner for every payment QR.").is_visible()
+    assert page.get_by_role("heading", name="Scan any payment QR. Get one clean intent.").is_visible()
 
     payload = page.get_by_label("Raw QR payload")
     payload.fill("upi://pay?pa=merchant%40bank&pn=Example&am=499.00&cu=INR")
@@ -27,6 +27,7 @@ with sync_playwright() as playwright:
     assert '"amount": "499.00"' in page.locator(".json-panel pre").inner_text()
 
     page.locator(".scheme-list label", has_text="Solana Pay").get_by_role("checkbox").uncheck()
+    page.wait_for_timeout(150)  # allow the policy-backed scanner instance to refresh
     payload.fill("solana:9xQeWvG816bUx9EPfEZi4q3G44E2sA6v7a6D9k5GmRse?amount=1.25")
     page.get_by_role("button", name="Parse intent").click()
     page.get_by_text("Solana Pay payments are not supported by this application.", exact=True).wait_for()

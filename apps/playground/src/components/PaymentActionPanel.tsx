@@ -97,6 +97,23 @@ export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
     if (open) setLog(listPaymentAttempts());
   }, [open, buttonStates]);
 
+  const solanaLink = useMemo(() => {
+    if (action?.type !== "wallet" || action.network !== "solana") return undefined;
+    try {
+      return genericSolanaLink(intent);
+    } catch {
+      return undefined;
+    }
+  }, [action, intent]);
+  const ethereumLink = useMemo(() => {
+    if (action?.type !== "wallet" || !isKnownEvmChain(action.network)) return undefined;
+    try {
+      return genericEthereumLink(intent);
+    } catch {
+      return undefined;
+    }
+  }, [action, intent]);
+
   if (!launchable || !action) return null;
 
   const setState = (key: string, state: ButtonState) => setButtonStates((prev) => ({ ...prev, [key]: state }));
@@ -166,22 +183,6 @@ export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
   const venmo = action.type === "redirect" && action.provider === "venmo" ? venmoLinks(intent) : null;
   const upiApps = action.type === "deeplink" && action.scheme === "upi" ? UPI_APPS : [];
   const genericLink = action.uri ?? undefined;
-  const solanaLink = useMemo(() => {
-    if (action.type !== "wallet" || action.network !== "solana") return undefined;
-    try {
-      return genericSolanaLink(intent);
-    } catch {
-      return undefined;
-    }
-  }, [action, intent]);
-  const ethereumLink = useMemo(() => {
-    if (action.type !== "wallet" || !isKnownEvmChain(action.network)) return undefined;
-    try {
-      return genericEthereumLink(intent);
-    } catch {
-      return undefined;
-    }
-  }, [action, intent]);
 
   return (
     <div className="pay-panel">

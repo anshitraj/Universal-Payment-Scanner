@@ -57,3 +57,116 @@
 .upqr-rescan:hover { background: var(--upqr-accent); }
 @media (max-width: 560px) { .upqr-scanner { grid-template-columns: 1.8rem 1fr; min-height: 34rem; }.upqr-scanner__main { padding: 1.1rem; }.upqr-private { display: none; }.upqr-status dl { grid-template-columns: 1fr; }.upqr-scanner h2 { font-size: 2.65rem; } }
 @media (prefers-reduced-motion: no-preference) { .upqr-stage { animation: upqr-reveal .42s cubic-bezier(.2,.75,.2,1) both; } @keyframes upqr-reveal { from { opacity: 0; transform: translateY(8px); } } }
+
+/* Instrument-panel refinement: stronger hierarchy and clearer interactive states. */
+.upqr-scanner {
+  position: relative;
+  overflow: hidden;
+  border-top: 3px solid var(--upqr-accent);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--upqr-ink) 3%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--upqr-ink) 3%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.upqr-scanner::after {
+  content: "SCANNER / LOCAL";
+  position: absolute;
+  right: .75rem;
+  bottom: .6rem;
+  color: color-mix(in srgb, var(--upqr-ink) 32%, transparent);
+  font: 750 .5rem/1 ui-monospace, monospace;
+  letter-spacing: .14em;
+  pointer-events: none;
+}
+.upqr-scanner__rail {
+  background: color-mix(in srgb, var(--upqr-ink) 4%, transparent);
+  font-family: ui-monospace, monospace;
+  font-weight: 750;
+}
+.upqr-scanner__rail span:first-child { color: var(--upqr-accent); }
+.upqr-scanner__rail i {
+  background: linear-gradient(var(--upqr-accent), var(--upqr-line) 32%, var(--upqr-line));
+}
+.upqr-scanner h2 { text-wrap: balance; }
+.upqr-private {
+  padding: .52rem .65rem;
+  border: 1px solid var(--upqr-line);
+  background: color-mix(in srgb, white 28%, transparent);
+}
+.upqr-tabs {
+  gap: .35rem;
+  padding: .3rem;
+  border: 1px solid var(--upqr-line);
+  background: color-mix(in srgb, var(--upqr-ink) 4%, transparent);
+}
+.upqr-tabs button {
+  min-height: 2.65rem;
+  margin: 0;
+  padding: .75rem 1rem;
+  border: 1px solid transparent;
+  border-bottom-width: 1px;
+  transition: background .16s ease, color .16s ease, transform .16s ease;
+}
+.upqr-tabs button:hover { background: color-mix(in srgb, white 55%, transparent); }
+.upqr-tabs button[aria-pressed="true"] {
+  border-color: var(--upqr-accent);
+  background: var(--upqr-accent);
+  color: white;
+  box-shadow: 0 .5rem 1.2rem color-mix(in srgb, var(--upqr-accent) 24%, transparent);
+}
+.upqr-paste textarea {
+  border-width: 1px 1px 1px 3px;
+  border-left-color: var(--upqr-accent);
+  background: color-mix(in srgb, white 58%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 70%, transparent);
+}
+.upqr-paste button,
+.upqr-rescan {
+  min-height: 3rem;
+  box-shadow: .35rem .35rem 0 color-mix(in srgb, var(--upqr-accent) 28%, transparent);
+  transition: transform .16s ease, background .16s ease, box-shadow .16s ease;
+}
+.upqr-paste button:hover:not(:disabled),
+.upqr-rescan:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: .48rem .48rem 0 color-mix(in srgb, var(--upqr-accent) 24%, transparent);
+}
+.upqr-dropzone {
+  border-width: 2px;
+  background-color: color-mix(in srgb, white 36%, transparent);
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.upqr-dropzone:hover,
+.upqr-dropzone.is-dragging {
+  transform: translateY(-2px);
+  border-color: var(--upqr-accent);
+}
+.upqr-upload-mark { box-shadow: .45rem .45rem 0 color-mix(in srgb, var(--upqr-ink) 14%, transparent); }
+.upqr-camera::after {
+  content: "";
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  top: 16%;
+  height: 2px;
+  background: var(--upqr-mint);
+  box-shadow: 0 0 1rem var(--upqr-mint);
+  opacity: .9;
+}
+.upqr-status {
+  padding: 1rem;
+  border: 1px solid var(--upqr-line);
+  background: color-mix(in srgb, white 34%, transparent);
+}
+.upqr-status__signal { box-shadow: 0 0 0 .25rem color-mix(in srgb, currentColor 12%, transparent); }
+.upqr-status dl div { padding-top: .9rem; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .upqr-camera::after { animation: upqr-scanline 2.2s cubic-bezier(.4, 0, .2, 1) infinite alternate; }
+  @keyframes upqr-scanline { to { transform: translateY(11.2rem); } }
+}
+@media (max-width: 560px) {
+  .upqr-tabs { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .upqr-tabs button { padding-inline: .4rem; }
+  .upqr-scanner::after { display: none; }
+}
