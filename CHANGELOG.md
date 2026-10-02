@@ -2,6 +2,31 @@
 
 ## 0.1.0 - Unreleased
 
+- Added X Money (`x_money`, Beta): recognizes `https://x.com/<handle>` / `www.x.com` profile
+  links, which is what X's own QR codes encode, and hands off to that profile with a redirect URL
+  rebuilt from the validated handle (query strings and fragments are dropped). X Money has no
+  public payment link, QR payload, or API, so no amount is ever read or invented, and every intent
+  carries an `UNVERIFIED_RECIPIENT` warning: the QR names an account, not a confirmed X Money
+  recipient. Narrow by design - one path segment, a valid 1-15 character handle, not one of X's
+  own top-level pages (`/home`, `/explore`, `/i`, ...), no custom port; legacy `twitter.com` links
+  are not claimed. Registry identification is overridden to `heuristic` for the same reason. Note
+  for default-policy consumers: X profile links now come back as `x_money` instead of `url`.
+- Fixed `ALL_SCHEME_IDS` (`unipayscan`) drifting behind the Rust registry: Zelle, Revolut, Wise,
+  Monzo, Interac, Swish, Vipps, UnionPay, Monero, Zcash, KE-QR and NQR were missing, so a React
+  host passing `enabledSchemes` silently couldn't turn them on or off. Added a test that fails
+  whenever the list and `registry/schemes.json` disagree.
+- `@universal-payment-qr/react`: opt-in "UPI ID" tab (`upiIdEntry`) - type a UPI ID, an optional
+  "name you expect" and an optional amount; it is scanned as the `upi://pay` link NPCI defines,
+  so validation stays in the core parser. `onDetected`/`onUnsupported`/`onError` now also receive
+  a `ScanContext` (`source: "camera" | "paste" | "upload" | "upi_id"`), so a host can say whether
+  a payee name came from the QR or was typed by the user. The status panel shows the payee address
+  first, with any name beneath it marked unverified.
+- Playground: result card shows the UPI ID (or other address) and the payee name together, labelled
+  "from the QR" or "typed by you" and always "unverified"; the pay panel names both and reminds the
+  user that their UPI app shows the bank-registered name before the PIN. Fixed a mobile layout bug
+  where the scanner card and JSON panel overflowed a phone screen (single-column grids used `1fr`,
+  which can't shrink below a child's min-content).
+
 - **Breaking (schema 2.0.0):** the 10 country-tag-only national EMVCo overlays (KHQR, LankaQR,
   Bangla QR, Raast QR, MMQR, Lao QR, JPQR, TWQR, ZeroPay, Mercado Pago) no longer report their
   specific `scheme` id when no scheme-specific GUID has been confirmed - only the generic EMVCo

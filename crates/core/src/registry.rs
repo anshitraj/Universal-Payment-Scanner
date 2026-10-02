@@ -24,6 +24,7 @@ pub fn default_registry() -> Vec<Box<dyn PaymentScheme>> {
         Box::new(schemes::WeChatPay),
         Box::new(schemes::Venmo),
         Box::new(schemes::CashApp),
+        Box::new(schemes::XMoney),
         Box::new(schemes::Zelle),
         Box::new(schemes::Revolut),
         Box::new(schemes::Wise),

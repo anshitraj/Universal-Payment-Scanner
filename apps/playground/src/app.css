@@ -201,7 +201,7 @@ code { font-family: var(--mono); }
 .maturity--community { color: var(--accent-on-panel); }
 .maturity--experimental { color: #ff6b6b; }
 .scheme-list--static { margin-top: 1rem; max-height: none; }
-.scheme-static-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .7rem 0; border-bottom: 1px solid var(--panel-line-soft); font-size: .82rem; }
+.scheme-static-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .35rem 1rem; padding: .7rem 0; border-bottom: 1px solid var(--panel-line-soft); font-size: .82rem; }
 .scheme-static-row__name { display: flex; align-items: center; gap: .55rem; }
 .scheme-static-row > span:last-child { font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; color: var(--on-panel-muted); flex: none; }
 
@@ -221,6 +221,11 @@ code { font-family: var(--mono); }
 .result-card dl { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem 1.2rem; }
 .result-card dt { font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--on-panel-muted); }
 .result-card dd { margin: .3rem 0 0; font-size: .85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--on-panel); }
+.result-card__name { margin: 1rem 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem .7rem; font-size: .85rem; color: var(--on-panel); }
+.result-card__name span { font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--on-panel-muted); }
+.result-card__name strong { font-weight: 700; overflow-wrap: anywhere; }
+.result-card__name em { font-style: normal; font-size: .7rem; color: #ffb36b; }
+.result-card__name--empty { display: block; font-size: .75rem; line-height: 1.5; color: var(--on-panel-muted); }
 .result-card__trust { margin: 1.2rem 0 0; padding-top: 1rem; border-top: 1px solid var(--panel-line); font-size: .78rem; color: var(--on-panel-muted); }
 .result-card__trust strong { color: #ff8a8a; letter-spacing: .05em; }
 
@@ -351,7 +356,9 @@ footer { background: var(--bg-soft); border-top: 1px solid var(--line); padding:
 footer > p { margin: 0; font-size: .8rem; color: var(--ink-soft); max-width: 42rem; }
 
 @media (max-width: 900px) {
-  .hero__grid, .workspace, .output, .security__body, .compare__grid, .cta-band { grid-template-columns: 1fr; }
+  /* minmax(0, 1fr), not 1fr: a bare 1fr track can't shrink below its widest child's min-content
+     (the scanner card, the JSON panel), which pushed both past a phone's screen edge. */
+  .hero__grid, .workspace, .output, .security__body, .compare__grid, .cta-band { grid-template-columns: minmax(0, 1fr); }
   .cta-band > .install { justify-self: stretch; }
   .masthead { grid-template-columns: 1fr auto; }
   .masthead__links { display: none; }

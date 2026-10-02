@@ -65,6 +65,7 @@ A disabled scheme remains recognized:
 | PayPal | Global | Beta | public link shape (`paypal_me`, `invoice_qr` subtypes) | None |
 | Venmo | US | Beta | public profile link shape (`/u/<handle>` only, to avoid misreading other venmo.com pages) | None |
 | Cash App | US, GB | Beta | public `$cashtag` link shape | None |
+| X Money | Global | Beta | `x.com/<handle>` profile link - what X's own QR codes encode; X's site pages excluded. Identifies the account only: whether it accepts X Money can't be read from the QR, so it carries an unverified-recipient warning (registry identification: `heuristic`) | None |
 | Zelle | US | Beta | `enroll.zellepay.com/qr-codes` enrollment link shape - not the underlying transfer payload, which has no public spec | None |
 | Revolut | GB | Beta | public `revolut.me` link shape | None |
 | Wise | Global | Beta | public Wise pay-link shape | None |
@@ -112,6 +113,17 @@ still in development as of this research), Russia (SBP's QR payload format could
 publicly), and Costa Rica (SINPE Móvil has no QR support yet - BCCR's own roadmap targets 2028).
 Zelle's underlying transfer QR has no public spec either (bank-proprietary, confirmed via Early
 Warning Services), but its public enrollment link does and is covered above.
+
+X Money has no published payment link, QR payload, or API: money is sent from inside the X app,
+starting from the recipient's profile. The X Money row above therefore recognizes the profile link
+X's QR codes encode and hands off to that profile - it never reads or builds an amount. Because
+`x.com/<handle>` is also every account's ordinary social profile link, the default policy
+reports such links as `x_money` rather than as a plain website link.
+
+A UPI ID's bank-registered name can't be looked up here: that takes NPCI's address validation,
+which is open only to licensed payment apps and paid KYC services. A UPI QR's `pn` (payee name) is
+reported as-is - whoever made the QR typed it - and the payer's own UPI app shows the bank's name
+before the PIN step.
 
 ## Scheme Registry
 

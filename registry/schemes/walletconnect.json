@@ -9,7 +9,7 @@
   "identification": "exact",
   "supported": true,
   "nonPayment": true,
-  "lastVerified": "2026-09-20",
+  "lastVerified": "2026-10-02",
   "supports": {
     "amount": false,
     "merchant": false,

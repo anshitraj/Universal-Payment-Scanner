@@ -1,14 +1,12 @@
 {
-  "scheme": "interac",
-  "displayName": "Interac e-Transfer",
-  "country": [
-    "CA"
-  ],
+  "scheme": "x_money",
+  "displayName": "X Money",
+  "country": [],
   "category": "payment_link",
-  "standard": "Interac e-Transfer QR link",
+  "standard": "Public X profile link (account handle only)",
   "parserVersion": "0.1.0",
   "maturity": "beta",
-  "identification": "exact",
+  "identification": "heuristic",
   "supported": true,
   "nonPayment": false,
   "lastVerified": "2026-10-02",
@@ -19,6 +17,6 @@
     "dynamic": false
   },
   "references": [
-    "https://www.interac.ca/en/interac-e-transfer/"
+    "https://help.x.com/en/using-x/qr-codes"
   ]
 }

@@ -27,6 +27,15 @@ const defaultMessages: ScannerMessages = {
 
 type ScannerState = "idle" | "requesting" | "scanning" | "processing" | "success" | "unsupported" | "error";
 
+/** Where a scanned payload came from. `upi_id` means the user typed a UPI ID into the UPI ID tab,
+ * so any payee name on the intent is one they typed themselves, not one printed in a QR - a host
+ * should label it that way. */
+export type ScanSource = "camera" | "paste" | "upload" | "upi_id";
+
+export interface ScanContext {
+  source: ScanSource;
+}
+
 export interface PaymentQRScannerProps {
   enabledSchemes?: string[];
   scanner?: Scanner;
@@ -36,9 +45,26 @@ export interface PaymentQRScannerProps {
   /** Drives the paste tab from outside (e.g. a host app's "try an example" button) — set a new
    * `key` each time to force a re-scan, even if `payload` is unchanged from the last one. */
   example?: { key: string | number; payload: string } | undefined;
-  onDetected?(intent: PaymentIntent): void;
-  onUnsupported?(intent: PaymentIntent): void;
-  onError?(error: Error, intent?: PaymentIntent): void;
+  /** Adds a "UPI ID" tab: the user types a UPI ID (plus an optional payee name and amount) and it
+   * is scanned as the `upi://pay` link NPCI defines for it. Off by default because it is
+   * India-specific, and because a bare `name@bank` can't be told apart from an email address -
+   * choosing this tab is what says "this is a UPI ID", so the core never has to guess. */
+  upiIdEntry?: boolean;
+  onDetected?(intent: PaymentIntent, context?: ScanContext): void;
+  onUnsupported?(intent: PaymentIntent, context?: ScanContext): void;
+  onError?(error: Error, intent?: PaymentIntent, context?: ScanContext): void;
+}
+
+/** The `upi://pay` link for a typed UPI ID. `@` stays literal in `pa` (as in NPCI's own examples);
+ * everything else is percent-encoded, so a stray `&` in a name can't inject another parameter.
+ * Validation is left to the core's UPI parser, the one source of truth for what a valid payee
+ * address and amount are. */
+function upiPayLink(upiId: string, payeeName: string, amount: string): string {
+  const params = [`pa=${encodeURIComponent(upiId).replace(/%40/g, "@")}`];
+  if (payeeName) params.push(`pn=${encodeURIComponent(payeeName)}`);
+  if (amount) params.push(`am=${encodeURIComponent(amount)}`);
+  params.push("cu=INR");
+  return `upi://pay?${params.join("&")}`;
 }
 
 export function usePaymentQRScanner(options: Pick<PaymentQRScannerProps, "enabledSchemes" | "scanner" | "onDetected" | "onUnsupported" | "onError">) {
@@ -49,7 +75,7 @@ export function usePaymentQRScanner(options: Pick<PaymentQRScannerProps, "enable
   const [intent, setIntent] = useState<PaymentIntent>();
   const [error, setError] = useState<Error>();
 
-  const scan = useCallback(async (payload: string) => {
+  const scan = useCallback(async (payload: string, context?: ScanContext) => {
     setState("processing");
     setError(undefined);
     try {
@@ -59,25 +85,28 @@ export function usePaymentQRScanner(options: Pick<PaymentQRScannerProps, "enable
         const problem = new Error(next.validation.errors[0]?.message ?? "Invalid payment QR.");
         setError(problem);
         setState("error");
-        options.onError?.(problem, next);
+        options.onError?.(problem, next, context);
       } else if (!next.supported) {
         setState("unsupported");
-        options.onUnsupported?.(next);
+        options.onUnsupported?.(next, context);
       } else {
         setState("success");
-        options.onDetected?.(next);
+        options.onDetected?.(next, context);
       }
       return next;
     } catch (cause) {
       const problem = cause instanceof Error ? cause : new Error(String(cause));
       setError(problem);
       setState("error");
-      options.onError?.(problem);
+      options.onError?.(problem, undefined, context);
       return undefined;
     }
   }, [scanner, options.onDetected, options.onUnsupported, options.onError]);
 
-  const scanImage = useCallback(async (file: Blob) => scan(await decodePaymentQRImage(file)), [scan]);
+  const scanImage = useCallback(
+    async (file: Blob) => scan(await decodePaymentQRImage(file), { source: "upload" }),
+    [scan],
+  );
   const reset = useCallback(() => { setIntent(undefined); setError(undefined); setState("idle"); }, []);
   return { scanner, state, setState, intent, error, scan, scanImage, reset };
 }
@@ -87,8 +116,11 @@ export function PaymentQRScanner(props: PaymentQRScannerProps) {
   const controller = usePaymentQRScanner(props);
   const videoRef = useRef<HTMLVideoElement>(null);
   const cameraRef = useRef<CameraSession | undefined>(undefined);
-  const [mode, setMode] = useState<"paste" | "camera" | "upload">("paste");
+  const [mode, setMode] = useState<"paste" | "camera" | "upload" | "upi_id">("paste");
   const [payload, setPayload] = useState("");
+  const [upiId, setUpiId] = useState("");
+  const [upiName, setUpiName] = useState("");
+  const [upiAmount, setUpiAmount] = useState("");
   const [dragging, setDragging] = useState(false);
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
   const [activeCamera, setActiveCamera] = useState(0);
@@ -100,7 +132,7 @@ export function PaymentQRScanner(props: PaymentQRScannerProps) {
     if (!props.example) return;
     setMode("paste");
     setPayload(props.example.payload);
-    void controller.scan(props.example.payload);
+    void controller.scan(props.example.payload, { source: "paste" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.example?.key]);
 
@@ -114,7 +146,7 @@ export function PaymentQRScanner(props: PaymentQRScannerProps) {
       if (!videoRef.current) throw new Error("Camera preview is unavailable.");
       await session.start(videoRef.current, {
         ...(deviceId ? { deviceId } : {}),
-        onDetected: (value) => { session.stop(); void controller.scan(value); },
+        onDetected: (value) => { session.stop(); void controller.scan(value, { source: "camera" }); },
         onError: (cameraError) => props.onError?.(cameraError),
       });
       setCameras(await CameraSession.listCameras());
@@ -149,11 +181,24 @@ export function PaymentQRScanner(props: PaymentQRScannerProps) {
     await controller.scanImage(file);
   };
 
+  const submitUpiId = () => {
+    const id = upiId.trim();
+    if (!id) return;
+    // Someone pasting a whole UPI link into the ID box gets it scanned as-is rather than wrapped
+    // in a second link.
+    const link = /^upi:/i.test(id) ? id : upiPayLink(id, upiName.trim(), upiAmount.trim());
+    void controller.scan(link, { source: "upi_id" });
+  };
+
   const scanAnother = () => {
     controller.reset();
     if (mode === "camera") void startCamera(cameras[activeCamera]?.deviceId);
     else if (mode === "paste") setPayload("");
   };
+
+  const tabs = props.upiIdEntry ? (["camera", "paste", "upload", "upi_id"] as const) : (["camera", "paste", "upload"] as const);
+  const recipient = controller.intent?.recipient;
+  const recipientAddress = recipient?.id ?? recipient?.address;
 
   if (props.headless) return null;
 
@@ -178,9 +223,9 @@ export function PaymentQRScanner(props: PaymentQRScannerProps) {
         </header>
 
         <nav className="upqr-tabs" aria-label="Input method">
-          {(["camera", "paste", "upload"] as const).map((tab) => (
+          {tabs.map((tab) => (
             <button key={tab} type="button" aria-pressed={mode === tab} onClick={() => tab === "camera" ? void startCamera() : setMode(tab)}>
-              {tab}
+              {tab === "upi_id" ? "UPI ID" : tab}
             </button>
           ))}
         </nav>
@@ -205,8 +250,23 @@ export function PaymentQRScanner(props: PaymentQRScannerProps) {
               <strong>{messages.upload}</strong>
               <small>PNG, JPEG, WebP or GIF · processed locally</small>
             </label>
+          ) : mode === "upi_id" ? (
+            <form className="upqr-upi" onSubmit={(event) => { event.preventDefault(); submitUpiId(); }}>
+              <label htmlFor="upqr-upi-id">UPI ID</label>
+              <input id="upqr-upi-id" value={upiId} maxLength={255} onChange={(event) => setUpiId(event.target.value)} placeholder="name@bank" inputMode="email" autoCapitalize="none" autoComplete="off" autoCorrect="off" spellCheck={false} required />
+              <label htmlFor="upqr-upi-name">Name you expect <em>optional · unverified</em></label>
+              <input id="upqr-upi-name" value={upiName} maxLength={100} onChange={(event) => setUpiName(event.target.value)} placeholder="e.g. Ram Lal" autoComplete="off" />
+              <label htmlFor="upqr-upi-amount">Amount (INR) <em>optional</em></label>
+              <input id="upqr-upi-amount" value={upiAmount} maxLength={12} onChange={(event) => setUpiAmount(event.target.value)} placeholder="Leave empty to enter it in your UPI app" inputMode="decimal" autoComplete="off" />
+              <p className="upqr-upi__note">
+                The name is only what you typed. Your UPI app shows the name the bank has on record before you enter your PIN - pay only if that matches.
+              </p>
+              <button type="submit" disabled={!upiId.trim() || controller.state === "processing"}>
+                {controller.state === "processing" ? "Checking…" : "Check UPI ID"}<span aria-hidden="true">→</span>
+              </button>
+            </form>
           ) : (
-            <form className="upqr-paste" onSubmit={(event) => { event.preventDefault(); if (payload.trim()) void controller.scan(payload.trim()); }}>
+            <form className="upqr-paste" onSubmit={(event) => { event.preventDefault(); if (payload.trim()) void controller.scan(payload.trim(), { source: "paste" }); }}>
               <label htmlFor="upqr-payload">Raw QR payload</label>
               <textarea id="upqr-payload" value={payload} maxLength={8192} onChange={(event) => setPayload(event.target.value)} placeholder="upi://pay?pa=merchant@bank…" spellCheck={false} />
               <button type="submit" disabled={!payload.trim() || controller.state === "processing"}>
@@ -222,7 +282,13 @@ export function PaymentQRScanner(props: PaymentQRScannerProps) {
           {controller.intent && controller.state !== "error" && (
             <dl>
               <div><dt>Scheme</dt><dd>{controller.intent.scheme}</dd></div>
-              <div><dt>Recipient</dt><dd>{controller.intent.recipient?.name ?? controller.intent.recipient?.id ?? controller.intent.recipient?.address ?? "Unspecified"}</dd></div>
+              <div>
+                <dt>Recipient</dt>
+                <dd>
+                  {recipientAddress ?? recipient?.name ?? "Unspecified"}
+                  {recipientAddress && recipient?.name && <small>{recipient.name} · unverified</small>}
+                </dd>
+              </div>
               <div><dt>Amount</dt><dd>{controller.intent.amount ? `${controller.intent.amount} ${controller.intent.currency ?? controller.intent.asset?.symbol ?? ""}` : "Open amount"}</dd></div>
             </dl>
           )}

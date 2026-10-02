@@ -25,6 +25,9 @@ export const SCHEME_LOGOS: Record<string, string> = {
   // (upload.wikimedia.org/wikipedia/commons/3/31/InteracLogo.svg), same nominative-use basis as
   // every other trademarked mark on this page.
   interac: "/logos/interac.svg",
+  // Simple Icons' `x` glyph in white on a black rounded square (the X app-icon look): the bare
+  // glyph is black, which disappears on the dark wallet buttons.
+  x_money: "/logos/x.svg",
 };
 
 // Wallet-app brand marks used by the payment-launcher buttons (PaymentActionPanel), keyed by

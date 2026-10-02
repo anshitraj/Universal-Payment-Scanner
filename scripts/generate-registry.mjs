@@ -45,10 +45,15 @@ const generatedAt = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
 // uncertainty (the debtor-address block's line count, and the QRR reference's own check digit -
 // see CHANGELOG.md) - but the scheme's *identification signature itself* (the SPC v2.x structural
 // format plus a real IBAN checksum) is not in doubt, so it gets the same "exact" tier a beta/stable
-// scheme would. No other scheme in the current registry needs an override; if a future addition
-// does, add it here with the same kind of comment, not silently.
+// scheme would.
+// The reverse case: X Money is `beta` because the link it claims (`x.com/<handle>`, documented by
+// X as what its QR codes encode) is confirmed - but that link is every X account's ordinary social
+// profile URL, so reading one as an X Money recipient is an inference the QR alone can't confirm.
+// "heuristic" says that; "exact" would overstate it.
+// If a future addition needs an override, add it here with the same kind of comment, not silently.
 const IDENTIFICATION_OVERRIDES = {
   swiss_qr_bill: "exact",
+  x_money: "heuristic",
 };
 
 function identificationFor(scheme) {

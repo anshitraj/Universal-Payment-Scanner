@@ -34,8 +34,13 @@ function formatAmount(intent: PaymentIntent): string {
   return `${intent.amount}${unit ? ` ${unit}` : ""}`;
 }
 
+// Name and address together when both exist: the name alone is unverified text, the address is
+// what the money actually goes to.
 function recipientLabel(intent: PaymentIntent): string {
-  return intent.recipient?.name ?? intent.recipient?.id ?? intent.recipient?.address ?? "an unspecified recipient";
+  const address = intent.recipient?.id ?? intent.recipient?.address;
+  const name = intent.recipient?.name;
+  if (name && address) return `${name} (${address})`;
+  return name ?? address ?? "an unspecified recipient";
 }
 
 function providerLabel(provider: string): string {
@@ -203,6 +208,18 @@ export function PaymentActionPanel({ intent }: { intent: PaymentIntent }) {
             touches your funds, your keys, or your PIN, and can't reverse anything once you approve it there. Only
             continue if you recognize this recipient and intend to pay them.
           </p>
+          {upiApps.length > 0 && (
+            <p className="pay-panel__hint">
+              Your UPI app shows the name the bank has on record for this UPI ID before you enter your PIN.
+              {intent.recipient?.name ? " The name above is not verified - pay only if the bank's name matches." : " Pay only if it's who you mean to pay."}
+            </p>
+          )}
+          {action.type === "redirect" && action.provider === "x_money" && (
+            <p className="pay-panel__hint">
+              Opens @{intent.recipient?.id}'s X profile. If that account accepts X Money, send it from there - the amount
+              is entered in the X app.
+            </p>
+          )}
 
           <div className="pay-panel__wallets">
             {action.type === "wallet" && action.network === "solana" && (

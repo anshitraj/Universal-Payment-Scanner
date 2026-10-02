@@ -145,6 +145,21 @@
     "expected": { "recognized": true, "scheme": "cash_app", "valid": true, "amount": "12.50" }
   },
   {
+    "name": "X profile link (what the X app's QR code encodes) recognized as an X Money recipient",
+    "payload": "https://x.com/exampleuser",
+    "expected": { "recognized": true, "scheme": "x_money", "valid": true }
+  },
+  {
+    "name": "an x.com site page is not an X profile, so it stays a generic URL",
+    "payload": "https://x.com/home",
+    "expected": { "recognized": true, "scheme": "url", "valid": true }
+  },
+  {
+    "name": "X profile link over plain http is recognized but rejected as unsafe",
+    "payload": "http://x.com/exampleuser",
+    "expected": { "recognized": true, "scheme": "x_money", "valid": false, "error": "UNSAFE_URI" }
+  },
+  {
     "name": "bare TRON address (public USDT-TRC20 contract address, not a customer account)",
     "payload": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
     "expected": { "recognized": true, "scheme": "tron", "valid": true }

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import { createScanner, type PaymentIntent, type SchemeMetadata } from "unipayscan";
-import { PaymentQRScanner } from "@universal-payment-qr/react";
+import { PaymentQRScanner, type ScanContext, type ScanSource } from "@universal-payment-qr/react";
 import { REGION_ORDER, NON_PAYMENT_SCHEME_IDS, regionFor } from "./data/regions";
 import { SCANNER_EXAMPLES } from "./data/examples";
 import { SDK_STATUSES } from "./data/sdks";
@@ -16,6 +16,30 @@ const DIRECTORY_PAGE_SIZE = 10;
 
 function MaturityBadge({ maturity }: { maturity: string }) {
   return <span className={`maturity maturity--${maturity}`}>{maturity}</span>;
+}
+
+// A payee name is never verified here: a QR's name field is whatever its creator typed, and a name
+// entered in the UPI ID tab is whatever the user typed. Only the payer's own UPI app sees the name
+// the bank has on record, so the label says where the name came from and points there.
+function RecipientName({ intent, source }: { intent: PaymentIntent; source: ScanSource | undefined }) {
+  const name = intent.recipient?.name;
+  if (name) {
+    return (
+      <p className="result-card__name">
+        <span>Name</span>
+        <strong>{name}</strong>
+        <em>{source === "upi_id" ? "typed by you" : "from the QR"} · unverified</em>
+      </p>
+    );
+  }
+  if (intent.scheme === "upi" && intent.validation.valid) {
+    return (
+      <p className="result-card__name result-card__name--empty">
+        No name in this {source === "upi_id" ? "entry" : "QR"}. Your UPI app shows the name the bank has on record before you enter your PIN.
+      </p>
+    );
+  }
+  return null;
 }
 
 function SchemeIcon({ id }: { id: string }) {
@@ -119,6 +143,7 @@ export function App() {
   const [capabilities, setCapabilities] = useState<SchemeMetadata[]>([]);
   const [enabled, setEnabled] = useState<string[]>([]);
   const [intent, setIntent] = useState<PaymentIntent>();
+  const [intentSource, setIntentSource] = useState<ScanSource>();
   const [copied, setCopied] = useState(false);
   const [configCopied, setConfigCopied] = useState(false);
   const [example, setExample] = useState<{ key: string | number; payload: string }>();
@@ -174,7 +199,11 @@ export function App() {
     ? "const scanner = createScanner();\n// all schemes enabled by default"
     : `const scanner = createScanner({\n  schemes: {\n${turnedOff.map((id) => `    ${id}: false,`).join("\n")}\n  },\n});`;
 
-  const receive = (next: PaymentIntent) => { setIntent(next); setCopied(false); };
+  const receive = (next: PaymentIntent, context?: ScanContext) => {
+    setIntent(next);
+    setIntentSource(context?.source);
+    setCopied(false);
+  };
   const copy = async () => {
     if (!intent) return;
     await navigator.clipboard.writeText(JSON.stringify(intent, null, 2));
@@ -329,7 +358,7 @@ export function App() {
               ))}
             </div>
           </div>
-          <PaymentQRScanner scanner={scanner} example={example} onDetected={receive} onUnsupported={receive} onError={(_error, next) => next && receive(next)} />
+          <PaymentQRScanner scanner={scanner} example={example} upiIdEntry onDetected={receive} onUnsupported={receive} onError={(_error, next, context) => next && receive(next, context)} />
         </div>
         <aside className="control-panel">
           <div className="panel-heading"><span>02</span><div><small>APPLICATION POLICY</small><h2>Payment methods your app accepts</h2></div></div>
@@ -381,9 +410,10 @@ export function App() {
                 <div><dt>Format</dt><dd>{intent.validation.valid ? "Structurally valid" : "Invalid"}</dd></div>
                 <div><dt>App support</dt><dd>{intent.support.enabled ? "Enabled" : "Disabled"}</dd></div>
                 <div><dt>Maturity</dt><dd>{intentMeta ? <MaturityBadge maturity={intentMeta.maturity} /> : "—"}</dd></div>
-                <div><dt>Recipient</dt><dd>{intent.recipient?.name ?? intent.recipient?.id ?? intent.recipient?.address ?? "Unspecified"}</dd></div>
+                <div><dt>Recipient</dt><dd title={intent.recipient?.id ?? intent.recipient?.address}>{intent.recipient?.id ?? intent.recipient?.address ?? intent.recipient?.name ?? "Unspecified"}</dd></div>
                 <div><dt>Amount</dt><dd>{intent.amount ? `${intent.amount} ${intent.currency ?? intent.asset?.symbol ?? ""}`.trim() : "Open amount"}</dd></div>
               </dl>
+              <RecipientName intent={intent} source={intentSource} />
               <p className="result-card__trust">Recipient trust <strong>UNVERIFIED</strong></p>
               <PaymentActionPanel intent={intent} />
             </div>
